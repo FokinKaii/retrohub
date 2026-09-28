@@ -1501,74 +1501,103 @@
 
     <!-- MODAL DE SUGERENCIAS Y PETICIONES A LA CREADORA -->
     <div class="modal-overlay" id="modal-sugerencias" onclick="if(event.target === this) cerrarModalSugerencias()">
-        <div class="modal-caja" style="max-width: 530px; text-align: left;">
+        <div class="modal-caja" style="max-width: 550px; text-align: left;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                 <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">💡 Buzón de Sugerencias & Peticiones</h3>
                 <button class="btn-secundario" style="border: none; padding: 4px 10px; cursor: pointer; border-radius: 6px; font-size: 16px; color: #fff;" onclick="cerrarModalSugerencias()">✕</button>
             </div>
             
-            <p style="margin-bottom: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                ¿Quieres que añada un juego a alguna consola, tienes alguna idea de mejora o has encontrado un fallo? Envíamelo directamente con este formulario:
+            <p style="margin-bottom: 14px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                ¿Quieres que añada un juego concreto a alguna consola, tienes una idea o has visto un fallo? Escribe tu petición y elige cómo enviármela:
             </p>
 
-            <form id="form-sugerencias" onsubmit="enviarSugerencia(event)" style="display: flex; flex-direction: column; gap: 13px;">
-                <div>
-                    <label style="display: block; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px;">Tu Nombre o Gamertag:</label>
-                    <input type="text" id="sug-nombre" required placeholder="Ej: MarioPlayer99" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; font-family: inherit;">
-                </div>
-
+            <div style="display: flex; flex-direction: column; gap: 11px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div>
-                        <label style="display: block; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px;">Tipo:</label>
-                        <select id="sug-tipo" style="width: 100%; box-sizing: border-box; background: #121422; border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 8px; color: #fff; font-size: 13px; font-family: inherit;">
-                            <option value="pedir_juego">🎮 Pedir un juego nuevo</option>
-                            <option value="reportar_fallo">🐛 Reportar un fallo</option>
-                            <option value="mejora_tema">✨ Sugerir mejora / tema</option>
-                            <option value="mensaje">💬 Mensaje general</option>
-                        </select>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Tu Nombre / Gamertag:</label>
+                        <input type="text" id="sug-nombre" oninput="actualizarTicketPreview()" placeholder="Ej: MarioPlayer99" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
                     </div>
                     <div>
-                        <label style="display: block; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px;">Consola / Sistema:</label>
-                        <select id="sug-consola" style="width: 100%; box-sizing: border-box; background: #121422; border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 8px; color: #fff; font-size: 13px; font-family: inherit;">
-                            <option value="n64">Nintendo 64</option>
-                            <option value="gba">Game Boy Advance</option>
-                            <option value="snes">Super Nintendo (SNES)</option>
-                            <option value="psx">PlayStation 1 (PSX)</option>
-                            <option value="psp">PSP</option>
-                            <option value="nds">Nintendo DS</option>
-                            <option value="nes">NES</option>
-                            <option value="gb">Game Boy / Color</option>
-                            <option value="segaMD">Sega Mega Drive</option>
-                            <option value="arcade">Arcade / MAME</option>
-                            <option value="atari2600">Atari 2600</option>
-                            <option value="general">Todo el sitio / General</option>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Consola / Sistema:</label>
+                        <select id="sug-consola" onchange="actualizarTicketPreview()" style="width: 100%; box-sizing: border-box; background: #121422; border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 8px; color: #fff; font-size: 13px; font-family: inherit;">
+                            <option value="Nintendo 64">Nintendo 64</option>
+                            <option value="Game Boy Advance">Game Boy Advance</option>
+                            <option value="Super Nintendo">Super Nintendo (SNES)</option>
+                            <option value="PlayStation 1">PlayStation 1 (PSX)</option>
+                            <option value="PSP">Sony PSP</option>
+                            <option value="Nintendo DS">Nintendo DS</option>
+                            <option value="NES">NES (8-Bit)</option>
+                            <option value="Game Boy">Game Boy / Color</option>
+                            <option value="Sega Mega Drive">Sega Mega Drive</option>
+                            <option value="Arcade">Arcade / MAME</option>
+                            <option value="General">Web / General</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px;">Título del juego o detalle de la sugerencia:</label>
-                    <textarea id="sug-mensaje" rows="3" required placeholder="Ej: Me gustaría que añadieras Zelda Ocarina of Time para N64, o Mario Kart Super Circuit para GBA..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Juego que quieres pedir o Título de la sugerencia:</label>
+                    <input type="text" id="sug-juego" oninput="actualizarTicketPreview()" placeholder="Ej: Super Smash Bros / Mario Kart / Pokémon Esmeralda..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px;">Tu contacto o email (Opcional):</label>
-                    <input type="text" id="sug-contacto" placeholder="Para avisarte cuando lo añada (ej: tu correo o @instagram)" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Detalles o Mensaje (Opcional):</label>
+                    <textarea id="sug-mensaje" rows="2" oninput="actualizarTicketPreview()" placeholder="Ej: Si es posible en español, o para jugar multijugador..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
                 </div>
 
-                <div id="sug-estado" style="display: none; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center;"></div>
+                <!-- FICHA DINÁMICA DE PREVISUALIZACIÓN -->
+                <div id="sug-ticket-preview" style="background: rgba(0, 0, 0, 0.45); border: 1px dashed var(--primary); border-radius: 10px; padding: 10px 14px; font-family: 'Space Grotesk', monospace; font-size: 12px; line-height: 1.5; color: #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-heading-accent); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 4px; margin-bottom: 6px;">
+                        <span>🎫 FICHA DE SUGERENCIA</span>
+                        <span id="ticket-consola-tag" style="background: var(--primary-glow); padding: 2px 8px; border-radius: 12px; font-size: 10px; color: #fff;">NINTENDO 64</span>
+                    </div>
+                    <div>👤 <strong>Jugador:</strong> <span id="ticket-nombre-txt">Player 1</span></div>
+                    <div>🎮 <strong>Juego / Petición:</strong> <span id="ticket-juego-txt" style="color: var(--secondary);">Escribe el título arriba...</span></div>
+                    <div id="ticket-desc-line" style="display: none; color: #94a3b8; font-size: 11px; margin-top: 3px;">💬 <span id="ticket-desc-txt"></span></div>
+                </div>
 
-                <div style="display: flex; gap: 10px; margin-top: 4px;">
-                    <button type="submit" id="btn-enviar-sugerencia" class="btn-accion" style="flex: 1; justify-content: center; padding: 12px;">
-                        <span>🚀</span> <span id="texto-btn-sug">Enviar a la creadora</span>
+                <div id="sug-estado" style="display: none; padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.4; text-align: center;"></div>
+
+                <!-- ACCIONES DE ENVÍO DIRECTO -->
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Elige cómo enviármelo (1 Clic):</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <!-- WhatsApp -->
+                        <button type="button" class="btn-accion" onclick="enviarSugerenciaWhatsApp()" style="justify-content: center; padding: 10px 12px; font-size: 12px; background: rgba(37, 211, 102, 0.16); border: 1px solid rgba(37, 211, 102, 0.5); color: #4ade80;">
+                            <span>📲</span> <span>Por WhatsApp</span>
+                        </button>
+
+                        <!-- Correo Directo -->
+                        <button type="button" class="btn-accion" onclick="enviarSugerenciaEmail()" style="justify-content: center; padding: 10px 12px; font-size: 12px; background: rgba(6, 182, 212, 0.16); border: 1px solid rgba(6, 182, 212, 0.4); color: #67e8f9;">
+                            <span>📧</span> <span>Por Correo Directo</span>
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 8px;">
+                        <!-- Envío Web Automático -->
+                        <button type="button" id="btn-enviar-web" class="btn-accion" onclick="enviarSugerenciaWeb()" style="justify-content: center; padding: 10px 12px; font-size: 12px;">
+                            <span>🚀</span> <span id="txt-btn-web">Enviar por la Web</span>
+                        </button>
+
+                        <!-- Copiar al Portapapeles -->
+                        <button type="button" class="btn-secundario" onclick="copiarFichaSugerencia()" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; font-size: 12px; border-radius: 8px; cursor: pointer; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid var(--card-border);">
+                            <span>📋</span> <span>Copiar Ficha</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- HISTORIAL LOCAL -->
+                <div style="margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
+                    <button type="button" onclick="alternarHistorialSugerencias()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; text-decoration: underline; font-size: 11px; padding: 0;">
+                        📁 <span id="btn-txt-historial">Ver sugerencias guardadas (0)</span>
                     </button>
-                    <button type="button" class="btn-secundario" style="padding: 12px 16px; border: 1px solid var(--card-border); background: transparent; color: #fff; border-radius: 8px; cursor: pointer;" onclick="cerrarModalSugerencias()">Cerrar</button>
+                    <a href="https://github.com/FokinKaii/retrohub/issues/new" target="_blank" style="color: var(--secondary); text-decoration: none;">Abrir Issue en GitHub ↗</a>
                 </div>
-            </form>
 
-            <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                <span>📬 Me llegará al correo para añadirlo en el siguiente parche</span>
-                <a href="https://github.com/FokinKaii/retrohub/issues/new" target="_blank" style="color: var(--secondary); text-decoration: none;">GitHub Issues ↗</a>
+                <div id="caja-historial-sugerencias" style="display: none; max-height: 140px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 8px; font-size: 11px; border: 1px solid rgba(255,255,255,0.06);">
+                    <!-- Rellenado dinámico -->
+                </div>
             </div>
         </div>
     </div>
@@ -1746,7 +1775,16 @@
         function abrirModalSugerencias() {
             sonidoClick('select');
             const modal = document.getElementById('modal-sugerencias');
-            if (modal) modal.classList.add('activo');
+            if (modal) {
+                modal.classList.add('activo');
+                const inNombre = document.getElementById('sug-nombre');
+                if (inNombre && !inNombre.value) {
+                    const actualPlayer = localStorage.getItem('retrohub_player') || 'Player 1';
+                    if (actualPlayer !== 'Player 1') inNombre.value = actualPlayer;
+                }
+                actualizarTicketPreview();
+                actualizarHistorialSugerenciasUI();
+            }
         }
 
         function cerrarModalSugerencias() {
@@ -1754,35 +1792,175 @@
             if (modal) modal.classList.remove('activo');
         }
 
-        async function enviarSugerencia(e) {
-            e.preventDefault();
-            sonidoClick('select');
+        function actualizarTicketPreview() {
+            const inNombre = document.getElementById('sug-nombre');
+            const inConsola = document.getElementById('sug-consola');
+            const inJuego = document.getElementById('sug-juego');
+            const inMensaje = document.getElementById('sug-mensaje');
 
-            const btn = document.getElementById('btn-enviar-sugerencia');
-            const txtBtn = document.getElementById('texto-btn-sug');
-            const estado = document.getElementById('sug-estado');
+            if (!inNombre || !inConsola || !inJuego) return;
 
-            const nombre = document.getElementById('sug-nombre').value.trim();
-            const tipo = document.getElementById('sug-tipo').value;
+            const nombre = inNombre.value.trim() || (localStorage.getItem('retrohub_player') || 'Player 1');
+            const consola = inConsola.value;
+            const juego = inJuego.value.trim();
+            const mensaje = inMensaje ? inMensaje.value.trim() : '';
+
+            document.getElementById('ticket-nombre-txt').innerText = nombre;
+            document.getElementById('ticket-consola-tag').innerText = consola.toUpperCase();
+            document.getElementById('ticket-juego-txt').innerText = juego || 'Escribe el título arriba...';
+
+            const descLine = document.getElementById('ticket-desc-line');
+            const descTxt = document.getElementById('ticket-desc-txt');
+            if (mensaje) {
+                descLine.style.display = 'block';
+                descTxt.innerText = `"${mensaje}"`;
+            } else {
+                descLine.style.display = 'none';
+            }
+        }
+
+        function obtenerDatosSugerencia() {
+            const inJuego = document.getElementById('sug-juego');
+            const juego = inJuego.value.trim();
+            if (!juego) {
+                inJuego.focus();
+                inJuego.style.borderColor = '#ef4444';
+                setTimeout(() => inJuego.style.borderColor = 'var(--card-border)', 2000);
+                mostrarToast('⚠️ Escribe el título del juego que quieres pedir');
+                return null;
+            }
+
+            const inNombre = document.getElementById('sug-nombre');
+            const nombre = inNombre.value.trim() || (localStorage.getItem('retrohub_player') || 'Player 1');
             const consola = document.getElementById('sug-consola').value;
             const mensaje = document.getElementById('sug-mensaje').value.trim();
-            const contacto = document.getElementById('sug-contacto').value.trim();
+
+            return {
+                nombre,
+                consola,
+                juego,
+                mensaje,
+                fecha: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+        }
+
+        function guardarSugerenciaLocal(item) {
+            try {
+                const lista = JSON.parse(localStorage.getItem('retrohub_sugerencias_guardadas') || '[]');
+                lista.unshift(item);
+                localStorage.setItem('retrohub_sugerencias_guardadas', JSON.stringify(lista.slice(0, 30)));
+                actualizarHistorialSugerenciasUI();
+            } catch(e) {}
+        }
+
+        function alternarHistorialSugerencias() {
+            const caja = document.getElementById('caja-historial-sugerencias');
+            if (!caja) return;
+            const visible = caja.style.display === 'block';
+            caja.style.display = visible ? 'none' : 'block';
+            if (!visible) actualizarHistorialSugerenciasUI();
+        }
+
+        function actualizarHistorialSugerenciasUI() {
+            const btn = document.getElementById('btn-txt-historial');
+            const caja = document.getElementById('caja-historial-sugerencias');
+            const lista = JSON.parse(localStorage.getItem('retrohub_sugerencias_guardadas') || '[]');
+            
+            if (btn) btn.innerText = `Ver peticiones guardadas (${lista.length})`;
+            if (!caja) return;
+
+            if (lista.length === 0) {
+                caja.innerHTML = '<div style="color: #64748b; text-align: center; padding: 6px;">No hay peticiones guardadas en este navegador todavía.</div>';
+                return;
+            }
+
+            caja.innerHTML = lista.map((p) => `
+                <div style="padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                    <div>
+                        <strong style="color: #fff;">${p.juego}</strong> 
+                        <span style="background: rgba(139, 92, 246, 0.2); color: #c084fc; padding: 1px 6px; border-radius: 4px; font-size: 10px;">${p.consola}</span>
+                        <div style="color: #94a3b8; font-size: 10px;">De: ${p.nombre} • ${p.fecha} ${p.mensaje ? '• <em>"' + p.mensaje + '"</em>' : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 1. ENVIAR POR WHATSAPP
+        function enviarSugerenciaWhatsApp() {
+            const datos = obtenerDatosSugerencia();
+            if (!datos) return;
+            sonidoClick('coin');
+            guardarSugerenciaLocal(datos);
+
+            const textoMsg = `🎮 *Petición para RetroHub:*%0A👤 *De:* ${encodeURIComponent(datos.nombre)}%0A🕹️ *Consola:* ${encodeURIComponent(datos.consola)}%0A⭐ *Juego:* ${encodeURIComponent(datos.juego)}${datos.mensaje ? '%0A💬 *Detalles:* ' + encodeURIComponent(datos.mensaje) : ''}`;
+            const urlWhatsApp = `https://api.whatsapp.com/send?text=${textoMsg}`;
+            window.open(urlWhatsApp, '_blank');
+            mostrarToast('📲 Abriendo WhatsApp para enviar la petición...');
+        }
+
+        // 2. ENVIAR POR CORREO DIRECTO (Gmail / Mailto)
+        function enviarSugerenciaEmail() {
+            const datos = obtenerDatosSugerencia();
+            if (!datos) return;
+            sonidoClick('coin');
+            guardarSugerenciaLocal(datos);
+
+            const asunto = `[RetroHub] Petición de juego: ${datos.juego} (${datos.consola})`;
+            const cuerpo = `¡Hola!\n\nTe envío esta petición de juego para añadir a RetroHub:\n\n• Juego: ${datos.juego}\n• Consola: ${datos.consola}\n• De: ${datos.nombre}\n• Detalles: ${datos.mensaje || 'Sin detalles extra'}\n\n¡Un saludo!`;
+
+            const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=sargomman@alu.edu.gva.es&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            const urlMailto = `mailto:sargomman@alu.edu.gva.es?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+
+            const win = window.open(urlGmail, '_blank');
+            if (!win) {
+                window.location.href = urlMailto;
+            }
+            mostrarToast('📧 Abriendo correo para enviar la petición...');
+        }
+
+        // 3. COPIAR FICHA AL PORTAPAPELES
+        function copiarFichaSugerencia() {
+            const datos = obtenerDatosSugerencia();
+            if (!datos) return;
+            guardarSugerenciaLocal(datos);
+
+            const ficha = `🎮 [RetroHub] Petición de Juego:\n• Título: ${datos.juego}\n• Consola: ${datos.consola}\n• Enviado por: ${datos.nombre}\n${datos.mensaje ? '• Detalles: ' + datos.mensaje + '\n' : ''}• Web: https://fokinkaii.github.io/retrohub/`;
+
+            navigator.clipboard.writeText(ficha).then(() => {
+                sonidoClick('coin');
+                mostrarToast('📋 ¡Ficha copiada! Pégala en Discord, Instagram o tu chat.');
+            }).catch(() => {
+                sonidoClick('coin');
+                mostrarToast('📋 ¡Ficha guardada localmente!');
+            });
+        }
+
+        // 4. ENVIAR POR LA WEB (FormSubmit con validación estricta y feedback honesto)
+        async function enviarSugerenciaWeb() {
+            const datos = obtenerDatosSugerencia();
+            if (!datos) return;
+            sonidoClick('select');
+
+            const btn = document.getElementById('btn-enviar-web');
+            const txtBtn = document.getElementById('txt-btn-web');
+            const estado = document.getElementById('sug-estado');
 
             btn.disabled = true;
             txtBtn.innerText = 'Enviando...';
             estado.style.display = 'block';
             estado.style.background = 'rgba(139, 92, 246, 0.15)';
             estado.style.color = '#c084fc';
-            estado.innerText = '⏳ Enviando tu sugerencia a la creadora...';
+            estado.innerText = '⏳ Conectando con el servidor de correo...';
+
+            guardarSugerenciaLocal(datos);
 
             const payload = {
-                Nombre: nombre,
-                Tipo_Sugerencia: tipo,
-                Consola: consola.toUpperCase(),
-                Detalle_Peticion: mensaje,
-                Contacto_Opcional: contacto || 'No facilitado',
-                Fecha_Envio: new Date().toLocaleString(),
-                _subject: `🎮 [RetroHub] Sugerencia de ${nombre} (${consola.toUpperCase()}): ${mensaje.substring(0, 35)}...`,
+                Nombre: datos.nombre,
+                Consola: datos.consola,
+                Juego_O_Peticion: datos.juego,
+                Mensaje_Extra: datos.mensaje || 'Ninguno',
+                Fecha_Envio: datos.fecha,
+                _subject: `🎮 [RetroHub] Petición de ${datos.nombre}: ${datos.juego} (${datos.consola})`,
                 _template: 'table',
                 _captcha: 'false'
             };
@@ -1797,35 +1975,30 @@
                     body: JSON.stringify(payload)
                 });
 
-                if (res.ok || res.status === 200) {
+                const respuestaJson = await res.json();
+
+                if (respuestaJson && (respuestaJson.success === "true" || respuestaJson.success === true)) {
                     sonidoClick('coin');
                     estado.style.background = 'rgba(16, 185, 129, 0.2)';
                     estado.style.color = '#34d399';
-                    estado.innerHTML = '🎉 <strong>¡Sugerencia enviada con éxito!</strong> Le llegará directamente a la administradora para añadirla.';
-                    document.getElementById('form-sugerencias').reset();
-
-                    try {
-                        const anteriores = JSON.parse(localStorage.getItem('retrohub_sugerencias') || '[]');
-                        anteriores.unshift(payload);
-                        localStorage.setItem('retrohub_sugerencias', JSON.stringify(anteriores.slice(0, 20)));
-                    } catch(errLS) {}
-
-                    setTimeout(() => {
-                        cerrarModalSugerencias();
-                        mostrarToast('¡Sugerencia enviada a la creadora!');
-                        btn.disabled = false;
-                        txtBtn.innerText = 'Enviar a la creadora';
-                        estado.style.display = 'none';
-                    }, 2400);
+                    estado.innerHTML = '🎉 <strong>¡Petición enviada con éxito!</strong> Le llegará directamente al correo de la administradora.';
+                    document.getElementById('sug-juego').value = '';
+                    if (document.getElementById('sug-mensaje')) document.getElementById('sug-mensaje').value = '';
+                    actualizarTicketPreview();
+                } else if (respuestaJson && respuestaJson.message && respuestaJson.message.toLowerCase().includes('activation')) {
+                    estado.style.background = 'rgba(245, 158, 11, 0.2)';
+                    estado.style.color = '#fbbf24';
+                    estado.innerHTML = `ℹ️ <strong>Pendiente de activación en el correo:</strong> FormSubmit requiere que revises <code>sargomman@alu.edu.gva.es</code> (o carpeta Spam) y pulses <em>"Activate Form"</em> una sola vez para permitir envíos web. <br><br>👉 <strong>¡Solución inmediata!</strong> Pulsa el botón <strong>"📲 Por WhatsApp"</strong> o <strong>"📧 Por Correo Directo"</strong> de arriba para enviárselo directamente ahora mismo.`;
                 } else {
-                    throw new Error('Servidor respondio con status ' + res.status);
+                    throw new Error(respuestaJson.message || 'Error en la respuesta del servidor');
                 }
             } catch (err) {
                 estado.style.background = 'rgba(245, 158, 11, 0.2)';
                 estado.style.color = '#fbbf24';
-                estado.innerHTML = `⚠️ No se pudo enviar por el canal automático. <a href="mailto:sargomman@alu.edu.gva.es?subject=Sugerencia%20RetroHub%20de%20${encodeURIComponent(nombre)}&body=${encodeURIComponent(mensaje + '\n\nConsola: ' + consola + '\nContacto: ' + contacto)}" style="color: #67e8f9; text-decoration: underline;">Haz clic aquí para enviarlo por correo</a> o en <a href="https://github.com/FokinKaii/retrohub/issues/new" target="_blank" style="color: #67e8f9; text-decoration: underline;">GitHub Issues</a>.`;
+                estado.innerHTML = `⚠️ No se pudo enviar por el canal web automático. <br>👉 Pulsa el botón <strong>"📲 Por WhatsApp"</strong> o <strong>"📧 Por Correo Directo"</strong> de arriba para mandárselo sin esperas.`;
+            } finally {
                 btn.disabled = false;
-                txtBtn.innerText = 'Reintentar Envío';
+                txtBtn.innerText = 'Enviar por la Web';
             }
         }
 
