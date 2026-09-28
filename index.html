@@ -1515,7 +1515,7 @@
                 <div id="sug-estado" style="display: none; padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.4; text-align: center;"></div>
 
                 <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 7px 10px; font-size: 11px; display: flex; align-items: center; justify-content: space-between; color: var(--text-muted);">
-                    <span>📬 Llega a: <strong id="txt-correo-destino" style="color: var(--secondary);">sargomman@alu.edu.gva.es</strong></span>
+                    <span>📬 Llega a: <strong id="txt-correo-destino" style="color: var(--secondary);">saragomezmanzanares@gmail.com</strong></span>
                     <button type="button" onclick="cambiarCorreoDestino(event)" style="background: none; border: none; color: #c084fc; cursor: pointer; text-decoration: underline; font-size: 11px; padding: 0;">✏️ Cambiar email</button>
                 </div>
 
@@ -1733,11 +1733,17 @@
         }
 
         // --- BUZÓN DE SUGERENCIAS Y PETICIONES A LA CREADORA ---
-        let correoDestino = localStorage.getItem('retrohub_destino_email') || 'sargomman@alu.edu.gva.es';
+        const CORREO_PREDETERMINADO = 'saragomezmanzanares@gmail.com';
+        let savedEmail = localStorage.getItem('retrohub_destino_email');
+        if (!savedEmail || savedEmail === 'sargomman@alu.edu.gva.es') {
+            savedEmail = CORREO_PREDETERMINADO;
+            localStorage.setItem('retrohub_destino_email', CORREO_PREDETERMINADO);
+        }
+        let correoDestino = savedEmail;
 
         function cambiarCorreoDestino(e) {
             if (e) e.preventDefault();
-            const actual = localStorage.getItem('retrohub_destino_email') || 'sargomman@alu.edu.gva.es';
+            const actual = correoDestino;
             const nuevo = prompt('Introduce el correo electrónico donde quieres recibir las sugerencias y peticiones de tus amigos (ej: tu_correo@gmail.com):', actual);
             if (nuevo && nuevo.trim().includes('@')) {
                 correoDestino = nuevo.trim().toLowerCase();
