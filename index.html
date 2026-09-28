@@ -870,8 +870,18 @@
             padding: 28px;
             max-width: 540px;
             width: 100%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 35px var(--primary-glow);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.85), 0 0 40px var(--primary-glow);
             position: relative;
+            transform: scale(0.88) translateY(-15px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
+
+        .modal-overlay.activo .modal-caja {
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
 
         .modal-caja h3 {
@@ -1047,54 +1057,6 @@
             z-index: 10;
         }
 
-        /* --- BOTÓN FLOTANTE DE SUGERENCIAS --- */
-        .btn-flotante-sugerencia {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 99;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 10px 18px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--primary-glow);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .btn-flotante-sugerencia:hover {
-            transform: translateY(-3px) scale(1.04);
-            border-color: var(--primary);
-            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5), 0 0 30px var(--primary-glow);
-        }
-
-        .btn-flotante-sugerencia .icono-flotante {
-            font-size: 18px;
-            animation: latidoSugerencia 2.5s infinite ease-in-out;
-        }
-
-        @keyframes latidoSugerencia {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.22) rotate(12deg); }
-        }
-
-        @media (max-width: 768px) {
-            .btn-flotante-sugerencia {
-                bottom: 16px;
-                right: 16px;
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-        }
-
         @media (max-width: 768px) {
             .contenedor-principal { padding: 20px 14px; }
             .tarjeta-guia { flex-direction: column; align-items: flex-start; }
@@ -1108,12 +1070,6 @@
 
     <!-- LIENZO DE FONDO ANIMADO -->
     <canvas id="retro-canvas-fondo"></canvas>
-
-    <!-- BOTON FLOTANTE DE SUGERENCIAS -->
-    <button class="btn-flotante-sugerencia" id="btn-flotante-sug" onclick="abrirModalSugerencias()" title="¿Falta algún juego o tienes una sugerencia? ¡Pídelo aquí!">
-        <span class="icono-flotante">💡</span>
-        <span class="texto-flotante">¿Falta un juego? Pídelo</span>
-    </button>
 
     <!-- BARRA SUPERIOR CON TOQUES DE PERSONALIDAD -->
     <div class="barra-superior-global">
@@ -1558,6 +1514,11 @@
 
                 <div id="sug-estado" style="display: none; padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.4; text-align: center;"></div>
 
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 7px 10px; font-size: 11px; display: flex; align-items: center; justify-content: space-between; color: var(--text-muted);">
+                    <span>📬 Llega a: <strong id="txt-correo-destino" style="color: var(--secondary);">sargomman@alu.edu.gva.es</strong></span>
+                    <button type="button" onclick="cambiarCorreoDestino(event)" style="background: none; border: none; color: #c084fc; cursor: pointer; text-decoration: underline; font-size: 11px; padding: 0;">✏️ Cambiar email</button>
+                </div>
+
                 <!-- ACCIONES DE ENVÍO DIRECTO -->
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Elige cómo enviármelo (1 Clic):</div>
@@ -1772,6 +1733,26 @@
         }
 
         // --- BUZÓN DE SUGERENCIAS Y PETICIONES A LA CREADORA ---
+        let correoDestino = localStorage.getItem('retrohub_destino_email') || 'sargomman@alu.edu.gva.es';
+
+        function cambiarCorreoDestino(e) {
+            if (e) e.preventDefault();
+            const actual = localStorage.getItem('retrohub_destino_email') || 'sargomman@alu.edu.gva.es';
+            const nuevo = prompt('Introduce el correo electrónico donde quieres recibir las sugerencias y peticiones de tus amigos (ej: tu_correo@gmail.com):', actual);
+            if (nuevo && nuevo.trim().includes('@')) {
+                correoDestino = nuevo.trim().toLowerCase();
+                localStorage.setItem('retrohub_destino_email', correoDestino);
+                actualizarTextoCorreoDestino();
+                mostrarToast('¡Correo de destino actualizado a ' + correoDestino + '!');
+                sonidoClick('coin');
+            }
+        }
+
+        function actualizarTextoCorreoDestino() {
+            const el = document.getElementById('txt-correo-destino');
+            if (el) el.innerText = correoDestino;
+        }
+
         function abrirModalSugerencias() {
             sonidoClick('select');
             const modal = document.getElementById('modal-sugerencias');
@@ -1783,6 +1764,7 @@
                     if (actualPlayer !== 'Player 1') inNombre.value = actualPlayer;
                 }
                 actualizarTicketPreview();
+                actualizarTextoCorreoDestino();
                 actualizarHistorialSugerenciasUI();
             }
         }
@@ -1908,14 +1890,14 @@
             const asunto = `[RetroHub] Petición de juego: ${datos.juego} (${datos.consola})`;
             const cuerpo = `¡Hola!\n\nTe envío esta petición de juego para añadir a RetroHub:\n\n• Juego: ${datos.juego}\n• Consola: ${datos.consola}\n• De: ${datos.nombre}\n• Detalles: ${datos.mensaje || 'Sin detalles extra'}\n\n¡Un saludo!`;
 
-            const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=sargomman@alu.edu.gva.es&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
-            const urlMailto = `mailto:sargomman@alu.edu.gva.es?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(correoDestino)}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            const urlMailto = `mailto:${encodeURIComponent(correoDestino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
 
             const win = window.open(urlGmail, '_blank');
             if (!win) {
                 window.location.href = urlMailto;
             }
-            mostrarToast('📧 Abriendo correo para enviar la petición...');
+            mostrarToast('📧 Abriendo correo hacia ' + correoDestino + '...');
         }
 
         // 3. COPIAR FICHA AL PORTAPAPELES
@@ -1966,7 +1948,7 @@
             };
 
             try {
-                const res = await fetch('https://formsubmit.co/ajax/sargomman@alu.edu.gva.es', {
+                const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(correoDestino)}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1981,14 +1963,14 @@
                     sonidoClick('coin');
                     estado.style.background = 'rgba(16, 185, 129, 0.2)';
                     estado.style.color = '#34d399';
-                    estado.innerHTML = '🎉 <strong>¡Petición enviada con éxito!</strong> Le llegará directamente al correo de la administradora.';
+                    estado.innerHTML = `🎉 <strong>¡Petición enviada con éxito!</strong> Le llegará directamente al correo <code>${correoDestino}</code>.`;
                     document.getElementById('sug-juego').value = '';
                     if (document.getElementById('sug-mensaje')) document.getElementById('sug-mensaje').value = '';
                     actualizarTicketPreview();
                 } else if (respuestaJson && respuestaJson.message && respuestaJson.message.toLowerCase().includes('activation')) {
                     estado.style.background = 'rgba(245, 158, 11, 0.2)';
                     estado.style.color = '#fbbf24';
-                    estado.innerHTML = `ℹ️ <strong>Pendiente de activación en el correo:</strong> FormSubmit requiere que revises <code>sargomman@alu.edu.gva.es</code> (o carpeta Spam) y pulses <em>"Activate Form"</em> una sola vez para permitir envíos web. <br><br>👉 <strong>¡Solución inmediata!</strong> Pulsa el botón <strong>"📲 Por WhatsApp"</strong> o <strong>"📧 Por Correo Directo"</strong> de arriba para enviárselo directamente ahora mismo.`;
+                    estado.innerHTML = `ℹ️ <strong>Pendiente de activación en el correo:</strong> FormSubmit requiere que revises <code>${correoDestino}</code> (o carpeta Spam) y pulses <em>"Activate Form"</em> una sola vez para permitir envíos web. <br><br>👉 <strong>¡Solución inmediata!</strong> Pulsa el botón <strong>"📲 Por WhatsApp"</strong> o <strong>"📧 Por Correo Directo"</strong> de arriba para enviárselo directamente ahora mismo.`;
                 } else {
                     throw new Error(respuestaJson.message || 'Error en la respuesta del servidor');
                 }
