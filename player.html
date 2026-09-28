@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductor EmulatorJS</title>
+    <script src="coi-serviceworker.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #07080d;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f1f2f6;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+        }
+        #game {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        #game canvas {
+            display: block;
+            margin: 0 auto;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        #pantalla-carga {
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            background: radial-gradient(circle at center, rgba(26, 28, 45, 0.96) 0%, rgba(10, 11, 18, 0.98) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.2);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(12px);
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+        .spinner {
+            width: 54px;
+            height: 54px;
+            border: 4px solid rgba(139, 92, 246, 0.2);
+            border-top: 4px solid #a855f7;
+            border-right: 4px solid #06b6d4;
+            border-radius: 50%;
+            animation: girar 0.9s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #pantalla-carga h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #pantalla-carga p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .badge-motor {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 5px 12px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #d8b4fe;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+
+    <div id="pantalla-carga">
+        <div class="spinner"></div>
+        <h3 id="texto-titulo">Iniciando Emulador...</h3>
+        <p id="texto-desc">Cargando núcleo WebGL y preparando shaders de alta fidelidad...</p>
+        <div id="badge-info" class="badge-motor">✨ Motor Anti-Glitches Activado</div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let coreParam = params.get('core') || 'gba';
+        let romParam = params.get('rom') || '';
+        let gameNameParam = params.get('name') || '';
+        let n64coreParam = params.get('n64core') || 'parallel'; // 'parallel' por defecto para Paper Mario
+
+        const themeParam = params.get('theme') || 'obsidian';
+        const colorTemas = {
+            'obsidian': { bg: '#07080d', color: '#8b5cf6' },
+            'gameboy': { bg: '#8bac0f', color: '#306230' },
+            'synthwave': { bg: '#120726', color: '#ec4899' },
+            'snes': { bg: '#181926', color: '#6366f1' },
+            'crimson': { bg: '#0f0507', color: '#ef4444' },
+            'emerald': { bg: '#04100c', color: '#10b981' }
+        };
+        const configTema = colorTemas[themeParam] || colorTemas['obsidian'];
+        document.body.style.backgroundColor = configTema.bg;
+
+        function ocultarCarga() {
+            const el = document.getElementById('pantalla-carga');
+            if (el) {
+                el.style.opacity = '0';
+                setTimeout(() => el.style.display = 'none', 400);
+            }
+        }
+
+        function lanzarEmulador(fuenteRom, sistema, nombre, opcionN64Core) {
+            const motorN64 = opcionN64Core || n64coreParam;
+            let coreElegido = sistema || coreParam;
+
+            // Tratamiento especial N64 para eliminar errores de renderizado (Paper Mario)
+            let coreFinal = coreElegido;
+            if (coreElegido === 'n64' || coreElegido === 'parallel_n64' || coreElegido === 'mupen64plus_next') {
+                if (motorN64 === 'parallel' || motorN64 === 'parallel_n64') {
+                    coreFinal = 'parallel_n64';
+                    document.getElementById('badge-info').innerText = '✨ Motor ParaLLEl N64 (Sin fallos gráficos)';
+                } else {
+                    coreFinal = 'mupen64plus_next';
+                    document.getElementById('badge-info').innerText = '⚡ Motor Mupen64Plus-Next';
+                }
+            } else {
+                document.getElementById('badge-info').innerText = '🎮 Núcleo: ' + coreFinal.toUpperCase();
+            }
+
+            if (nombre) {
+                document.getElementById('texto-titulo').innerText = 'Cargando ' + nombre;
+            }
+
+            window.EJS_player = '#game';
+            window.EJS_core = coreFinal;
+            window.EJS_gameUrl = fuenteRom;
+            if (nombre) {
+                window.EJS_gameName = nombre;
+            }
+            window.EJS_startOnLoaded = true;
+            window.EJS_pathtodata = 'data/';
+            window.EJS_backgroundColor = configTema.bg;
+            window.EJS_color = configTema.color;
+
+            // Opciones avanzadas de emulación y shaders para evitar artefactos visuales
+            window.EJS_defaultOptions = {
+                'webgl2Enabled': 'enabled',
+                'retroarch_core': coreFinal,
+                'core': coreFinal,
+                // Opciones para corregir cajas negras y planos 2D en Paper Mario
+                'mupen64plus-rdp-plugin': 'parallel',
+                'mupen64plus-rsp-plugin': 'parallel',
+                'mupen64plus-EnableFBEmulation': 'True',
+                'mupen64plus-EnableCopyColorToRDRAM': 'Async',
+                'mupen64plus-EnableCopyDepthToRDRAM': 'Software',
+                'mupen64plus-16-9-screensize': '4:3',
+                'mupen64plus-aspect': '4:3',
+                'mupen64plus-BilinearMode': 'standard',
+                'parallel-n64-gfxplugin': 'glide64',
+                'parallel-n64-screensize': '4:3',
+                'parallel-n64-framerate': 'original'
+            };
+
+            // Threads sólo si es PSP o DOS
+            if (coreElegido === 'psp' || coreElegido === 'dos') {
+                window.EJS_threads = true;
+            }
+
+            window.EJS_onGameStart = function() {
+                ocultarCarga();
+            };
+
+            // Timeout de seguridad para ocultar el cartel de carga si onGameStart tarda en responder
+            setTimeout(ocultarCarga, 4500);
+
+            const loader = document.createElement('script');
+            loader.src = 'data/loader.js';
+            document.body.appendChild(loader);
+        }
+
+        // Si se pasa directamente por URL
+        if (romParam) {
+            lanzarEmulador(romParam, coreParam, gameNameParam, n64coreParam);
+        } else {
+            // Escuchar mensaje del contenedor padre
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'CARGAR_ROM') {
+                    lanzarEmulador(event.data.rom, event.data.core, event.data.name, event.data.n64core);
+                }
+            }, { once: true });
+
+            document.getElementById('texto-titulo').innerText = 'Esperando juego...';
+            document.getElementById('texto-desc').innerText = 'Selecciona una ROM desde el Gestor de Juegos para comenzar.';
+            document.getElementById('badge-info').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

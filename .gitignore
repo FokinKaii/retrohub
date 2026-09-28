@@ -1,0 +1,18 @@
+# Entornos y dependencias
+node_modules/
+package-lock.json
+yarn.lock
+__pycache__/
+*.pyc
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+
+# GitHub workflows
+.github/

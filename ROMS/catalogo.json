@@ -1,0 +1,41 @@
+{
+  "arcade": [],
+  "atari2600": [],
+  "gb": [],
+  "gba": [
+    {
+      "titulo": "3Weeksinparadise",
+      "archivo": "ROMS/gba/3Weeksinparadise.gba",
+      "nombreArchivo": "3Weeksinparadise.gba"
+    },
+    {
+      "titulo": "Anguna",
+      "archivo": "ROMS/gba/Anguna.gba",
+      "nombreArchivo": "Anguna.gba"
+    }
+  ],
+  "n64": [
+    {
+      "titulo": "Paper Mario (Europe) (En,Fr,De,Es)",
+      "archivo": "ROMS/n64/Paper Mario (Europe) (En,Fr,De,Es).z64",
+      "nombreArchivo": "Paper Mario (Europe) (En,Fr,De,Es).z64"
+    }
+  ],
+  "nds": [],
+  "nes": [
+    {
+      "titulo": "31In1Realgame-Multicart",
+      "archivo": "ROMS/nes/31In1Realgame-Multicart.nes",
+      "nombreArchivo": "31In1Realgame-Multicart.nes"
+    },
+    {
+      "titulo": "3In12Ppak",
+      "archivo": "ROMS/nes/3In12Ppak.nes",
+      "nombreArchivo": "3In12Ppak.nes"
+    }
+  ],
+  "psp": [],
+  "psx": [],
+  "segaMD": [],
+  "snes": []
+}

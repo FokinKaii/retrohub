@@ -1,0 +1,15 @@
+==============================================
+CARPETA DE ROMS / JUEGOS DE EMULATORJS
+==============================================
+
+Puedes colocar tus archivos de juegos en sus correspondientes carpetas:
+
+- ROMS/gba/     -> Juegos de Game Boy Advance (.gba)
+- ROMS/n64/     -> Juegos de Nintendo 64 (.z64, .n64, .v64)
+- ROMS/snes/    -> Juegos de Super Nintendo (.sfc, .smc)
+- ROMS/nes/     -> Juegos de NES / Famicom (.nes)
+- ROMS/gb/      -> Juegos de Game Boy / Game Boy Color (.gb, .gbc)
+- ROMS/segaMD/  -> Juegos de Sega Mega Drive / Genesis (.md, .gen, .bin)
+
+* Cualquier archivo que coloques aquí aparecerá automáticamente en la lista de juegos de la web.
+* Además, puedes abrir cualquier ROM directamente desde tu ordenador haciendo clic en "Cargar ROM" o arrastrando el archivo a la ventana del navegador.
