@@ -845,22 +845,28 @@
             display: block;
         }
 
-        /* MODALES */
+        /* MODALES Y POP-UPS CENTRADOS */
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            position: fixed !important;
+            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(4, 6, 14, 0.86);
             backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999999 !important;
+            display: none !important;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            box-sizing: border-box;
             animation: fadeIn 0.2s ease;
         }
 
         .modal-overlay.activo {
-            display: flex;
+            display: flex !important;
         }
 
         .modal-caja {
@@ -1010,10 +1016,11 @@
             border-radius: 10px;
             padding: 12px 20px;
             position: fixed;
-            z-index: 1000;
+            z-index: 1000000;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
+            pointer-events: none;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             font-size: 13px;
             font-weight: 600;
@@ -1050,9 +1057,7 @@
 
         .barra-superior-global,
         .contenedor-principal,
-        .modal-overlay,
-        .banner-konami,
-        #toast {
+        .banner-konami {
             position: relative;
             z-index: 10;
         }
@@ -1082,7 +1087,7 @@
             <button class="btn-toggle-top" onclick="abrirModalTemas()" title="Cambiar tema visual de la web">
                 <span>🎨</span> <span id="btn-texto-tema">Tema: Obsidian</span>
             </button>
-            <button class="btn-toggle-top" onclick="abrirModalSugerencias()" title="Pedir un juego o enviar sugerencias a la creadora">
+            <button class="btn-toggle-top" id="btn-top-sugerencias" onclick="abrirModalSugerencias()" title="Pedir un juego o enviar sugerencias a la creadora" style="background: rgba(192, 132, 252, 0.12); border-color: rgba(192, 132, 252, 0.45); color: #e9d5ff;">
                 <span>💡</span> <span>Sugerencias</span>
             </button>
             <button class="btn-toggle-top" onclick="abrirModalGuia()" title="Ver guía de cómo descargar y añadir juegos">
@@ -1148,6 +1153,9 @@
                     </a>
                     <button class="btn-accion btn-secundario" style="padding: 8px 14px; font-size: 11px;" onclick="abrirModalGuia()">
                         Ver Instrucciones Completas
+                    </button>
+                    <button class="btn-accion btn-secundario" style="padding: 8px 14px; font-size: 11px; border-color: rgba(192, 132, 252, 0.4); color: #c084fc;" onclick="abrirModalSugerencias()" title="¿Quieres que añadamos un juego? ¡Pídelo aquí!">
+                        💡 Pedir un Juego
                     </button>
                 </div>
             </div>
@@ -1609,12 +1617,20 @@
         }
 
         function abrirModalTemas() {
-            sonidoClick('select');
-            document.getElementById('modal-temas').classList.add('activo');
+            try { sonidoClick('select'); } catch(e) {}
+            const m = document.getElementById('modal-temas');
+            if (m) {
+                m.classList.add('activo');
+                try { document.body.style.overflow = 'hidden'; } catch(e) {}
+            }
         }
 
         function cerrarModalTemas() {
-            document.getElementById('modal-temas').classList.remove('activo');
+            const m = document.getElementById('modal-temas');
+            if (m) {
+                m.classList.remove('activo');
+                try { document.body.style.overflow = ''; } catch(e) {}
+            }
         }
 
         let motorN64Global = 'parallel';
@@ -1760,24 +1776,33 @@
         }
 
         function abrirModalSugerencias() {
-            sonidoClick('select');
+            try { sonidoClick('select'); } catch(e) {}
             const modal = document.getElementById('modal-sugerencias');
             if (modal) {
                 modal.classList.add('activo');
-                const inNombre = document.getElementById('sug-nombre');
-                if (inNombre && !inNombre.value) {
-                    const actualPlayer = localStorage.getItem('retrohub_player') || 'Player 1';
-                    if (actualPlayer !== 'Player 1') inNombre.value = actualPlayer;
+                try { document.body.style.overflow = 'hidden'; } catch(e) {}
+                try {
+                    const inNombre = document.getElementById('sug-nombre');
+                    if (inNombre && !inNombre.value) {
+                        const actualPlayer = localStorage.getItem('retrohub_player') || 'Player 1';
+                        if (actualPlayer !== 'Player 1') inNombre.value = actualPlayer;
+                    }
+                    actualizarTicketPreview();
+                    actualizarTextoCorreoDestino();
+                    actualizarHistorialSugerenciasUI();
+                } catch(e) {
+                    console.warn('Error inicializando campos de sugerencias:', e);
                 }
-                actualizarTicketPreview();
-                actualizarTextoCorreoDestino();
-                actualizarHistorialSugerenciasUI();
             }
         }
 
         function cerrarModalSugerencias() {
+            try { sonidoClick('select'); } catch(e) {}
             const modal = document.getElementById('modal-sugerencias');
-            if (modal) modal.classList.remove('activo');
+            if (modal) {
+                modal.classList.remove('activo');
+                try { document.body.style.overflow = ''; } catch(e) {}
+            }
         }
 
         function actualizarTicketPreview() {
@@ -1788,22 +1813,30 @@
 
             if (!inNombre || !inConsola || !inJuego) return;
 
-            const nombre = inNombre.value.trim() || (localStorage.getItem('retrohub_player') || 'Player 1');
-            const consola = inConsola.value;
+            let defaultPlayer = 'Player 1';
+            try { defaultPlayer = localStorage.getItem('retrohub_player') || 'Player 1'; } catch(e) {}
+            const nombre = inNombre.value.trim() || defaultPlayer;
+            const consola = inConsola.value || 'Nintendo 64';
             const juego = inJuego.value.trim();
             const mensaje = inMensaje ? inMensaje.value.trim() : '';
 
-            document.getElementById('ticket-nombre-txt').innerText = nombre;
-            document.getElementById('ticket-consola-tag').innerText = consola.toUpperCase();
-            document.getElementById('ticket-juego-txt').innerText = juego || 'Escribe el título arriba...';
+            const elNombre = document.getElementById('ticket-nombre-txt');
+            const elConsola = document.getElementById('ticket-consola-tag');
+            const elJuego = document.getElementById('ticket-juego-txt');
+
+            if (elNombre) elNombre.innerText = nombre;
+            if (elConsola) elConsola.innerText = consola.toUpperCase();
+            if (elJuego) elJuego.innerText = juego || 'Escribe el título arriba...';
 
             const descLine = document.getElementById('ticket-desc-line');
             const descTxt = document.getElementById('ticket-desc-txt');
-            if (mensaje) {
-                descLine.style.display = 'block';
-                descTxt.innerText = `"${mensaje}"`;
-            } else {
-                descLine.style.display = 'none';
+            if (descLine && descTxt) {
+                if (mensaje) {
+                    descLine.style.display = 'block';
+                    descTxt.innerText = `"${mensaje}"`;
+                } else {
+                    descLine.style.display = 'none';
+                }
             }
         }
 
@@ -1852,9 +1885,15 @@
         function actualizarHistorialSugerenciasUI() {
             const btn = document.getElementById('btn-txt-historial');
             const caja = document.getElementById('caja-historial-sugerencias');
-            const lista = JSON.parse(localStorage.getItem('retrohub_sugerencias_guardadas') || '[]');
+            let lista = [];
+            try {
+                lista = JSON.parse(localStorage.getItem('retrohub_sugerencias_guardadas') || '[]');
+                if (!Array.isArray(lista)) lista = [];
+            } catch(e) {
+                lista = [];
+            }
             
-            if (btn) btn.innerText = `Ver peticiones guardadas (${lista.length})`;
+            if (btn) btn.innerText = `Ver sugerencias guardadas (${lista.length})`;
             if (!caja) return;
 
             if (lista.length === 0) {
@@ -1862,15 +1901,21 @@
                 return;
             }
 
-            caja.innerHTML = lista.map((p) => `
+            caja.innerHTML = lista.map((p) => {
+                const sJuego = String(p.juego || '').replace(/[<>&"]/g, '');
+                const sConsola = String(p.consola || '').replace(/[<>&"]/g, '');
+                const sNombre = String(p.nombre || '').replace(/[<>&"]/g, '');
+                const sFecha = String(p.fecha || '').replace(/[<>&"]/g, '');
+                const sMensaje = String(p.mensaje || '').replace(/[<>&"]/g, '');
+                return `
                 <div style="padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                     <div>
-                        <strong style="color: #fff;">${p.juego}</strong> 
-                        <span style="background: rgba(139, 92, 246, 0.2); color: #c084fc; padding: 1px 6px; border-radius: 4px; font-size: 10px;">${p.consola}</span>
-                        <div style="color: #94a3b8; font-size: 10px;">De: ${p.nombre} • ${p.fecha} ${p.mensaje ? '• <em>"' + p.mensaje + '"</em>' : ''}</div>
+                        <strong style="color: #fff;">${sJuego}</strong> 
+                        <span style="background: rgba(139, 92, 246, 0.2); color: #c084fc; padding: 1px 6px; border-radius: 4px; font-size: 10px;">${sConsola}</span>
+                        <div style="color: #94a3b8; font-size: 10px;">De: ${sNombre} • ${sFecha} ${sMensaje ? '• <em>"' + sMensaje + '"</em>' : ''}</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         // 1. ENVIAR POR WHATSAPP
@@ -2248,12 +2293,20 @@
 
         // --- MODAL GUÍA DE ROMS ---
         function abrirModalGuia() {
-            sonidoClick('select');
-            document.getElementById('modal-guia').classList.add('activo');
+            try { sonidoClick('select'); } catch(e) {}
+            const m = document.getElementById('modal-guia');
+            if (m) {
+                m.classList.add('activo');
+                try { document.body.style.overflow = 'hidden'; } catch(e) {}
+            }
         }
 
         function cerrarModalGuia() {
-            document.getElementById('modal-guia').classList.remove('activo');
+            const m = document.getElementById('modal-guia');
+            if (m) {
+                m.classList.remove('activo');
+                try { document.body.style.overflow = ''; } catch(e) {}
+            }
         }
 
         // --- COMPARTIR EN RED / GITHUB PAGES CON AMIGOS ---
@@ -2275,13 +2328,31 @@
         }
 
         function abrirModalCompartir() {
-            sonidoClick('select');
-            document.getElementById('modal-compartir').classList.add('activo');
+            try { sonidoClick('select'); } catch(e) {}
+            const m = document.getElementById('modal-compartir');
+            if (m) {
+                m.classList.add('activo');
+                try { document.body.style.overflow = 'hidden'; } catch(e) {}
+            }
         }
 
         function cerrarModalCompartir() {
-            document.getElementById('modal-compartir').classList.remove('activo');
+            const m = document.getElementById('modal-compartir');
+            if (m) {
+                m.classList.remove('activo');
+                try { document.body.style.overflow = ''; } catch(e) {}
+            }
         }
+
+        // Cierre con tecla Escape para todos los modales
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                cerrarModalTemas();
+                cerrarModalGuia();
+                cerrarModalCompartir();
+                cerrarModalSugerencias();
+            }
+        });
 
         function copiarLinkRed() {
             const link = document.getElementById('texto-link-red').innerText;
