@@ -1,0 +1,98 @@
+{
+  "$schema": "https://retrohub.org/schemas/theme-v1.json",
+  "id": "iisu_glass",
+  "name": "iiSU Mint Glassmorphism",
+  "author": "RetroHub Core UI Team",
+  "version": "1.0.0",
+  "description": "Estética translúcida moderna de cristal esmerilado inspirada en Nintendo Switch y Wii U. Tonos verde menta, física de rebote suave, tipografía limpia y diseño de tres filas.",
+
+  "layout": {
+    "type": "css-grid",
+    "gridTemplateAreas": [
+      "\"sidebar topbar topbar\"",
+      "\"sidebar friends friends\"",
+      "\"sidebar library library\"",
+      "\"sidebar feed feed\""
+    ],
+    "gridTemplateColumns": "260px 1fr 1fr",
+    "gridTemplateRows": "70px 140px 1fr 110px",
+    "gap": "18px",
+    "padding": "24px",
+    "maxContentWidth": "1540px",
+    "windowMode": "floating-glass",
+    "borderRadiusWindow": "32px",
+    "activeModules": {
+      "sidebar": { "enabled": true, "showProfile": true, "showNav": true },
+      "topbar": { "enabled": true, "showPrompts": true, "showStats": true },
+      "friends": { "enabled": true, "horizontalScroll": true, "showStatusBubble": true },
+      "library": { "enabled": true, "viewMode": "horizontal-cards", "showRibbon": true },
+      "feed": { "enabled": true, "showVotePill": true },
+      "dock": { "enabled": false }
+    }
+  },
+
+  "morphology": {
+    "borderRadiusGlobal": "22px",
+    "buttonStyle": "smooth-glass",
+    "borderStyle": "solid",
+    "borderWidth": "1px",
+    "borderLightColor": "rgba(255, 255, 255, 0.8)",
+    "borderDarkColor": "rgba(255, 255, 255, 0.2)",
+    "surfaceTexture": "none",
+    "boxShadow": "0 24px 70px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9)",
+    "fontFamilyPrimary": "'Outfit', 'Inter', system-ui, sans-serif",
+    "fontFamilyDisplay": "'Space Grotesk', sans-serif",
+    "fontScale": 1.0
+  },
+
+  "colors": {
+    "primary": "#10ac84",
+    "secondary": "#00d2d3",
+    "accent": "#1dd1a1",
+    "accentGlow": "rgba(29, 209, 161, 0.45)",
+    "surface": "rgba(255, 255, 255, 0.72)",
+    "surfaceGlass": "rgba(255, 255, 255, 0.45)",
+    "surfaceHighlight": "rgba(255, 255, 255, 0.9)",
+    "textMain": "#0f172a",
+    "textMuted": "#475569",
+    "textInverted": "#ffffff",
+    "scanlineColor": "transparent"
+  },
+
+  "background": {
+    "type": "gradient",
+    "cssGradient": "linear-gradient(135deg, #78ffd6 0%, #a8ff78 40%, #00d2d3 80%, #54a0ff 100%)",
+    "fallbackImage": "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80",
+    "backdropBlur": "18px",
+    "overlayOpacity": 0.15,
+    "overlayColor": "#ffffff"
+  },
+
+  "shaders": {
+    "crtEffect": { "enabled": false },
+    "filmGrain": { "enabled": false }
+  },
+
+  "cursors": {
+    "default": "default",
+    "pointer": "pointer"
+  },
+
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.75,
+    "bgmVolume": 0.4,
+    "sfxVolume": 0.8,
+    "backgroundMusic": {
+      "src": "/assets/themes/iisu_glass/audio/ambient_pearl.mp3",
+      "loop": true,
+      "fadeInDuration": 2.0
+    },
+    "sfx": {
+      "onHover": { "type": "synth-pop", "frequency": 1200, "duration": 0.03 },
+      "onClick": { "type": "synth-soft", "frequency": 600, "duration": 0.06 },
+      "onLaunchGame": { "type": "synth-chime", "frequencies": [440, 554.37, 659.25, 880], "duration": 0.5 },
+      "onNotification": { "type": "synth-bell", "frequency": 900, "duration": 0.3 }
+    }
+  }
+}

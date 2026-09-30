@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 140" width="170" height="140">
+  <defs>
+    <linearGradient id="genGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="15%" stop-color="#1e293b"/>
+      <stop offset="90%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+  </defs>
+  <path d="M10,35 Q85,15 160,35 L155,130 L15,130 Z" fill="url(#genGrad)" stroke="#475569" stroke-width="2"/>
+  <rect x="25" y="50" width="120" height="65" rx="4" fill="#dc2626"/>
+  <text x="85" y="80" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="13" text-anchor="middle" letter-spacing="1">SEGA GENESIS</text>
+  <text x="85" y="98" fill="#fef08a" font-family="sans-serif" font-weight="800" font-size="9" text-anchor="middle">16-BIT CARTRIDGE</text>
+</svg>

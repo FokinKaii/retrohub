@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroHub - Motor Agnóstico Universal & Theme Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Space+Grotesk:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    /* VARIABLES DINÁMICAS INYECTADAS POR EL MOTOR */
+    :root {
+      --theme-primary: #00e1ff;
+      --theme-secondary: #ff007f;
+      --theme-accent: #39ff14;
+      --theme-accent-glow: rgba(57, 255, 20, 0.6);
+      --theme-surface: rgba(10, 25, 47, 0.85);
+      --theme-surface-glass: rgba(15, 34, 64, 0.65);
+      --theme-surface-highlight: rgba(255, 255, 255, 0.3);
+      --theme-text-main: #e0f7fa;
+      --theme-text-muted: #80deea;
+      --theme-text-inverted: #001020;
+      
+      --theme-border-radius-window: 14px;
+      --theme-border-radius-global: 8px;
+      --theme-border-width: 3px;
+      --theme-border-style: outset;
+      --theme-border-light: #00f0ff;
+      --theme-border-dark: #002b4d;
+      --theme-surface-texture: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.4) 0%, rgba(0,240,255,0.15) 100%);
+      --theme-box-shadow: 0 8px 32px rgba(0, 43, 77, 0.45), inset 0 2px 4px rgba(255,255,255,0.8), inset 0 -3px 6px rgba(0,0,0,0.4);
+      --theme-font-primary: 'Space Grotesk', sans-serif;
+      --theme-font-display: 'VT323', monospace;
+      
+      --theme-backdrop-blur: 14px;
+      --theme-overlay-opacity: 0.4;
+      --theme-overlay-color: #000814;
+      
+      --theme-cursor-default: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="0,0 0,18 5,14 9,23 12,21 8,12 14,12" fill="%2300f0ff" stroke="%23000" stroke-width="1.5"/></svg>') 0 0, auto;
+      --theme-cursor-pointer: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 1v12h3l-2 5 3 1 2-5h3l-9-13z" fill="%2339ff14" stroke="%23000" stroke-width="1.5"/></svg>') 4 0, pointer;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: var(--theme-cursor-default);
+      user-select: none;
+    }
+
+    button, a, .clickable {
+      cursor: var(--theme-cursor-pointer) !important;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: var(--theme-font-primary);
+      background-color: #000;
+      color: var(--theme-text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CAPAS DE FONDO MULTICAPA */
+    .bg-layer-base {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 30%, #003b6f 0%, #001122 70%, #000511 100%);
+      transition: all 0.8s ease;
+    }
+
+    .bg-layer-pattern {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background-image: radial-gradient(rgba(0, 225, 255, 0.15) 1px, transparent 0);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .bg-layer-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background-color: var(--theme-overlay-color);
+      opacity: var(--theme-overlay-opacity);
+      backdrop-filter: blur(var(--theme-backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--theme-backdrop-blur));
+      pointer-events: none;
+      transition: all 0.5s ease;
+    }
+
+    /* CONTENEDOR MAESTRO DE LA APLICACIÓN */
+    .app-viewport {
+      position: relative;
+      z-index: 10;
+      width: 96vw;
+      max-width: 1520px;
+      height: 92vh;
+      max-height: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+    }
+
+    /* MALLA CSS GRID DINÁMICA */
+    .dynamic-grid-shell {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      border-radius: var(--theme-border-radius-window);
+      background: var(--theme-surface-glass);
+      backdrop-filter: blur(var(--theme-backdrop-blur));
+      border: var(--theme-border-width) var(--theme-border-style) var(--theme-border-light);
+      box-shadow: var(--theme-box-shadow);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* VARIACIONES DE LAYOUT */
+    .layout-y2k-dock {
+      grid-template-areas: 
+        "banner banner banner"
+        "library library friends"
+        "dock dock dock";
+      grid-template-columns: 1fr 1fr 340px;
+      grid-template-rows: 140px 1fr 85px;
+    }
+
+    .layout-glass-sidebar {
+      grid-template-areas: 
+        "sidebar banner banner"
+        "sidebar library friends"
+        "sidebar dock dock";
+      grid-template-columns: 240px 1fr 320px;
+      grid-template-rows: 130px 1fr 80px;
+    }
+
+    .layout-split-matrix {
+      grid-template-areas: 
+        "banner banner"
+        "library friends"
+        "dock dock";
+      grid-template-columns: 1fr 380px;
+      grid-template-rows: 140px 1fr 85px;
+    }
+
+    /* MÓDULOS DEL SISTEMA */
+    .grid-slot {
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .theme-card {
+      background: var(--theme-surface);
+      border-radius: var(--theme-border-radius-global);
+      border: var(--theme-border-width) var(--theme-border-style) var(--theme-border-light);
+      box-shadow: var(--theme-box-shadow);
+      padding: 16px;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Módulo: Banner */
+    .banner-module {
+      justify-content: center;
+      padding: 0 32px;
+      background: var(--theme-surface-texture), var(--theme-surface);
+    }
+    .banner-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      font-family: var(--theme-font-display);
+      letter-spacing: 2px;
+      color: var(--theme-text-main);
+      text-shadow: 0 0 12px var(--theme-accent-glow);
+    }
+    .banner-sub {
+      font-size: 0.85rem;
+      color: var(--theme-text-muted);
+      margin-top: 4px;
+    }
+
+    /* Botón Lanzador 3D / Jelly */
+    .btn-action {
+      background: var(--theme-primary);
+      color: var(--theme-text-inverted);
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      padding: 10px 22px;
+      border-radius: var(--theme-border-radius-global);
+      border: var(--theme-border-width) outset var(--theme-border-light);
+      box-shadow: 0 4px 14px var(--theme-accent-glow);
+      text-transform: uppercase;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-action:hover {
+      background: var(--theme-accent);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px var(--theme-accent-glow);
+    }
+    .btn-action:active {
+      transform: scale(0.96);
+      border-style: inset;
+    }
+
+    /* Módulo: Biblioteca de Juegos */
+    .library-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      overflow-y: auto;
+      padding: 4px;
+      flex: 1;
+    }
+    .game-box {
+      border-radius: var(--theme-border-radius-global);
+      border: 2px solid var(--theme-border-dark);
+      overflow: hidden;
+      position: relative;
+      background: rgba(0, 0, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      aspect-ratio: 3/4;
+    }
+    .game-box:hover {
+      transform: scale(1.05) translateY(-4px);
+      border-color: var(--theme-accent);
+      box-shadow: 0 12px 30px var(--theme-accent-glow);
+    }
+    .game-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .game-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid var(--theme-accent);
+      color: var(--theme-accent);
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Módulo: Lista de Amigos */
+    .friends-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    .friend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--theme-border-radius-global);
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+    }
+    .friend-row:hover {
+      border-color: var(--theme-accent);
+      background: rgba(0, 0, 0, 0.45);
+      transform: translateX(4px);
+    }
+    .friend-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--theme-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #000;
+      font-size: 0.85rem;
+    }
+
+    /* Módulo: Dock Estilo MacOS / Jelly */
+    .dock-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .dock-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 24px;
+      border-radius: 999px;
+      background: var(--theme-surface-glass);
+      border: var(--theme-border-width) var(--theme-border-style) var(--theme-border-light);
+      box-shadow: var(--theme-box-shadow);
+      backdrop-filter: blur(var(--theme-backdrop-blur));
+    }
+    .dock-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--theme-surface-texture), var(--theme-surface);
+      border: 1px solid var(--theme-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .dock-icon:hover {
+      transform: scale(1.3) translateY(-6px);
+      box-shadow: 0 8px 20px var(--theme-accent-glow);
+      background: var(--theme-accent);
+    }
+
+    /* SHADERS CRT VINTAGE */
+    .crt-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      display: none;
+    }
+    .crt-active .crt-overlay {
+      display: block;
+    }
+    .crt-scanlines {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%);
+      background-size: 100% 3px;
+    }
+    .crt-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.65) 100%);
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.8);
+    }
+
+    /* FLOATING THEME STUDIO CONTROL PANEL */
+    .studio-dock {
+      position: fixed;
+      bottom: 14px;
+      right: 20px;
+      z-index: 200;
+      background: rgba(5, 10, 20, 0.9);
+      border: 1px solid #00f0ff;
+      border-radius: 12px;
+      padding: 10px 16px;
+      box-shadow: 0 10px 40px rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+    }
+    .studio-badge {
+      font-weight: 900;
+      color: #00f0ff;
+      letter-spacing: 1px;
+    }
+    .studio-btn {
+      padding: 5px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+    .studio-btn:hover {
+      background: #00f0ff;
+      color: black;
+      transform: scale(1.05);
+    }
+    .studio-btn.active {
+      background: #39ff14;
+      color: black;
+      border-color: #39ff14;
+    }
+  </style>
+</head>
+<body class="crt-active">
+
+  <!-- CAPAS DE FONDO -->
+  <div class="bg-layer-base" id="bgBase"></div>
+  <div class="bg-layer-pattern" id="bgPattern"></div>
+  <div class="bg-layer-overlay" id="bgOverlay"></div>
+
+  <!-- SHADERS CRT -->
+  <div class="crt-overlay" id="crtShader">
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL -->
+  <div class="app-viewport">
+    <div class="dynamic-grid-shell layout-y2k-dock" id="gridShell">
+      
+      <!-- SLOT 1: BANNER HERO -->
+      <div class="grid-slot" style="grid-area: banner;">
+        <div class="theme-card banner-module flex-row items-center justify-between">
+          <div>
+            <div style="font-size: 0.7rem; font-weight: 900; color: var(--theme-accent); letter-spacing: 2px;">
+              ● SISTEMA ACTIVO EN LÍNEA
+            </div>
+            <h1 class="banner-title" id="bannerTitle">CYBERIA 2000 // 64-BIT ENGINE</h1>
+            <p class="banner-sub" id="bannerSub">Arquitectura de Emulación Agnóstica | 128 ROMs Indexadas | Web Audio Low-Latency</p>
+          </div>
+          <button class="btn-action clickable" id="btnLaunch" onclick="playLaunchEffect()">
+            ▶ INICIAR SISTEMA
+          </button>
+        </div>
+      </div>
+
+      <!-- SLOT 2: BIBLIOTECA DE JUEGOS -->
+      <div class="grid-slot" style="grid-area: library;">
+        <div class="theme-card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+            <h2 style="font-size: 1.1rem; font-weight: 900; color: var(--theme-text-main); font-family: var(--theme-font-display); letter-spacing: 1px;">
+              LUDOTECA EN TIEMPO REAL
+            </h2>
+            <span style="font-size: 0.75rem; color: var(--theme-accent); font-family: monospace;">TOTAL: 4 JUEGOS</span>
+          </div>
+
+          <div class="library-grid">
+            <div class="game-box clickable" onclick="playLaunchEffect('Super Mario 64')" onmouseenter="playSynthBlip()">
+              <span class="game-badge">N64</span>
+              <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png" alt="Mario 64">
+            </div>
+            <div class="game-box clickable" onclick="playLaunchEffect('Zelda: Ocarina of Time')" onmouseenter="playSynthBlip()">
+              <span class="game-badge">N64</span>
+              <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co1vci.png" alt="Zelda">
+            </div>
+            <div class="game-box clickable" onclick="playLaunchEffect('Super Smash Bros Melee')" onmouseenter="playSynthBlip()">
+              <span class="game-badge">WII</span>
+              <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co2224.png" alt="Smash">
+            </div>
+            <div class="game-box clickable" onclick="playLaunchEffect('Mario Kart 64')" onmouseenter="playSynthBlip()">
+              <span class="game-badge">N64</span>
+              <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co1x7f.png" alt="Mario Kart">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLOT 3: LISTA DE AMIGOS -->
+      <div class="grid-slot" style="grid-area: friends;">
+        <div class="theme-card">
+          <h3 style="font-size: 0.85rem; font-weight: 900; color: var(--theme-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+            AMIGOS CONECTADOS (3)
+          </h3>
+          <div class="friends-list">
+            <div class="friend-row clickable" onmouseenter="playSynthBlip()">
+              <div class="friend-avatar">L</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-weight: 800; font-size: 0.8rem;">Lucas_Fox</span>
+                  <span style="font-size: 0.7rem; color: var(--theme-accent);">Wii</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--theme-text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                  Jugando Melee
+                </div>
+              </div>
+            </div>
+
+            <div class="friend-row clickable" onmouseenter="playSynthBlip()">
+              <div class="friend-avatar" style="background: #ff4757;">P</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-weight: 800; font-size: 0.8rem;">PixelQueen</span>
+                  <span style="font-size: 0.7rem; color: var(--theme-accent);">N64</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--theme-text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                  Templo del Agua
+                </div>
+              </div>
+            </div>
+
+            <div class="friend-row clickable" onmouseenter="playSynthBlip()">
+              <div class="friend-avatar" style="background: #39ff14;">C</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-weight: 800; font-size: 0.8rem;">CyberKidd</span>
+                  <span style="font-size: 0.7rem; color: var(--theme-accent);">GBA</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--theme-text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                  Capturando a Mewtwo
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLOT 4: DOCK INFERIOR (Estilo MacOS / Y2K Jelly) -->
+      <div class="grid-slot" style="grid-area: dock;">
+        <div class="dock-container">
+          <div class="dock-pill">
+            <div class="dock-icon clickable" title="Lanzar Consola" onmouseenter="playSynthBlip()" onclick="playSynthClick()">🚀</div>
+            <div class="dock-icon clickable" title="Librería ROMs" onmouseenter="playSynthBlip()" onclick="playSynthClick()">💾</div>
+            <div class="dock-icon clickable" title="Juegos Favoritos" onmouseenter="playSynthBlip()" onclick="playSynthClick()">⭐</div>
+            <div class="dock-icon clickable" title="Red Social" onmouseenter="playSynthBlip()" onclick="playSynthClick()">💬</div>
+            <div class="dock-icon clickable" title="Radio FM Y2K" onmouseenter="playSynthBlip()" onclick="playSynthClick()">📻</div>
+            <div class="dock-icon clickable" title="Configuraciones" onmouseenter="playSynthBlip()" onclick="playSynthClick()">⚙️</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING THEME STUDIO -->
+  <div class="studio-dock">
+    <span class="studio-badge">THEME ENGINE:</span>
+    <button class="studio-btn active" id="btnThemeY2K" onclick="applyTheme('y2k')">Y2K Cyberia 2000</button>
+    <button class="studio-btn" id="btnThemeGlass" onclick="applyTheme('glass')">iiSU Mint Glass</button>
+    <button class="studio-btn" id="btnThemeAero" onclick="applyTheme('aero')">Frutiger Aero Aqua</button>
+    <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+    <button class="studio-btn active" id="btnShader" onclick="toggleCRT()">CRT Shader: ON</button>
+    <button class="studio-btn" onclick="toggleLayout()">Layout: Dock vs Sidebar</button>
+    <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+    <button class="studio-btn" onclick="window.location.href='index.html'" style="background: rgba(255, 71, 87, 0.25); border-color: #ff4757; color: #ff6b81;">🏠 Launcher</button>
+    <button class="studio-btn" onclick="window.location.href='theme_engine.html'" style="background: rgba(0, 210, 211, 0.25); border-color: #00d2d3; color: #00d2d3;">✨ Theme Studio</button>
+  </div>
+
+  <!-- MOTOR DE AUDIO REACTIVO EN JAVASCRIPT -->
+  <script>
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSynthBlip() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(1320, now + 0.04);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    }
+
+    function playSynthClick() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.06);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    }
+
+    function playLaunchEffect(gameName = 'Nintendo 64') {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const chord = [523.25, 659.25, 783.99, 1046.50];
+      chord.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const start = now + idx * 0.07;
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0.25, start);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.5);
+      });
+      alert(`[Motor Agnóstico]: Iniciando emulador de ${gameName} con perfil de hardware acelerado.`);
+    }
+
+    // GESTOR DE TEMAS DINÁMICOS
+    const THEMES = {
+      y2k: {
+        id: 'y2k',
+        primary: '#00e1ff',
+        secondary: '#ff007f',
+        accent: '#39ff14',
+        accentGlow: 'rgba(57, 255, 20, 0.6)',
+        surface: 'rgba(10, 25, 47, 0.85)',
+        surfaceGlass: 'rgba(15, 34, 64, 0.65)',
+        textMain: '#e0f7fa',
+        textMuted: '#80deea',
+        textInverted: '#001020',
+        radiusWindow: '14px',
+        radiusGlobal: '8px',
+        borderWidth: '3px',
+        borderStyle: 'outset',
+        borderLight: '#00f0ff',
+        borderDark: '#002b4d',
+        fontPrimary: "'Space Grotesk', sans-serif",
+        fontDisplay: "'VT323', monospace",
+        boxShadow: '0 8px 32px rgba(0, 43, 77, 0.45), inset 0 2px 4px rgba(255,255,255,0.8), inset 0 -3px 6px rgba(0,0,0,0.4)',
+        bgGradient: 'radial-gradient(ellipse at 50% 30%, #003b6f 0%, #001122 70%, #000511 100%)',
+        overlayColor: '#000814',
+        overlayOpacity: '0.4',
+        title: 'CYBERIA 2000 // 64-BIT ENGINE',
+        sub: 'Arquitectura de Emulación Agnóstica | 128 ROMs Indexadas | Web Audio Low-Latency',
+        crt: true
+      },
+      glass: {
+        id: 'glass',
+        primary: '#10ac84',
+        secondary: '#00d2d3',
+        accent: '#1dd1a1',
+        accentGlow: 'rgba(29, 209, 161, 0.45)',
+        surface: 'rgba(255, 255, 255, 0.72)',
+        surfaceGlass: 'rgba(255, 255, 255, 0.45)',
+        textMain: '#0f172a',
+        textMuted: '#475569',
+        textInverted: '#ffffff',
+        radiusWindow: '32px',
+        radiusGlobal: '20px',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderLight: 'rgba(255, 255, 255, 0.85)',
+        borderDark: 'rgba(0, 0, 0, 0.1)',
+        fontPrimary: "'Outfit', sans-serif",
+        fontDisplay: "'Space Grotesk', sans-serif",
+        boxShadow: '0 24px 70px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9)',
+        bgGradient: 'linear-gradient(135deg, #78ffd6 0%, #a8ff78 40%, #00d2d3 80%, #54a0ff 100%)',
+        overlayColor: '#ffffff',
+        overlayOpacity: '0.15',
+        title: 'iiSU MINT PEARL // NEXT-GEN',
+        sub: 'Interfaz Translúcida Ultra-Fluida | Frecuencia de Refresco 120 FPS | Glassmorphism',
+        crt: false
+      },
+      aero: {
+        id: 'aero',
+        primary: '#0984e3',
+        secondary: '#00cec9',
+        accent: '#fdcb6e',
+        accentGlow: 'rgba(253, 203, 110, 0.5)',
+        surface: 'rgba(225, 245, 255, 0.65)',
+        surfaceGlass: 'rgba(180, 225, 255, 0.4)',
+        textMain: '#1e272e',
+        textMuted: '#485460',
+        textInverted: '#ffffff',
+        radiusWindow: '24px',
+        radiusGlobal: '16px',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderLight: 'rgba(255, 255, 255, 0.95)',
+        borderDark: 'rgba(9, 132, 227, 0.4)',
+        fontPrimary: "'Outfit', sans-serif",
+        fontDisplay: "'Space Grotesk', sans-serif",
+        boxShadow: '0 20px 50px rgba(0, 100, 200, 0.25), inset 0 2px 8px rgba(255, 255, 255, 1)',
+        bgGradient: 'linear-gradient(180deg, #74b9ff 0%, #81ecec 50%, #00cec9 100%)',
+        overlayColor: '#e1f5fe',
+        overlayOpacity: '0.2',
+        title: 'FRUTIGER AERO // AQUA ACRYLIC',
+        sub: 'Texturas Líquidas Efervescentes | Luces Volumétricas | Época Dorada 2006',
+        crt: false
+      }
+    };
+
+    function applyTheme(themeKey) {
+      playSynthClick();
+      const t = THEMES[themeKey];
+      if (!t) return;
+
+      const root = document.documentElement;
+      root.style.setProperty('--theme-primary', t.primary);
+      root.style.setProperty('--theme-secondary', t.secondary);
+      root.style.setProperty('--theme-accent', t.accent);
+      root.style.setProperty('--theme-accent-glow', t.accentGlow);
+      root.style.setProperty('--theme-surface', t.surface);
+      root.style.setProperty('--theme-surface-glass', t.surfaceGlass);
+      root.style.setProperty('--theme-text-main', t.textMain);
+      root.style.setProperty('--theme-text-muted', t.textMuted);
+      root.style.setProperty('--theme-text-inverted', t.textInverted);
+      root.style.setProperty('--theme-border-radius-window', t.radiusWindow);
+      root.style.setProperty('--theme-border-radius-global', t.radiusGlobal);
+      root.style.setProperty('--theme-border-width', t.borderWidth);
+      root.style.setProperty('--theme-border-style', t.borderStyle);
+      root.style.setProperty('--theme-border-light', t.borderLight);
+      root.style.setProperty('--theme-border-dark', t.borderDark);
+      root.style.setProperty('--theme-font-primary', t.fontPrimary);
+      root.style.setProperty('--theme-font-display', t.fontDisplay);
+      root.style.setProperty('--theme-box-shadow', t.boxShadow);
+      root.style.setProperty('--theme-overlay-color', t.overlayColor);
+      root.style.setProperty('--theme-overlay-opacity', t.overlayOpacity);
+
+      document.getElementById('bgBase').style.background = t.bgGradient;
+      document.getElementById('bannerTitle').textContent = t.title;
+      document.getElementById('bannerSub').textContent = t.sub;
+
+      // Actualizar Shaders CRT según el tema
+      if (t.crt) {
+        document.body.classList.add('crt-active');
+        document.getElementById('btnShader').classList.add('active');
+        document.getElementById('btnShader').textContent = 'CRT Shader: ON';
+      } else {
+        document.body.classList.remove('crt-active');
+        document.getElementById('btnShader').classList.remove('active');
+        document.getElementById('btnShader').textContent = 'CRT Shader: OFF';
+      }
+
+      // Actualizar botones de dock
+      document.querySelectorAll('.studio-btn').forEach(btn => btn.classList.remove('active'));
+      if (themeKey === 'y2k') document.getElementById('btnThemeY2K').classList.add('active');
+      if (themeKey === 'glass') document.getElementById('btnThemeGlass').classList.add('active');
+      if (themeKey === 'aero') document.getElementById('btnThemeAero').classList.add('active');
+    }
+
+    function toggleCRT() {
+      playSynthClick();
+      const body = document.body;
+      const btn = document.getElementById('btnShader');
+      body.classList.toggle('crt-active');
+      const isOn = body.classList.contains('crt-active');
+      btn.classList.toggle('active', isOn);
+      btn.textContent = isOn ? 'CRT Shader: ON' : 'CRT Shader: OFF';
+    }
+
+    let currentLayoutIndex = 0;
+    const layouts = ['layout-y2k-dock', 'layout-glass-sidebar', 'layout-split-matrix'];
+    function toggleLayout() {
+      playSynthClick();
+      const shell = document.getElementById('gridShell');
+      shell.classList.remove(layouts[currentLayoutIndex]);
+      currentLayoutIndex = (currentLayoutIndex + 1) % layouts.length;
+      shell.classList.add(layouts[currentLayoutIndex]);
+    }
+  </script>
+</body>
+</html>

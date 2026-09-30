@@ -1,0 +1,126 @@
+{
+  "$schema": "https://himawari.dev/schemas/theme-v3-cinematic.json",
+  "id": "sonic_green_hill",
+  "name": "Sonic (Green Hill Speedway 120Hz)",
+  "author": "Sonic Team & Technical Art Division",
+  "version": "3.0.0",
+  "description": "Tema cinemático de alto rendimiento para pantallas 1080p a 120Hz. Fondos interactivos Parallax multicapa, botones SVG con forma de cápsula de bonus, paneo de audio espacial 3D y rebote elástico extremo.",
+
+  "kinetics": {
+    "engine": "framer-motion",
+    "springPhysics": {
+      "stiffness": 340,
+      "damping": 19,
+      "mass": 0.82,
+      "restDelta": 0.001
+    },
+    "velocityTilt": {
+      "enabled": true,
+      "maxAngleX": 22,
+      "maxAngleY": 28,
+      "sensitivity": 1.45
+    },
+    "idleBreathing": {
+      "enabled": true,
+      "amplitudeY": 9,
+      "durationSeconds": 3.2,
+      "sinusoidal": true
+    },
+    "motionBlur": {
+      "enabled": true,
+      "velocityThreshold": 1.2,
+      "maxBlurPixels": 8
+    },
+    "haptics": {
+      "enabled": true,
+      "onScroll": { "duration": 35, "weak": 0.35, "strong": 0.08 },
+      "onSelect": { "duration": 85, "weak": 0.6, "strong": 0.3 },
+      "onImpactZoom": { "duration": 420, "weak": 0.75, "strong": 0.98 }
+    }
+  },
+
+  "parallax": [
+    {
+      "id": "layer_sky",
+      "name": "Cielo Azul 16-Bit",
+      "src": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80",
+      "speedFactor": 0.12,
+      "blur": 0,
+      "opacity": 1.0
+    },
+    {
+      "id": "layer_mountains",
+      "name": "Montañas Pixeladas Green Hill",
+      "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80",
+      "speedFactor": 0.42,
+      "blur": 1,
+      "opacity": 0.85
+    },
+    {
+      "id": "layer_hills_rings",
+      "name": "Cuadros de Tierra & Anillos",
+      "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80",
+      "speedFactor": 0.88,
+      "blur": 0,
+      "opacity": 0.75
+    }
+  ],
+
+  "morfology": {
+    "buttonSkin": "sonic_capsule",
+    "capsuleGlow": "#ffd700",
+    "borderRadiusGlobal": "18px",
+    "borderWidth": "3px",
+    "borderLightColor": "#ffd700",
+    "borderDarkColor": "#002b80",
+    "boxShadow": "0 14px 40px rgba(0, 51, 153, 0.6), inset 0 2px 6px #ffd700",
+    "fontPrimary": "'Outfit', sans-serif",
+    "fontDisplay": "'Space Grotesk', sans-serif"
+  },
+
+  "colors": {
+    "primary": "#0055ff",
+    "secondary": "#ffd700",
+    "accent": "#ff2200",
+    "accentGlow": "rgba(255, 215, 0, 0.75)",
+    "hudSurface": "rgba(5, 15, 38, 0.78)",
+    "hudBorder": "rgba(255, 215, 0, 0.35)",
+    "textMain": "#ffffff",
+    "textMuted": "#9ec5fe",
+    "vignetteColor": "radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 8, 28, 0.88) 100%)"
+  },
+
+  "audio": {
+    "enabled": true,
+    "spatialPanning": true,
+    "panStrength": 0.65,
+    "masterVolume": 0.9,
+    "bgmVolume": 0.5,
+    "sfx": {
+      "ui_move": {
+        "src": "/assets/audio/sonic/ui_move.wav",
+        "synthType": "synth-tick-panned",
+        "frequency": 1280,
+        "duration": 0.03
+      },
+      "ui_select": {
+        "src": "/assets/audio/sonic/ui_select.wav",
+        "synthType": "synth-ring",
+        "frequency": 1760,
+        "duration": 0.1
+      },
+      "social_notify": {
+        "src": "/assets/audio/sonic/ring_collect.wav",
+        "synthType": "synth-chime-double",
+        "frequencies": [880, 1760],
+        "duration": 0.25
+      },
+      "ui_launch": {
+        "src": "/assets/audio/sonic/spin_dash.wav",
+        "synthType": "synth-spindash",
+        "frequency": 2400,
+        "duration": 0.6
+      }
+    }
+  }
+}

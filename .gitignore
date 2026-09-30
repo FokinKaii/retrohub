@@ -16,3 +16,12 @@ desktop.ini
 
 # GitHub workflows
 .github/
+
+# Bases de datos locales (regenerables)
+himawari.db
+retrohub_games_cache.db
+retrohub_organism.db
+
+# Backups
+*.backup.html
+iisu_preview.jpg

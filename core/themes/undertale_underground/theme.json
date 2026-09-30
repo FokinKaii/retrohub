@@ -1,0 +1,102 @@
+{
+  "$schema": "https://retrohub.org/schemas/theme-v1.json",
+  "id": "undertale_underground",
+  "name": "Undertale (Underground Determination)",
+  "author": "Toby Fox Minimalist Tribute",
+  "version": "1.0.0",
+  "description": "Minimalismo monocromático puro de 8 bits. Fondo negro abisal, recuadros de combate blancos, acentos del Alma Roja (Determinación), efecto de diálogo typewriter y sintetizador PSG.",
+
+  "layout": {
+    "type": "css-grid",
+    "gridTemplateAreas": [
+      "\"banner banner banner\"",
+      "\"library library dialog\"",
+      "\"hotbar hotbar hotbar\""
+    ],
+    "gridTemplateColumns": "1fr 1fr 360px",
+    "gridTemplateRows": "120px 1fr 80px",
+    "gap": "14px",
+    "padding": "20px",
+    "maxContentWidth": "1500px",
+    "windowMode": "fullscreen",
+    "borderRadiusWindow": "0px",
+    "activeModules": {
+      "banner": { "enabled": true, "title": "* RETROHUB - DETERMINATION" },
+      "library": { "enabled": true, "viewMode": "monochrome-slots", "columns": 4 },
+      "dialog": { "enabled": true, "typewriter": true },
+      "hotbar": { "enabled": true, "actions": ["FIGHT", "ACT", "ITEM", "MERCY"] }
+    }
+  },
+
+  "morphology": {
+    "borderRadiusGlobal": "0px",
+    "buttonStyle": "flat-minimal",
+    "borderStyle": "solid",
+    "borderWidth": "3px",
+    "borderLightColor": "#ffffff",
+    "borderDarkColor": "#ffffff",
+    "surfaceTexture": "none",
+    "boxShadow": "none",
+    "fontFamilyPrimary": "'VT323', 'Press Start 2P', monospace",
+    "fontFamilyDisplay": "'VT323', monospace",
+    "fontScale": 1.2
+  },
+
+  "colors": {
+    "primary": "#ff0000",
+    "secondary": "#ffff00",
+    "accent": "#ff0000",
+    "accentGlow": "rgba(255, 0, 0, 0.8)",
+    "surface": "#000000",
+    "surfaceGlass": "rgba(0, 0, 0, 0.95)",
+    "surfaceHighlight": "#ffffff",
+    "textMain": "#ffffff",
+    "textMuted": "#aaaaaa",
+    "textInverted": "#000000"
+  },
+
+  "background": {
+    "type": "composite",
+    "cssGradient": "linear-gradient(180deg, #000000 0%, #050505 100%)",
+    "backdropBlur": "0px",
+    "overlayOpacity": 0.0,
+    "overlayColor": "#000000"
+  },
+
+  "shaders": {
+    "crtEffect": {
+      "enabled": true,
+      "scanlines": true,
+      "scanlineFrequency": 4,
+      "vignette": 0.2
+    }
+  },
+
+  "cursors": {
+    "default": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path d=\"M10 18l-1.4-1.3C3.6 12.2 0 8.9 0 4.9 0 2.2 2.2 0 4.9 0c1.5 0 3 .7 4.1 1.8L10 2.9l1-1.1C12.1.7 13.6 0 15.1 0 17.8 0 20 2.2 20 4.9c0 4-3.6 7.3-8.6 11.8L10 18z\" fill=\"%23ff0000\" stroke=\"%23ffffff\" stroke-width=\"1.5\"/></svg>') 10 10, auto",
+    "pointer": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path d=\"M10 18l-1.4-1.3C3.6 12.2 0 8.9 0 4.9 0 2.2 2.2 0 4.9 0c1.5 0 3 .7 4.1 1.8L10 2.9l1-1.1C12.1.7 13.6 0 15.1 0 17.8 0 20 2.2 20 4.9c0 4-3.6 7.3-8.6 11.8L10 18z\" fill=\"%23ffff00\" stroke=\"%23ffffff\" stroke-width=\"1.5\"/></svg>') 10 10, pointer"
+  },
+
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.85,
+    "bgmVolume": 0.45,
+    "sfxVolume": 0.9,
+    "backgroundMusic": {
+      "src": "/assets/themes/undertale_underground/audio/ruins_8bit_loop.mp3",
+      "loop": true,
+      "fadeInDuration": 1.5
+    },
+    "sfx": {
+      "onHover": { "type": "synth-blip", "frequency": 440, "duration": 0.04 },
+      "onClick": { "type": "synth-click", "frequency": 880, "duration": 0.05 },
+      "onEmulatorLaunch": { "type": "synth-fanfare", "frequency": 660, "duration": 0.4 }
+    }
+  },
+
+  "boxArtFormat": {
+    "aspectRatio": "1:1",
+    "show3DSpine": false,
+    "badgePosition": "bottom-right"
+  }
+}

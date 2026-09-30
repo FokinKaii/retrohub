@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iiSU Network • Social Gaming OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mint-primary: #10ac84;
+            --mint-light: #1dd1a1;
+            --mint-glow: rgba(29, 209, 161, 0.4);
+            --mint-bg: rgba(29, 209, 161, 0.12);
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-sidebar: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 30px 80px rgba(0, 50, 60, 0.22), 0 10px 25px rgba(0, 0, 0, 0.08);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --badge-red: #ff4757;
+            --radius-window: 32px;
+            --radius-card: 22px;
+            --radius-pill: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* 1. ESTÉTICA GENERAL (Glassmorphism sobre gradiente verde menta / turquesa) */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #78ffd6 0%, #a8ff78 40%, #00d2d3 80%, #54a0ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Orbes bioluminiscentes desenfocados para profundidad dinámica */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 14s infinite alternate ease-in-out;
+        }
+        .orb-1 { width: 450px; height: 450px; background: rgba(29, 209, 161, 0.45); top: -80px; left: -80px; }
+        .orb-2 { width: 500px; height: 500px; background: rgba(0, 210, 211, 0.4); bottom: -100px; right: -80px; animation-duration: 18s; }
+        .orb-3 { width: 350px; height: 350px; background: rgba(255, 255, 255, 0.5); top: 30%; right: 25%; }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -40px) scale(1.08); }
+            100% { transform: translate(-20px, 30px) scale(0.95); }
+        }
+
+        /* VENTANA FLOTANTE PRINCIPAL (Glassmorphism 15px blur) */
+        .iisu-window {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1360px;
+            height: 92vh;
+            min-height: 720px;
+            max-height: 900px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border-radius: var(--radius-window);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            overflow: hidden;
+            animation: windowPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes windowPopIn {
+            0% { opacity: 0; transform: scale(0.96) translateY(16px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* 2. BARRA LATERAL IZQUIERDA (Sidebar) */
+        .iisu-sidebar {
+            background: var(--glass-sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.65);
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 24px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .brand-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--mint-light), #00d2d3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 8px 18px var(--mint-glow);
+            font-size: 20px;
+        }
+
+        .brand-text-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 19px;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+        .brand-sub {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--mint-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* Pestañas verticales de navegación */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            color: var(--mint-primary);
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+        }
+
+        /* Avatar de usuario en pestaña "Mi Perfil" */
+        .user-nav-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--mint-light);
+        }
+
+        .sidebar-footer {
+            padding-top: 18px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 6px;
+        }
+        .user-chip-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .user-chip-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-chip-name {
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        .user-chip-status {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--mint-primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-chip-status::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--mint-light);
+            box-shadow: 0 0 6px var(--mint-light);
+        }
+
+        /* CONTENEDOR DERECHO (Top Bar + Área Central) */
+        .iisu-main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* 3. CABECERA SUPERIOR (Top Bar) */
+        .iisu-topbar {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        /* Izquierda: Título de sección + Carita sonriente clásica */
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .classic-smiley {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #ffcc00;
+            box-shadow: 0 2px 8px rgba(255, 204, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .topbar-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        /* Centro: Menú de botones de acción estilo consola */
+        .console-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.55);
+            padding: 6px 18px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .btn-prompt {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .btn-bubble {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--text-main);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .btn-bubble.btn-a { background: #1dd1a1; }
+        .btn-bubble.btn-b { background: #ff4757; }
+        .btn-bubble.btn-y { background: #feca57; color: #333; }
+        .btn-bubble.btn-start {
+            width: auto;
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 9px;
+            background: #576574;
+        }
+
+        /* Derecha: Estado (RT, Reloj, Fecha, Batería) */
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .trigger-indicator {
+            background: rgba(15, 23, 42, 0.08);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .live-clock {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .live-date {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .battery-widget {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .battery-shell {
+            width: 24px;
+            height: 12px;
+            border: 2px solid var(--text-main);
+            border-radius: 3px;
+            position: relative;
+            padding: 1px;
+            display: flex;
+            align-items: center;
+        }
+        .battery-shell::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            background: var(--text-main);
+            border-radius: 0 1px 1px 0;
+        }
+        .battery-fill {
+            height: 100%;
+            width: 82%;
+            background: var(--mint-light);
+            border-radius: 1px;
+        }
+        .battery-text {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        /* 4. ÁREA CENTRAL (El corazón de la interfaz en 3 filas) */
+        .central-stage {
+            flex: 1;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        /* FILA 1: CARRUSEL DE ESTADO DE AMIGOS */
+        .row-friends-carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 8px 4px 16px 4px;
+            scrollbar-width: none;
+        }
+        .row-friends-carousel::-webkit-scrollbar { display: none; }
+
+        .friend-status-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .friend-status-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Globo de texto (Speech bubble sobre el avatar) */
+        .speech-bubble {
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            white-space: nowrap;
+            max-width: 190px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #ffffff;
+        }
+
+        /* Avatar del amigo + badge de plataforma + badge de notificación roja */
+        .avatar-platform-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .friend-avatar-img {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.25s ease;
+        }
+        .friend-status-card:hover .friend-avatar-img {
+            transform: scale(1.08);
+            border-color: var(--mint-light);
+        }
+
+        /* Globo rojo con número de notificaciones */
+        .notification-red-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--badge-red);
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            min-width: 19px;
+            height: 19px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(255, 71, 87, 0.4);
+            z-index: 5;
+            animation: badgePulse 2.5s infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        /* Pequeño icono / pastilla de la plataforma en la que están jugando */
+        .platform-mini-tag {
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 2px 7px;
+            border-radius: var(--radius-pill);
+            font-size: 9px;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border: 1.5px solid #ffffff;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            z-index: 4;
+        }
+
+        .friend-name-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        /* FILA 2: CUADRÍCULA DE JUEGOS ACTIVOS CON MINI-COLUMNA IZQUIERDA */
+        .row-games-section {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* Mini-columna con botones de Reloj (Historial) y Documento (Logs/Noticias) */
+        .mini-side-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .tool-icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--text-muted);
+        }
+        .tool-icon-btn:hover {
+            background: #ffffff;
+            color: var(--mint-primary);
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        .tool-icon-btn.active {
+            background: var(--mint-primary);
+            color: white;
+            box-shadow: 0 8px 20px var(--mint-glow);
+        }
+
+        /* Cuadrícula de tarjetas de juegos cuadradas */
+        .games-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .game-card-box {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            background: #0f172a;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .game-card-box:hover {
+            transform: scale(1.06) translateY(-6px);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.22);
+            border-color: #ffffff;
+        }
+
+        .game-box-art {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .game-card-box:hover .game-box-art {
+            transform: scale(1.08);
+        }
+
+        /* Detalle Crítico 1: Listón o etiqueta en esquina superior izquierda con color y logo */
+        .platform-ribbon-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 5;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Detalle Crítico 2: Avatares circulares superpuestos de amigos jugando en la esquina inferior izquierda */
+        .active-friends-cluster {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 4px 8px 4px 6px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .cluster-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            margin-left: -6px;
+            object-fit: cover;
+            background: #ffffff;
+        }
+        .cluster-avatar:first-child {
+            margin-left: 0;
+        }
+        .cluster-count {
+            font-size: 10px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-left: 6px;
+        }
+
+        /* FILA 3: FEED DE COMUNIDAD (Tarjetas horizontales alargadas) */
+        .row-community-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feed-post-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feed-post-card:hover {
+            background: #ffffff;
+            transform: translateX(4px) translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        .feed-author-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feed-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--mint-light);
+            flex-shrink: 0;
+        }
+
+        .feed-text-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .feed-headline {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .feed-subtext {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Detalle Crítico: Bloque con forma de píldora (pill) en verde menta y texto blanco con Upvotes/Downvotes */
+        .vote-pill-badge {
+            background: var(--mint-light);
+            color: #ffffff;
+            border-radius: var(--radius-pill);
+            padding: 7px 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px var(--mint-glow);
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .vote-pill-badge:hover {
+            background: var(--mint-primary);
+            transform: scale(1.05);
+        }
+
+        .vote-arrow {
+            font-size: 12px;
+        }
+        .vote-divider {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Orbes bioluminiscentes de fondo -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+
+    <!-- VENTANA FLOTANTE PRINCIPAL (GLASSMORPHISM) -->
+    <div class="iisu-window" id="iisuAppWindow">
+        
+        <!-- 2. BARRA LATERAL IZQUIERDA (Sidebar) -->
+        <aside class="iisu-sidebar">
+            <div>
+                <!-- Espacio para Logo Principal -->
+                <div class="sidebar-brand">
+                    <div class="brand-icon-box">🎮</div>
+                    <div class="brand-text-wrap">
+                        <span class="brand-title">iiSU</span>
+                        <span class="brand-sub">Network OS</span>
+                    </div>
+                </div>
+
+                <!-- Pestañas verticales -->
+                <nav class="sidebar-nav">
+                    <a class="nav-item" href="#profile" onclick="setSidebarActive(this)">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="user-nav-avatar" alt="Avatar">
+                        <span>Mi Perfil</span>
+                    </a>
+                    <a class="nav-item" href="#friends" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">👥</span>
+                        <span>Amigos</span>
+                    </a>
+                    <a class="nav-item" href="#global" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">🌐</span>
+                        <span>Global</span>
+                    </a>
+                    <a class="nav-item" href="#messages" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">💬</span>
+                        <span>Mensajes</span>
+                    </a>
+                    <a class="nav-item active" href="#dashboard" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Footer con usuario activo -->
+            <div class="sidebar-footer">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="user-chip-avatar" alt="Usuario">
+                <div class="user-chip-info">
+                    <span class="user-chip-name">Sara Gamer</span>
+                    <span class="user-chip-status">Conectada</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENEDOR DERECHO -->
+        <main class="iisu-main">
+
+            <!-- 3. CABECERA SUPERIOR (Top Bar) -->
+            <header class="iisu-topbar">
+                <!-- Izquierda: Título + Carita sonriente clásica -->
+                <div class="topbar-left">
+                    <div class="classic-smiley">😊</div>
+                    <h2 class="topbar-title">iiSU Network</h2>
+                </div>
+
+                <!-- Centro: Menú de botones de acción estilo consola -->
+                <div class="console-controls-bar">
+                    <div class="btn-prompt">
+                        <span class="btn-bubble btn-a">A</span>
+                        <span>Select</span>
+                    </div>
+                    <div class="btn-prompt">
+                        <span class="btn-bubble btn-b">B</span>
+                        <span>Back</span>
+                    </div>
+                    <div class="btn-prompt">
+                        <span class="btn-bubble btn-y">Y</span>
+                        <span>Share</span>
+                    </div>
+                    <div class="btn-prompt">
+                        <span class="btn-bubble btn-start">START</span>
+                        <span>Menu</span>
+                    </div>
+                </div>
+
+                <!-- Derecha: Barra de estado (RT, Reloj, Fecha, Batería) -->
+                <div class="topbar-right">
+                    <span class="trigger-indicator">RT</span>
+                    <span class="live-clock" id="iisuClock">12:45</span>
+                    <span class="live-date" id="iisuDate">09/30</span>
+                    <div class="battery-widget">
+                        <div class="battery-shell">
+                            <div class="battery-fill"></div>
+                        </div>
+                        <span class="battery-text">82%</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 4. ÁREA CENTRAL (El corazón de la interfaz en 3 filas) -->
+            <section class="central-stage">
+
+                <!-- FILA 1: CARRUSEL DE ESTADO DE AMIGOS -->
+                <div class="row-friends-carousel" id="friendsCarouselContainer">
+                    <!-- Inyectado dinámicamente con mock data -->
+                </div>
+
+                <!-- FILA 2: CUADRÍCULA DE JUEGOS ACTIVOS CON MINI-COLUMNA -->
+                <div class="row-games-section">
+                    <!-- Mini-columna con botones de Reloj y Documento -->
+                    <div class="mini-side-tools">
+                        <button class="tool-icon-btn active" title="Historial de juegos recientes" onclick="toggleToolBtn(this)">
+                            🕒
+                        </button>
+                        <button class="tool-icon-btn" title="Logs de actividad y noticias" onclick="toggleToolBtn(this)">
+                            📄
+                        </button>
+                    </div>
+
+                    <!-- Cuadrícula de Box Arts Cuadrados -->
+                    <div class="games-grid-container" id="gamesGridContainer">
+                        <!-- Inyectado dinámicamente con mock data -->
+                    </div>
+                </div>
+
+                <!-- FILA 3: FEED DE COMUNIDAD (TARJETAS INFERIORES) -->
+                <div class="row-community-feed" id="communityFeedContainer">
+                    <!-- Inyectado dinámicamente con mock data -->
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- SCRIPT DE INYECCIÓN DE DATOS MOCK & INTERACTIVIDAD -->
+    <script>
+        // MOCK DE DATOS OFICIAL (Requisitos: 3+ amigos, 3+ juegos, 2+ posts del feed)
+        const IISU_MOCK_DATA = {
+            friends: [
+                {
+                    id: "f1",
+                    name: "Lucas_Fox",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas",
+                    statusText: "¡Jugando Smash Bros Melee!",
+                    platform: "wii",
+                    platformName: "Wii",
+                    platformColor: "#00d2d3",
+                    notifications: 3
+                },
+                {
+                    id: "f2",
+                    name: "PixelQueen",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Queen",
+                    statusText: "En el Templo del Agua 💧",
+                    platform: "n64",
+                    platformName: "N64",
+                    platformColor: "#ff4757",
+                    notifications: 1
+                },
+                {
+                    id: "f3",
+                    name: "Alex_Speedrun",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+                    statusText: "Nuevo PB Mario 64 (16★)",
+                    platform: "switch",
+                    platformName: "Switch",
+                    platformColor: "#e60012",
+                    notifications: 0
+                },
+                {
+                    id: "f4",
+                    name: "CyberKidd",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber",
+                    statusText: "Capturando a Mewtwo",
+                    platform: "gb",
+                    platformName: "GB",
+                    platformColor: "#8e44ad",
+                    notifications: 2
+                }
+            ],
+            games: [
+                {
+                    id: "smash",
+                    title: "Super Smash Bros. Melee",
+                    platformLabel: "SWITCH",
+                    platformColor: "#e60012",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2224.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "Lucas", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas" },
+                        { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" }
+                    ]
+                },
+                {
+                    id: "mario64",
+                    title: "Super Mario 64",
+                    platformLabel: "N64",
+                    platformColor: "#f39c12",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "PixelQueen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Queen" }
+                    ]
+                },
+                {
+                    id: "mariokart",
+                    title: "Mario Kart Wii",
+                    platformLabel: "Wii",
+                    platformColor: "#00d2d3",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x7f.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "Lucas", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas" },
+                        { name: "Sara", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" },
+                        { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" }
+                    ]
+                },
+                {
+                    id: "pokemon",
+                    title: "Pokémon Esmeralda",
+                    platformLabel: "GBA",
+                    platformColor: "#8e44ad",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co20vo.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "CyberKidd", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber" }
+                    ]
+                }
+            ],
+            feed: [
+                {
+                    id: "post1",
+                    authorName: "Kamek_Fan_09",
+                    authorAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Kamek",
+                    headline: "Coughing Baby vs Hydrogenic Bomb: ¿Quién gana en Final Destination con Fox?",
+                    subtext: "Por @Kamek_Fan_09 • hace 2h en Torneos Melee",
+                    upvotes: 84,
+                    downvotes: 41
+                },
+                {
+                    id: "post2",
+                    authorName: "SpeedyGonzales",
+                    authorAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Speedy",
+                    headline: "Nuevo récord mundial conseguido en Rainbow Road 64 (Sin atajos glitcheados)",
+                    subtext: "Por @SpeedyGonzales • hace 4h en Speedrunning",
+                    upvotes: 126,
+                    downvotes: 12
+                }
+            ]
+        };
+
+        // RENDER FILA 1: CARRUSEL DE AMIGOS
+        function renderFriendsCarousel() {
+            const container = document.getElementById('friendsCarouselContainer');
+            container.innerHTML = '';
+
+            IISU_MOCK_DATA.friends.forEach(f => {
+                const card = document.createElement('div');
+                card.className = 'friend-status-card';
+                card.innerHTML = `
+                    <div class="speech-bubble" title="${f.statusText}">
+                        ${f.statusText}
+                    </div>
+                    <div class="avatar-platform-group">
+                        <img src="${f.avatar}" class="friend-avatar-img" alt="${f.name}">
+                        ${f.notifications > 0 ? `<div class="notification-red-badge">${f.notifications}</div>` : ''}
+                        <div class="platform-mini-tag" style="background: ${f.platformColor};">
+                            ${f.platformName}
+                        </div>
+                    </div>
+                    <span class="friend-name-label">${f.name}</span>
+                `;
+                card.onclick = () => alert(`Conectando con ${f.name} en ${f.platformName}...`);
+                container.appendChild(card);
+            });
+        }
+
+        // RENDER FILA 2: CUADRÍCULA DE JUEGOS
+        function renderGamesGrid() {
+            const container = document.getElementById('gamesGridContainer');
+            container.innerHTML = '';
+
+            IISU_MOCK_DATA.games.forEach(g => {
+                const box = document.createElement('div');
+                box.className = 'game-card-box';
+
+                // Avatares superpuestos
+                const friendsHtml = g.activeFriends.map(af => `
+                    <img src="${af.avatar}" class="cluster-avatar" title="${af.name}" alt="${af.name}">
+                `).join('');
+
+                box.innerHTML = `
+                    <div class="platform-ribbon-tag" style="background: ${g.platformColor};">
+                        <span>●</span> ${g.platformLabel}
+                    </div>
+                    <img src="${g.boxArt}" class="game-box-art" alt="${g.title}" onerror="this.src='${g.fallbackArt}'">
+                    <div class="active-friends-cluster">
+                        ${friendsHtml}
+                        <span class="cluster-count">+${g.activeFriends.length}</span>
+                    </div>
+                `;
+                box.onclick = () => alert(`Iniciando ${g.title} en iiSU Network Launcher...`);
+                container.appendChild(box);
+            });
+        }
+
+        // RENDER FILA 3: FEED DE COMUNIDAD
+        function renderCommunityFeed() {
+            const container = document.getElementById('communityFeedContainer');
+            container.innerHTML = '';
+
+            IISU_MOCK_DATA.feed.forEach(post => {
+                const row = document.createElement('div');
+                row.className = 'feed-post-card';
+                row.innerHTML = `
+                    <div class="feed-author-wrap">
+                        <img src="${post.authorAvatar}" class="feed-avatar" alt="${post.authorName}">
+                        <div class="feed-text-col">
+                            <div class="feed-headline">${post.headline}</div>
+                            <div class="feed-subtext">${post.subtext}</div>
+                        </div>
+                    </div>
+                    <div class="vote-pill-badge" onclick="event.stopPropagation(); votePost(this)">
+                        <span class="vote-arrow">▲</span>
+                        <span>${post.upvotes}</span>
+                        <span class="vote-divider">|</span>
+                        <span class="vote-arrow">▼</span>
+                        <span>${post.downvotes}</span>
+                    </div>
+                `;
+                row.onclick = () => alert(`Abriendo hilo: "${post.headline}"`);
+                container.appendChild(row);
+            });
+        }
+
+        function votePost(el) {
+            el.style.transform = 'scale(1.15)';
+            setTimeout(() => el.style.transform = '', 200);
+        }
+
+        function toggleToolBtn(btn) {
+            document.querySelectorAll('.tool-icon-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function setSidebarActive(link) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        // RELOJ Y FECHA EN TIEMPO REAL
+        function updateDateTime() {
+            const now = new Date();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            let month = (now.getMonth() + 1).toString().padStart(2, '0');
+            let day = now.getDate().toString().padStart(2, '0');
+
+            const clockEl = document.getElementById('iisuClock');
+            const dateEl = document.getElementById('iisuDate');
+            if (clockEl) clockEl.textContent = `${hours}:${minutes}`;
+            if (dateEl) dateEl.textContent = `${month}/${day}`;
+        }
+
+        // INICIALIZACIÓN
+        window.addEventListener('DOMContentLoaded', () => {
+            renderFriendsCarousel();
+            renderGamesGrid();
+            renderCommunityFeed();
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://retrohub.org/schemas/theme-v1.json",
+  "id": "minecraft_overworld",
+  "name": "Minecraft (Overworld Inventory)",
+  "author": "Mojang Aesthetic Division",
+  "version": "1.0.0",
+  "description": "Interfaz inspirada en el inventario clásico de Minecraft. Rejillas duras de 4px, paleta piedra/tierra/esmeralda, sonidos de bloques al interactuar y tipografía pixel art.",
+
+  "layout": {
+    "type": "css-grid",
+    "gridTemplateAreas": [
+      "\"topbar topbar topbar\"",
+      "\"banner banner friends\"",
+      "\"library library friends\"",
+      "\"hotbar hotbar hotbar\""
+    ],
+    "gridTemplateColumns": "1fr 1fr 320px",
+    "gridTemplateRows": "50px 140px 1fr 70px",
+    "gap": "12px",
+    "padding": "16px",
+    "maxContentWidth": "1500px",
+    "windowMode": "fullscreen",
+    "borderRadiusWindow": "0px",
+    "activeModules": {
+      "topbar": { "enabled": true, "title": "RETROHUB CRAFT v1.20" },
+      "banner": { "enabled": true, "showStats": true },
+      "library": { "enabled": true, "viewMode": "slot-grid", "columns": 5 },
+      "friends": { "enabled": true, "showSkin": true },
+      "hotbar": { "enabled": true, "slots": 9 },
+      "sidebar": { "enabled": false }
+    }
+  },
+
+  "morphology": {
+    "borderRadiusGlobal": "0px",
+    "buttonStyle": "pixel-hard",
+    "borderStyle": "outset",
+    "borderWidth": "4px",
+    "borderLightColor": "#ffffff",
+    "borderDarkColor": "#373737",
+    "surfaceTexture": "radial-gradient(circle, rgba(0,0,0,0.15) 10%, transparent 11%)",
+    "boxShadow": "inset -4px -4px 0px #373737, inset 4px 4px 0px #ffffff, 0 6px 0px #000000",
+    "fontFamilyPrimary": "'VT323', 'Press Start 2P', monospace",
+    "fontFamilyDisplay": "'VT323', monospace",
+    "fontScale": 1.15
+  },
+
+  "colors": {
+    "primary": "#55ff55",
+    "secondary": "#ffaa00",
+    "accent": "#00aa00",
+    "accentGlow": "rgba(85, 255, 85, 0.4)",
+    "surface": "#c6c6c6",
+    "surfaceGlass": "rgba(198, 198, 198, 0.95)",
+    "surfaceHighlight": "#ffffff",
+    "textMain": "#1e1e1e",
+    "textMuted": "#555555",
+    "textInverted": "#ffffff"
+  },
+
+  "background": {
+    "type": "composite",
+    "fallbackImage": "https://images.unsplash.com/photo-1627856014754-2907e2055744?auto=format&fit=crop&w=1920&q=80",
+    "cssGradient": "radial-gradient(circle at 50% 50%, #4a752c 0%, #2f4b1c 60%, #17260d 100%)",
+    "patternOverlay": "radial-gradient(#3a5d23 2px, transparent 2px)",
+    "patternSize": "16px 16px",
+    "backdropBlur": "0px",
+    "overlayOpacity": 0.25,
+    "overlayColor": "#000000"
+  },
+
+  "shaders": {
+    "crtEffect": { "enabled": false },
+    "filmGrain": { "enabled": false }
+  },
+
+  "cursors": {
+    "default": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><polygon points=\"2,2 2,20 6,16 10,22 14,20 10,14 16,14\" fill=\"%23ffffff\" stroke=\"%23000000\" stroke-width=\"2\"/></svg>') 2 2, auto",
+    "pointer": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M14 2l8 8-4 4-2-2-4 4 2 2-2 2-2-2-4 4-4-4 4-4-2-2 2-2 2 2 4-4-2-2 4-4z\" fill=\"%2355ff55\" stroke=\"%23000\" stroke-width=\"1.5\"/></svg>') 4 4, pointer"
+  },
+
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.85,
+    "bgmVolume": 0.45,
+    "sfxVolume": 0.9,
+    "backgroundMusic": {
+      "src": "/assets/themes/minecraft_overworld/audio/sweden_piano_loop.mp3",
+      "loop": true,
+      "fadeInDuration": 3.0
+    },
+    "sfx": {
+      "onHover": { "type": "synth-click", "frequency": 180, "duration": 0.05 },
+      "onClick": { "type": "synth-click", "frequency": 120, "duration": 0.08 },
+      "onEmulatorLaunch": { "type": "synth-fanfare", "frequency": 440, "duration": 0.5 },
+      "onNotification": { "type": "synth-chime", "frequencies": [330, 392, 659], "duration": 0.3 }
+    }
+  },
+
+  "boxArtFormat": {
+    "aspectRatio": "1:1",
+    "show3DSpine": false,
+    "badgePosition": "top-right"
+  }
+}

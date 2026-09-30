@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iiSU Network • Motor de Temas Absoluto & Glassmorphism AAA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=Press+Start+2P&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <style id="themeDynamicStyles">
+        :root {
+            /* 1. MOTOR DE TEMAS: TOKENS GLOBALES INYECTADOS DINÁMICAMENTE */
+            --primary-color: #10ac84;
+            --secondary-color: #00d2d3;
+            --accent-color: #1dd1a1;
+            --accent-glow: rgba(29, 209, 161, 0.45);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-on-accent: #ffffff;
+            
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-sidebar: rgba(255, 255, 255, 0.45);
+            --glass-card: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-blur-intensity: 16px;
+            --glass-shadow: 0 30px 80px rgba(0, 50, 60, 0.22), 0 10px 25px rgba(0, 0, 0, 0.08);
+            
+            --border-radius-window: 32px;
+            --border-radius-global: 22px;
+            --border-radius-pill: 9999px;
+            
+            --font-primary: 'Outfit', -apple-system, sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+
+            --bg-overlay-opacity: 0.25;
+            --bg-overlay-color: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-primary);
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* 1. FONDO DINÁMICO (Soporte de gradientes, imágenes, videos y overlay regulable) */
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+            background-color: #0f172a;
+            transition: background 0.5s ease;
+        }
+
+        .bg-dynamic-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -20;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .bg-animated-mesh {
+            background: linear-gradient(135deg, #78ffd6 0%, #a8ff78 40%, #00d2d3 80%, #54a0ff 100%);
+        }
+
+        .bg-overlay-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            background: var(--bg-overlay-color);
+            opacity: var(--bg-overlay-opacity);
+            pointer-events: none;
+            transition: opacity 0.3s ease, background 0.4s ease;
+        }
+
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: -5;
+            animation: orbDrift 14s infinite alternate ease-in-out;
+            transition: background 0.5s ease;
+        }
+        .orb-1 { width: 480px; height: 480px; background: var(--accent-glow); top: -80px; left: -80px; }
+        .orb-2 { width: 520px; height: 520px; background: var(--secondary-color); bottom: -120px; right: -80px; opacity: 0.35; }
+
+        @keyframes orbDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(35px, -40px) scale(1.08); }
+            100% { transform: translate(-25px, 30px) scale(0.95); }
+        }
+
+        /* 2. VENTANA FLOTANTE PRINCIPAL (GLASSMORPHISM RESPONSIVO) */
+        .iisu-window {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1380px;
+            height: 92vh;
+            min-height: 730px;
+            max-height: 920px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur-intensity)) saturate(180%);
+            -webkit-backdrop-filter: blur(var(--glass-blur-intensity)) saturate(180%);
+            border-radius: var(--border-radius-window);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+            display: grid;
+            grid-template-columns: 245px 1fr;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: windowScaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes windowScaleIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* 2.1 SIDEBAR LATERAL IZQUIERDA */
+        .iisu-sidebar {
+            background: var(--glass-sidebar);
+            border-right: 1px solid var(--glass-border);
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 22px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+        }
+
+        .brand-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: calc(var(--border-radius-global) * 0.7);
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 8px 18px var(--accent-glow);
+            font-size: 20px;
+            transition: transform 0.3s ease, border-radius 0.3s ease;
+        }
+        .sidebar-brand:hover .brand-icon-box {
+            transform: scale(1.08) rotate(5deg);
+        }
+
+        .brand-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 19px;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+        .brand-sub {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+            flex: 1;
+        }
+
+        /* Botones con animaciones elásticas físicas 'Spring' */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: calc(var(--border-radius-global) * 0.75);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--text-main);
+            transform: translateX(6px) scale(1.02);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-item:active {
+            transform: scale(0.96);
+            transition: transform 0.1s ease;
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            color: var(--primary-color);
+            border-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            transform: scale(1.02);
+        }
+
+        .user-nav-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+
+        /* Tarjeta de perfil inferior con LED de estado luminoso */
+        .sidebar-footer {
+            padding-top: 18px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 6px;
+        }
+        .user-chip-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .user-chip-name {
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        .user-chip-status {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-led {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1dd1a1;
+            box-shadow: 0 0 8px #1dd1a1;
+            display: inline-block;
+        }
+        .status-led.busy {
+            background: #ff4757;
+            box-shadow: 0 0 8px #ff4757;
+        }
+
+        /* 2.2 TOP BAR (CABECERA SUPERIOR) */
+        .iisu-main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .iisu-topbar {
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .classic-smiley {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffcc00;
+            box-shadow: 0 2px 8px rgba(255, 204, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+        .topbar-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        /* BUTTON PROMPTS DINÁMICOS SEGÚN MANDO (NINTENDO, XBOX, PLAYSTATION) */
+        .console-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.55);
+            padding: 6px 18px;
+            border-radius: var(--border-radius-pill);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-prompt {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .btn-bubble {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--text-main);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .trigger-indicator {
+            background: rgba(15, 23, 42, 0.08);
+            color: var(--text-main);
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .live-clock {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+        .live-date {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .battery-widget {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .battery-shell {
+            width: 24px;
+            height: 12px;
+            border: 2px solid var(--text-main);
+            border-radius: 3px;
+            position: relative;
+            padding: 1px;
+        }
+        .battery-shell::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            background: var(--text-main);
+        }
+        .battery-fill {
+            height: 100%;
+            width: 82%;
+            background: var(--accent-color);
+            border-radius: 1px;
+            transition: background 0.3s ease;
+        }
+        .battery-text {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        /* 3. ECOSISTEMA SOCIAL Y LUDOTECA (ÁREA CENTRAL EN 3 FILAS) */
+        .central-stage {
+            flex: 1;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        /* FILA 1: CARRUSEL DE ESTADOS */
+        .row-friends-carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 8px 4px 16px 4px;
+            scrollbar-width: none;
+        }
+        .row-friends-carousel::-webkit-scrollbar { display: none; }
+
+        .friend-status-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .friend-status-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .speech-bubble {
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            white-space: nowrap;
+            max-width: 190px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #ffffff;
+        }
+
+        .avatar-platform-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .friend-avatar-img {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.28s ease, border-color 0.28s ease;
+        }
+        .friend-status-card:hover .friend-avatar-img {
+            transform: scale(1.08);
+            border-color: var(--accent-color);
+        }
+
+        .notification-red-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ff4757;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            min-width: 19px;
+            height: 19px;
+            border-radius: var(--border-radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(255, 71, 87, 0.4);
+            z-index: 5;
+            animation: redPulse 2s infinite;
+        }
+        @keyframes redPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); box-shadow: 0 0 12px rgba(255, 71, 87, 0.7); }
+        }
+
+        .platform-mini-tag {
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 2px 7px;
+            border-radius: var(--border-radius-pill);
+            font-size: 9px;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border: 1.5px solid #ffffff;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            z-index: 4;
+        }
+
+        .friend-name-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        /* FILA 2: VITRINA DE JUEGOS ACTIVOS CON MINI-COLUMNA */
+        .row-games-section {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .mini-side-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .tool-icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: calc(var(--border-radius-global) * 0.75);
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--text-muted);
+            position: relative;
+        }
+        .tool-icon-btn:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        .tool-icon-btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        /* Cuadrícula de Box Arts Cuadrados con efectos físicos */
+        .games-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .game-card-box {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: var(--border-radius-global);
+            overflow: hidden;
+            background: #0f172a;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .game-card-box:hover {
+            transform: scale(1.06) translateY(-6px);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.25), 0 0 24px var(--accent-glow);
+            border-color: var(--accent-color);
+        }
+
+        .game-box-art {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .game-card-box:hover .game-box-art {
+            transform: scale(1.08);
+        }
+
+        .platform-ribbon-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 5;
+            backdrop-filter: blur(8px);
+        }
+
+        .active-friends-cluster {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 4px 8px 4px 6px;
+            border-radius: var(--border-radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .cluster-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            margin-left: -6px;
+            object-fit: cover;
+            background: #ffffff;
+        }
+        .cluster-avatar:first-child {
+            margin-left: 0;
+        }
+        .cluster-count {
+            font-size: 10px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-left: 6px;
+        }
+
+        /* FILA 3: FEED DE COMUNIDAD */
+        .row-community-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feed-post-card {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: calc(var(--border-radius-global) * 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feed-post-card:hover {
+            background: #ffffff;
+            transform: translateX(5px) translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+            border-color: var(--accent-color);
+        }
+
+        .feed-author-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feed-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            flex-shrink: 0;
+        }
+
+        .feed-text-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .feed-headline {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .feed-subtext {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .vote-pill-badge {
+            background: var(--accent-color);
+            color: var(--text-on-accent);
+            border-radius: var(--border-radius-pill);
+            padding: 7px 16px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px var(--accent-glow);
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+        .vote-pill-badge:hover {
+            transform: scale(1.06);
+            filter: brightness(1.1);
+        }
+
+        /* 4. DRAWER FLOTANTE DE CONTROL DEL MOTOR DE TEMAS */
+        .theme-studio-dock {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+            z-index: 99999;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .theme-preset-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .theme-preset-btn:hover {
+            background: var(--accent-color);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .custom-slider-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .custom-slider-group input[type="range"] {
+            width: 80px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Capa de Fondo Dinámico (Soporte para Gradiente animado, wallpapers y video) -->
+    <div class="bg-dynamic-layer bg-animated-mesh" id="bgDynamicLayer"></div>
+    <div class="bg-overlay-screen" id="bgOverlayScreen"></div>
+
+    <!-- Orbes bioluminiscentes para acentos dinámicos de tema -->
+    <div class="ambient-orb orb-1" id="ambientOrb1"></div>
+    <div class="ambient-orb orb-2" id="ambientOrb2"></div>
+
+    <!-- 2. VENTANA FLOTANTE PRINCIPAL (GLASSMORPHISM) -->
+    <div class="iisu-window" id="iisuAppWindow">
+        
+        <!-- SIDEBAR LATERAL IZQUIERDA -->
+        <aside class="iisu-sidebar">
+            <div>
+                <!-- Logo del sistema intercambiable según el tema -->
+                <div class="sidebar-brand" id="sidebarBrand">
+                    <div class="brand-icon-box" id="brandLogoIcon">🎮</div>
+                    <div class="brand-text-wrap">
+                        <span class="brand-title" id="brandTitleText">iiSU</span>
+                        <span class="brand-sub" id="brandSubText">Network OS</span>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación con animaciones 'Spring' -->
+                <nav class="sidebar-nav">
+                    <a class="nav-item" href="#profile" onclick="setSidebarActive(this)">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="user-nav-avatar" alt="Avatar">
+                        <span>Mi Perfil</span>
+                    </a>
+                    <a class="nav-item" href="#friends" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">👥</span>
+                        <span>Amigos</span>
+                    </a>
+                    <a class="nav-item" href="#global" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">🌐</span>
+                        <span>Global</span>
+                    </a>
+                    <a class="nav-item" href="#messages" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">💬</span>
+                        <span>Mensajes</span>
+                    </a>
+                    <a class="nav-item active" href="#dashboard" onclick="setSidebarActive(this)">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Mini tarjeta de perfil con LED luminoso de estado -->
+            <div class="sidebar-footer">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="user-chip-avatar" alt="Usuario">
+                <div class="user-chip-info">
+                    <span class="user-chip-name">Sara Gamer</span>
+                    <span class="user-chip-status">
+                        <span class="status-led" id="statusLed"></span>
+                        <span id="statusLabel">Online</span>
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENEDOR DERECHO -->
+        <main class="iisu-main">
+
+            <!-- 2.2 TOP BAR (CABECERA SUPERIOR) -->
+            <header class="iisu-topbar">
+                <!-- Izquierda: Título de sección + Icono vectorial dinámico -->
+                <div class="topbar-left">
+                    <div class="classic-smiley" id="topbarIcon">😊</div>
+                    <h2 class="topbar-title" id="topbarTitle">iiSU Network</h2>
+                </div>
+
+                <!-- Centro: Button Prompts dinámicos según el mando -->
+                <div class="console-controls-bar" id="buttonPromptsBar">
+                    <!-- Se inyecta según Nintendo, Xbox o PlayStation -->
+                </div>
+
+                <!-- Derecha: Métricas reales del sistema -->
+                <div class="topbar-right">
+                    <span class="trigger-indicator" id="triggerPrompt">RT</span>
+                    <span class="live-clock" id="liveClockHHMM">12:45</span>
+                    <span class="live-date" id="liveDateMMDD">09/30</span>
+                    <div class="battery-widget">
+                        <div class="battery-shell">
+                            <div class="battery-fill" id="batteryFill"></div>
+                        </div>
+                        <span class="battery-text" id="batteryPercentText">82%</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 3. ÁREA CENTRAL EN 3 FILAS -->
+            <section class="central-stage">
+
+                <!-- FILA 1: CARRUSEL DE ESTADOS -->
+                <div class="row-friends-carousel" id="friendsCarousel"></div>
+
+                <!-- FILA 2: VITRINA DE JUEGOS ACTIVOS CON MINI-COLUMNA -->
+                <div class="row-games-section">
+                    <div class="mini-side-tools">
+                        <button class="tool-icon-btn active" title="Historial de juego reciente" onclick="toggleToolBtn(this)">
+                            🕒
+                        </button>
+                        <button class="tool-icon-btn" title="Logs de sistema y actividad" onclick="toggleToolBtn(this)">
+                            📄
+                        </button>
+                    </div>
+
+                    <div class="games-grid-container" id="gamesGrid"></div>
+                </div>
+
+                <!-- FILA 3: FEED DE COMUNIDAD -->
+                <div class="row-community-feed" id="communityFeed"></div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- 4. DOCK DEL MOTOR DE TEMAS (CONTROLADOR EN VIVO) -->
+    <div class="theme-studio-dock">
+        <span>🎨 Motor de Temas:</span>
+        <button class="theme-preset-btn" onclick="applyTheme('mint')">iiSU Mint</button>
+        <button class="theme-preset-btn" onclick="applyTheme('cyberpunk')">Cyberpunk PS5</button>
+        <button class="theme-preset-btn" onclick="applyTheme('switch_oled')">Switch OLED</button>
+        <button class="theme-preset-btn" onclick="applyTheme('famicom')">Famicom 80s</button>
+
+        <div class="custom-slider-group">
+            <span>Desenfoque:</span>
+            <input type="range" min="2" max="36" value="16" oninput="setBlurIntensity(this.value)">
+        </div>
+
+        <div class="custom-slider-group">
+            <span>Bordes:</span>
+            <input type="range" min="4" max="36" value="22" oninput="setBorderRadius(this.value)">
+        </div>
+
+        <select id="controllerModeSelect" onchange="setControllerLayout(this.value)" style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 4px 8px; font-weight: 700;">
+            <option value="nintendo">Mando: Nintendo</option>
+            <option value="xbox">Mando: Xbox</option>
+            <option value="playstation">Mando: PlayStation</option>
+        </select>
+
+        <button class="theme-preset-btn" onclick="window.location.href='agnostic_studio.html'" style="background: linear-gradient(135deg, rgba(0,225,255,0.3), rgba(255,0,127,0.3)); border-color: #00f0ff;">🔮 Motor Agnóstico Y2K</button>
+        <button class="theme-preset-btn" onclick="window.location.href='index.html'" style="background: rgba(255,71,87,0.3); border-color: #ff4757;">🏠 Launcher</button>
+    </div>
+
+    <!-- SCRIPT DEL MOTOR DE TEMAS Y MOCK DATA COMPLETO -->
+    <script>
+        // MOCK DE DATOS COMPLEJO (JSON)
+        const MOCK_ECOSYSTEM = {
+            friends: [
+                {
+                    id: "f1",
+                    name: "Lucas_Fox",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas",
+                    statusText: "¡Jugando Smash Bros Melee!",
+                    platformName: "Wii",
+                    platformColor: "#00d2d3",
+                    notifications: 3
+                },
+                {
+                    id: "f2",
+                    name: "PixelQueen",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Queen",
+                    statusText: "En el Templo del Agua 💧",
+                    platformName: "N64",
+                    platformColor: "#ff4757",
+                    notifications: 1
+                },
+                {
+                    id: "f3",
+                    name: "Alex_Speedrun",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+                    statusText: "Nuevo PB Mario 64 (16★)",
+                    platformName: "Switch",
+                    platformColor: "#e60012",
+                    notifications: 0
+                },
+                {
+                    id: "f4",
+                    name: "CyberKidd",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber",
+                    statusText: "Capturando a Mewtwo en GBA",
+                    platformName: "GBA",
+                    platformColor: "#8e44ad",
+                    notifications: 2
+                }
+            ],
+            games: [
+                {
+                    id: "smash",
+                    title: "Super Smash Bros. Melee",
+                    platformLabel: "SWITCH",
+                    platformColor: "#e60012",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2224.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "Lucas", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas" },
+                        { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" }
+                    ]
+                },
+                {
+                    id: "mario64",
+                    title: "Super Mario 64",
+                    platformLabel: "N64",
+                    platformColor: "#f39c12",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "PixelQueen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Queen" }
+                    ]
+                },
+                {
+                    id: "mariokart",
+                    title: "Mario Kart Wii",
+                    platformLabel: "Wii",
+                    platformColor: "#00d2d3",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x7f.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "Lucas", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas" },
+                        { name: "Sara", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" },
+                        { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" }
+                    ]
+                },
+                {
+                    id: "pokemon",
+                    title: "Pokémon Esmeralda",
+                    platformLabel: "GBA",
+                    platformColor: "#8e44ad",
+                    boxArt: "https://images.igdb.com/igdb/image/upload/t_cover_big/co20vo.png",
+                    fallbackArt: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                    activeFriends: [
+                        { name: "CyberKidd", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber" }
+                    ]
+                }
+            ],
+            feed: [
+                {
+                    id: "post1",
+                    authorName: "Kamek_Fan_09",
+                    authorAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Kamek",
+                    headline: "Coughing Baby vs Hydrogenic Bomb: ¿Quién gana en Final Destination con Fox?",
+                    subtext: "Por @Kamek_Fan_09 • hace 2h en Torneos Melee",
+                    upvotes: 84,
+                    downvotes: 41
+                },
+                {
+                    id: "post2",
+                    authorName: "SpeedyGonzales",
+                    authorAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Speedy",
+                    headline: "Nuevo récord mundial conseguido en Rainbow Road 64 (Sin atajos glitcheados)",
+                    subtext: "Por @SpeedyGonzales • hace 4h en Speedrunning",
+                    upvotes: 126,
+                    downvotes: 12
+                }
+            ]
+        };
+
+        // DEFINICIÓN DE TEMAS MONOLÍTICOS
+        const THEME_PRESETS = {
+            mint: {
+                name: "iiSU Mint Pearl",
+                primary: "#10ac84",
+                secondary: "#00d2d3",
+                accent: "#1dd1a1",
+                accentGlow: "rgba(29, 209, 161, 0.45)",
+                textMain: "#0f172a",
+                textMuted: "#475569",
+                textOnAccent: "#ffffff",
+                glassBg: "rgba(255, 255, 255, 0.72)",
+                glassSidebar: "rgba(255, 255, 255, 0.45)",
+                glassCard: "rgba(255, 255, 255, 0.85)",
+                glassBorder: "rgba(255, 255, 255, 0.85)",
+                blur: "16px",
+                radiusWindow: "32px",
+                radiusGlobal: "22px",
+                fontPrimary: "'Outfit', sans-serif",
+                fontDisplay: "'Space Grotesk', sans-serif",
+                bgGradient: "linear-gradient(135deg, #78ffd6 0%, #a8ff78 40%, #00d2d3 80%, #54a0ff 100%)",
+                bgOverlayOpacity: 0.15,
+                bgOverlayColor: "#ffffff",
+                brandTitle: "iiSU",
+                brandSub: "Network OS",
+                brandIcon: "🎮",
+                controller: "nintendo"
+            },
+            cyberpunk: {
+                name: "Cyberpunk PS5",
+                primary: "#00f2fe",
+                secondary: "#4facfe",
+                accent: "#ff007f",
+                accentGlow: "rgba(255, 0, 127, 0.5)",
+                textMain: "#f8fafc",
+                textMuted: "#94a3b8",
+                textOnAccent: "#ffffff",
+                glassBg: "rgba(15, 23, 42, 0.76)",
+                glassSidebar: "rgba(30, 41, 59, 0.65)",
+                glassCard: "rgba(30, 41, 59, 0.8)",
+                glassBorder: "rgba(255, 255, 255, 0.15)",
+                blur: "26px",
+                radiusWindow: "18px",
+                radiusGlobal: "14px",
+                fontPrimary: "'Rajdhani', sans-serif",
+                fontDisplay: "'Space Grotesk', sans-serif",
+                bgGradient: "radial-gradient(circle at 70% 30%, #4a00e0 0%, #8e2de2 50%, #090a1a 100%)",
+                bgOverlayOpacity: 0.45,
+                bgOverlayColor: "#05060f",
+                brandTitle: "CYBER",
+                brandSub: "Matrix OS",
+                brandIcon: "⚡",
+                controller: "playstation"
+            },
+            switch_oled: {
+                name: "Switch OLED",
+                primary: "#e60012",
+                secondary: "#0abde3",
+                accent: "#e60012",
+                accentGlow: "rgba(230, 0, 18, 0.5)",
+                textMain: "#ffffff",
+                textMuted: "#a4b0be",
+                textOnAccent: "#ffffff",
+                glassBg: "rgba(24, 24, 28, 0.82)",
+                glassSidebar: "rgba(38, 38, 44, 0.7)",
+                glassCard: "rgba(38, 38, 44, 0.85)",
+                glassBorder: "rgba(255, 255, 255, 0.12)",
+                blur: "20px",
+                radiusWindow: "28px",
+                radiusGlobal: "20px",
+                fontPrimary: "'Outfit', sans-serif",
+                fontDisplay: "'Space Grotesk', sans-serif",
+                bgGradient: "linear-gradient(135deg, #2c3e50 0%, #000000 60%, #e60012 140%)",
+                bgOverlayOpacity: 0.5,
+                bgOverlayColor: "#000000",
+                brandTitle: "SWITCH",
+                brandSub: "OLED Suite",
+                brandIcon: "🔴",
+                controller: "nintendo"
+            },
+            famicom: {
+                name: "Famicom 80s",
+                primary: "#8b0000",
+                secondary: "#d4af37",
+                accent: "#8b0000",
+                accentGlow: "rgba(139, 0, 0, 0.4)",
+                textMain: "#1a1a1a",
+                textMuted: "#595959",
+                textOnAccent: "#ffffff",
+                glassBg: "rgba(245, 240, 230, 0.9)",
+                glassSidebar: "rgba(235, 226, 210, 0.8)",
+                glassCard: "rgba(255, 252, 245, 0.95)",
+                glassBorder: "rgba(139, 0, 0, 0.3)",
+                blur: "8px",
+                radiusWindow: "8px",
+                radiusGlobal: "6px",
+                fontPrimary: "'Outfit', sans-serif",
+                fontDisplay: "'Press Start 2P', monospace",
+                bgGradient: "linear-gradient(135deg, #d3cbb8 0%, #6d6027 100%)",
+                bgOverlayOpacity: 0.2,
+                bgOverlayColor: "#000000",
+                brandTitle: "FC-83",
+                brandSub: "Family Computer",
+                brandIcon: "👾",
+                controller: "nintendo"
+            }
+        };
+
+        // 1. INYECTOR DINÁMICO DE VARIABLES DE TEMA
+        function applyTheme(presetKey) {
+            const t = THEME_PRESETS[presetKey];
+            if (!t) return;
+
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', t.primary);
+            root.style.setProperty('--secondary-color', t.secondary);
+            root.style.setProperty('--accent-color', t.accent);
+            root.style.setProperty('--accent-glow', t.accentGlow);
+            root.style.setProperty('--text-main', t.textMain);
+            root.style.setProperty('--text-muted', t.textMuted);
+            root.style.setProperty('--text-on-accent', t.textOnAccent);
+            root.style.setProperty('--glass-bg', t.glassBg);
+            root.style.setProperty('--glass-sidebar', t.glassSidebar);
+            root.style.setProperty('--glass-card', t.glassCard);
+            root.style.setProperty('--glass-border', t.glassBorder);
+            root.style.setProperty('--glass-blur-intensity', t.blur);
+            root.style.setProperty('--border-radius-window', t.radiusWindow);
+            root.style.setProperty('--border-radius-global', t.radiusGlobal);
+            root.style.setProperty('--font-primary', t.fontPrimary);
+            root.style.setProperty('--font-display', t.fontDisplay);
+            root.style.setProperty('--bg-overlay-opacity', t.bgOverlayOpacity);
+            root.style.setProperty('--bg-overlay-color', t.bgOverlayColor);
+
+            // Fondo dinámico
+            document.getElementById('bgDynamicLayer').style.background = t.bgGradient;
+            
+            // Branding intercambiable
+            document.getElementById('brandLogoIcon').textContent = t.brandIcon;
+            document.getElementById('brandTitleText').textContent = t.brandTitle;
+            document.getElementById('brandSubText').textContent = t.brandSub;
+
+            // Disposición de botones según mando
+            setControllerLayout(t.controller);
+            document.getElementById('controllerModeSelect').value = t.controller;
+        }
+
+        function setBlurIntensity(val) {
+            document.documentElement.style.setProperty('--glass-blur-intensity', `${val}px`);
+        }
+
+        function setBorderRadius(val) {
+            document.documentElement.style.setProperty('--border-radius-global', `${val}px`);
+        }
+
+        // 2. DETECCIÓN Y CAMBIO DINÁMICO DE BUTTON PROMPTS SEGÚN MANDO
+        function setControllerLayout(layout) {
+            const bar = document.getElementById('buttonPromptsBar');
+            if (!bar) return;
+
+            if (layout === 'playstation') {
+                bar.innerHTML = `
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #0070d1;">✕</span><span>Select</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #e60012;">◯</span><span>Back</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #00a859;">△</span><span>Share</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #576574; border-radius: 4px; width: auto; padding: 2px 6px;">OPTIONS</span><span>Menu</span></div>
+                `;
+                document.getElementById('triggerPrompt').textContent = 'R2';
+            } else if (layout === 'xbox') {
+                bar.innerHTML = `
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #107c11;">A</span><span>Select</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #e60012;">B</span><span>Back</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #ffb703; color: black;">Y</span><span>Share</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #576574; border-radius: 4px; width: auto; padding: 2px 6px;">≡</span><span>Menu</span></div>
+                `;
+                document.getElementById('triggerPrompt').textContent = 'RT';
+            } else {
+                // Nintendo Default
+                bar.innerHTML = `
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #1dd1a1;">A</span><span>Select</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #ff4757;">B</span><span>Back</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #feca57; color: black;">Y</span><span>Share</span></div>
+                    <div class="btn-prompt"><span class="btn-bubble" style="background: #576574; border-radius: 4px; width: auto; padding: 2px 6px;">+</span><span>Menu</span></div>
+                `;
+                document.getElementById('triggerPrompt').textContent = 'ZR';
+            }
+        }
+
+        // 3. RENDER DE SECCIONES CENTRALES
+        function renderFriendsCarousel() {
+            const container = document.getElementById('friendsCarousel');
+            container.innerHTML = '';
+
+            MOCK_ECOSYSTEM.friends.forEach(f => {
+                const card = document.createElement('div');
+                card.className = 'friend-status-card';
+                card.innerHTML = `
+                    <div class="speech-bubble" title="${f.statusText}">${f.statusText}</div>
+                    <div class="avatar-platform-group">
+                        <img src="${f.avatar}" class="friend-avatar-img" alt="${f.name}">
+                        ${f.notifications > 0 ? `<div class="notification-red-badge">${f.notifications}</div>` : ''}
+                        <div class="platform-mini-tag" style="background: ${f.platformColor};">${f.platformName}</div>
+                    </div>
+                    <span class="friend-name-label">${f.name}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderGamesGrid() {
+            const container = document.getElementById('gamesGrid');
+            container.innerHTML = '';
+
+            MOCK_ECOSYSTEM.games.forEach(g => {
+                const box = document.createElement('div');
+                box.className = 'game-card-box';
+
+                const friendsHtml = g.activeFriends.map(af => `
+                    <img src="${af.avatar}" class="cluster-avatar" title="${af.name}" alt="${af.name}">
+                `).join('');
+
+                box.innerHTML = `
+                    <div class="platform-ribbon-tag" style="background: ${g.platformColor};">
+                        <span>●</span> ${g.platformLabel}
+                    </div>
+                    <img src="${g.boxArt}" class="game-box-art" alt="${g.title}" onerror="this.src='${g.fallbackArt}'">
+                    <div class="active-friends-cluster">
+                        ${friendsHtml}
+                        <span class="cluster-count">+${g.activeFriends.length}</span>
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function renderCommunityFeed() {
+            const container = document.getElementById('communityFeed');
+            container.innerHTML = '';
+
+            MOCK_ECOSYSTEM.feed.forEach(post => {
+                const row = document.createElement('div');
+                row.className = 'feed-post-card';
+                row.innerHTML = `
+                    <div class="feed-author-wrap">
+                        <img src="${post.authorAvatar}" class="feed-avatar" alt="${post.authorName}">
+                        <div class="feed-text-col">
+                            <div class="feed-headline">${post.headline}</div>
+                            <div class="feed-subtext">${post.subtext}</div>
+                        </div>
+                    </div>
+                    <div class="vote-pill-badge" onclick="event.stopPropagation(); this.style.transform='scale(1.15)'; setTimeout(()=>this.style.transform='', 200);">
+                        <span>▲</span>
+                        <span>${post.upvotes}</span>
+                        <span>|</span>
+                        <span>▼</span>
+                        <span>${post.downvotes}</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function toggleToolBtn(btn) {
+            document.querySelectorAll('.tool-icon-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function setSidebarActive(link) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hh = now.getHours().toString().padStart(2, '0');
+            const mm = now.getMinutes().toString().padStart(2, '0');
+            const mo = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dd = now.getDate().toString().padStart(2, '0');
+            document.getElementById('liveClockHHMM').textContent = `${hh}:${mm}`;
+            document.getElementById('liveDateMMDD').textContent = `${mo}/${dd}`;
+        }
+
+        // AUTO-DETECCIÓN DE MANDOS VIA GAMEPAD API
+        window.addEventListener("gamepadconnected", (e) => {
+            const id = e.gamepad.id.toLowerCase();
+            if (id.includes("playstation") || id.includes("dualshock") || id.includes("dualsense")) {
+                setControllerLayout("playstation");
+                document.getElementById('controllerModeSelect').value = 'playstation';
+            } else if (id.includes("xbox") || id.includes("xinput")) {
+                setControllerLayout("xbox");
+                document.getElementById('controllerModeSelect').value = 'xbox';
+            } else {
+                setControllerLayout("nintendo");
+                document.getElementById('controllerModeSelect').value = 'nintendo';
+            }
+        });
+
+        // INICIALIZACIÓN POR DEFECTO
+        window.addEventListener('DOMContentLoaded', () => {
+            applyTheme('mint');
+            renderFriendsCarousel();
+            renderGamesGrid();
+            renderCommunityFeed();
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="60%" stop-color="#1c0a00"/>
+      <stop offset="100%" stop-color="#090300"/>
+    </radialGradient>
+    <pattern id="smsgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none" stroke="rgba(251,146,60,0.1)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#smsgrid)"/>
+  <circle cx="1300" cy="500" r="500" fill="#f97316" opacity="0.25"/>
+</svg>

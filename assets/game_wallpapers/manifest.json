@@ -1,0 +1,71 @@
+{
+  "arcade": [
+    "assets/game_wallpapers/arcade/baby_pac_man__set_1__png.png",
+    "assets/game_wallpapers/arcade/metalslug.png"
+  ],
+  "atari": [
+    "assets/game_wallpapers/atari/pacman.png",
+    "assets/game_wallpapers/atari/spaceinvaders.png"
+  ],
+  "gba": [
+    "assets/game_wallpapers/gba/aria.png",
+    "assets/game_wallpapers/gba/goldensun.png",
+    "assets/game_wallpapers/gba/minish_cap.png",
+    "assets/game_wallpapers/gba/pokemon_emerald.png"
+  ],
+  "gbc": [
+    "assets/game_wallpapers/gbc/oracle_ages.png",
+    "assets/game_wallpapers/gbc/pokemon_crystal.png",
+    "assets/game_wallpapers/gbc/wario3.png"
+  ],
+  "genesis": [
+    "assets/game_wallpapers/genesis/gunstar.png",
+    "assets/game_wallpapers/genesis/shinobi3.png",
+    "assets/game_wallpapers/genesis/sonic2.png",
+    "assets/game_wallpapers/genesis/sor2.png"
+  ],
+  "n64": [
+    "assets/game_wallpapers/n64/mariokart64.png",
+    "assets/game_wallpapers/n64/oot.png",
+    "assets/game_wallpapers/n64/papermario.png",
+    "assets/game_wallpapers/n64/sm64.png"
+  ],
+  "nds": [
+    "assets/game_wallpapers/nds/nsmb.png",
+    "assets/game_wallpapers/nds/pokemon_hg.png"
+  ],
+  "nes": [
+    "assets/game_wallpapers/nes/castlevania.png",
+    "assets/game_wallpapers/nes/megaman2.png",
+    "assets/game_wallpapers/nes/smb3.png",
+    "assets/game_wallpapers/nes/zelda1.png"
+  ],
+  "pce": [
+    "assets/game_wallpapers/pce/bonk.png"
+  ],
+  "ps1": [
+    "assets/game_wallpapers/ps1/crash1.png",
+    "assets/game_wallpapers/ps1/ff7.png",
+    "assets/game_wallpapers/ps1/sotn.png",
+    "assets/game_wallpapers/ps1/tekken3.png"
+  ],
+  "psp": [
+    "assets/game_wallpapers/psp/crisis_core.png",
+    "assets/game_wallpapers/psp/gow.png"
+  ],
+  "sms": [
+    "assets/game_wallpapers/sms/alexkidd.png",
+    "assets/game_wallpapers/sms/sonic_sms.png"
+  ],
+  "snes": [
+    "assets/game_wallpapers/snes/chrono.png",
+    "assets/game_wallpapers/snes/dkc.png",
+    "assets/game_wallpapers/snes/smw.png",
+    "assets/game_wallpapers/snes/super_metroid.png"
+  ],
+  "virtualboy": [
+    "assets/game_wallpapers/virtualboy/3_d_tetris__usa__png.png",
+    "assets/game_wallpapers/virtualboy/galactic_pinball__japan__usa__png.png",
+    "assets/game_wallpapers/virtualboy/golf__usa__png.png"
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://retrohub.org/schemas/theme-v1.json",
+  "id": "y2k_cyberia",
+  "name": "Y2K Cyberia 2000 & Frutiger Aero",
+  "author": "RetroHub Technical Art Division",
+  "version": "1.0.0",
+  "description": "Nostalgia cibernética de principios de los 2000 con estética translúcida Frutiger Aero, botones estilo gelatina acrílica, CRT PVM shader, cursores retro y soundscapes analógicos.",
+  
+  "layout": {
+    "type": "css-grid",
+    "gridTemplateAreas": [
+      "\"banner banner banner\"",
+      "\"library library friends\"",
+      "\"dock dock dock\""
+    ],
+    "gridTemplateColumns": "1fr 1fr 340px",
+    "gridTemplateRows": "160px 1fr 90px",
+    "gap": "16px",
+    "padding": "20px",
+    "maxContentWidth": "1600px",
+    "windowMode": "floating-acrylic",
+    "borderRadiusWindow": "14px",
+    "activeModules": {
+      "banner": { "enabled": true, "title": "RETRO SYSTEM 2000", "showStats": true },
+      "library": { "enabled": true, "viewMode": "grid-cards", "columns": 4, "showBadges": true },
+      "friends": { "enabled": true, "compact": false, "showSpeechBubbles": true },
+      "dock": { "enabled": true, "position": "bottom", "magnification": true, "labels": true },
+      "sidebar": { "enabled": false }
+    }
+  },
+
+  "morphology": {
+    "borderRadiusGlobal": "8px",
+    "buttonStyle": "jelly-acrylic",
+    "borderStyle": "outset",
+    "borderWidth": "3px",
+    "borderLightColor": "#00f0ff",
+    "borderDarkColor": "#002b4d",
+    "surfaceTexture": "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.4) 0%, rgba(0,240,255,0.15) 100%)",
+    "boxShadow": "0 8px 32px rgba(0, 43, 77, 0.45), inset 0 2px 4px rgba(255,255,255,0.8), inset 0 -3px 6px rgba(0,0,0,0.4)",
+    "fontFamilyPrimary": "'MS Gothic', 'VT323', 'Space Grotesk', monospace",
+    "fontFamilyDisplay": "'Impact', 'Arial Black', sans-serif",
+    "fontScale": 1.05
+  },
+
+  "colors": {
+    "primary": "#00e1ff",
+    "secondary": "#ff007f",
+    "accent": "#39ff14",
+    "accentGlow": "rgba(57, 255, 20, 0.6)",
+    "surface": "rgba(10, 25, 47, 0.85)",
+    "surfaceGlass": "rgba(15, 34, 64, 0.65)",
+    "surfaceHighlight": "rgba(255, 255, 255, 0.3)",
+    "textMain": "#e0f7fa",
+    "textMuted": "#80deea",
+    "textInverted": "#001020",
+    "scanlineColor": "rgba(0, 240, 255, 0.12)"
+  },
+
+  "background": {
+    "type": "composite",
+    "videoSource": "/assets/themes/y2k_cyberia/backgrounds/matrix_cyber_loop.mp4",
+    "fallbackImage": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+    "cssGradient": "radial-gradient(ellipse at 50% 30%, #003b6f 0%, #001122 70%, #000511 100%)",
+    "patternOverlay": "radial-gradient(rgba(0, 225, 255, 0.15) 1px, transparent 0)",
+    "patternSize": "24px 24px",
+    "backdropBlur": "12px",
+    "overlayOpacity": 0.4,
+    "overlayColor": "#000814"
+  },
+
+  "shaders": {
+    "crtEffect": {
+      "enabled": true,
+      "scanlines": true,
+      "scanlineFrequency": 3,
+      "barrelCurvature": 0.04,
+      "chromaticAberration": 2.5,
+      "phosphorGlow": true,
+      "vignette": 0.35,
+      "flicker": 0.02
+    },
+    "filmGrain": {
+      "enabled": true,
+      "intensity": 0.08
+    }
+  },
+
+  "cursors": {
+    "default": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><polygon points=\"0,0 0,18 5,14 9,23 12,21 8,12 14,12\" fill=\"%2300f0ff\" stroke=\"%23000\" stroke-width=\"1.5\"/></svg>') 0 0, auto",
+    "pointer": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M8 1v12h3l-2 5 3 1 2-5h3l-9-13z\" fill=\"%2339ff14\" stroke=\"%23000\" stroke-width=\"1.5\"/></svg>') 4 0, pointer"
+  },
+
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.85,
+    "bgmVolume": 0.55,
+    "sfxVolume": 0.9,
+    "backgroundMusic": {
+      "src": "/assets/themes/y2k_cyberia/audio/cyber_ambient_loop.mp3",
+      "loop": true,
+      "fadeInDuration": 2.5,
+      "duckingOnLaunch": true
+    },
+    "sfx": {
+      "onHover": { "type": "synth-blip", "frequency": 880, "duration": 0.04 },
+      "onClick": { "type": "synth-click", "frequency": 440, "duration": 0.08 },
+      "onLaunchGame": { "type": "synth-fanfare", "frequency": 1200, "duration": 0.6 },
+      "onNotification": { "type": "synth-chime", "frequencies": [523.25, 659.25, 783.99], "duration": 0.35 },
+      "onThemeSwitch": { "type": "synth-warp", "frequency": 300, "duration": 0.45 }
+    }
+  }
+}

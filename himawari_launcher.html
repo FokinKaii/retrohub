@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Himawari • Cinematic Handheld Launcher (120Hz Living Organism)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Space+Grotesk:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --himawari-primary: #0055ff;
+      --himawari-secondary: #ffd700;
+      --himawari-accent: #ff2200;
+      --himawari-accent-glow: rgba(255, 215, 0, 0.75);
+      --himawari-hud-surface: rgba(5, 15, 38, 0.78);
+      --himawari-hud-border: rgba(255, 215, 0, 0.35);
+      --himawari-text-main: #ffffff;
+      --himawari-text-muted: #9ec5fe;
+      --himawari-font-primary: 'Outfit', sans-serif;
+      --himawari-font-display: 'Space Grotesk', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+      color: var(--himawari-text-main);
+      font-family: var(--himawari-font-primary);
+      position: relative;
+    }
+
+    /* 1. CAPAS PARALLAX MULTINIVEL CON INERCIA */
+    .parallax-viewport {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .parallax-layer {
+      position: absolute;
+      inset-y: 0;
+      left: -20%;
+      right: -20%;
+      width: 140%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+
+    .parallax-layer-1 {
+      background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80');
+      opacity: 1;
+    }
+
+    .parallax-layer-2 {
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+      opacity: 0.85;
+      filter: blur(1px);
+    }
+
+    .parallax-layer-3 {
+      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80');
+      opacity: 0.6;
+    }
+
+    /* VIÑETEADO OSCURO (EDGE VIGNETTING) */
+    .vignette-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(3, 8, 20, 0.92) 100%);
+      pointer-events: none;
+    }
+
+    /* AURA AMBIENTAL DINÁMICA */
+    .ambient-glow-core {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      filter: blur(100px);
+      opacity: 0.65;
+      pointer-events: none;
+      transition: background 0.7s ease;
+    }
+
+    /* 2. HUD SUPERIOR FLOTANTE CON CRISTAL OSCURO */
+    .hud-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    /* PERFIL DE USUARIA (TOP-LEFT) */
+    .user-profile-card {
+      pointer-events: auto;
+      position: absolute;
+      top: 24px;
+      left: 32px;
+      width: 320px;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid var(--himawari-hud-border);
+      background: var(--himawari-hud-surface);
+      backdrop-filter: blur(28px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
+    }
+
+    .user-profile-banner {
+      width: 100%;
+      height: 80px;
+      position: relative;
+    }
+    .user-profile-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .banner-fade-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 20%, rgba(5, 15, 38, 0.95) 100%);
+    }
+
+    .user-profile-body {
+      padding: 0 20px 18px 20px;
+      margin-top: -34px;
+      position: relative;
+    }
+    .avatar-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .user-avatar-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+      background: #000;
+    }
+    .user-online-led {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #00ff88;
+      border: 2.5px solid #000;
+    }
+
+    /* LIVE FRIENDS (RIGHT COLUMN) */
+    .friends-column {
+      pointer-events: auto;
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      width: 290px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .friend-card-hud {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 20px;
+      background: var(--himawari-hud-surface);
+      border: 1px solid var(--himawari-hud-border);
+      backdrop-filter: blur(28px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .friend-card-hud.popped {
+      animation: friendPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-color: #ffd700;
+    }
+
+    @keyframes friendPop {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    .friend-avatar-hud {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    /* 3. ESCENARIO COVER FLOW 3D (120Hz KINETIC CORE) */
+    .himawari-stage-3d {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .himawari-track-3d {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+
+    .console-card-3d {
+      position: absolute;
+      width: 330px;
+      height: 350px;
+      border-radius: 28px;
+      background: rgba(5, 18, 45, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(30px);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transform-origin: center center;
+      box-shadow: 0 35px 80px rgba(0,0,0,0.7);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.45s ease,
+                  filter 0.45s ease,
+                  border-color 0.45s ease;
+      will-change: transform, filter;
+    }
+
+    .console-card-3d.focused {
+      border-color: #ffd700;
+      box-shadow: 0 25px 80px var(--himawari-accent-glow);
+      animation: idleSinusoidal 3.2s ease-in-out infinite;
+      z-index: 50;
+      filter: blur(0px) brightness(1);
+    }
+
+    .console-card-3d.zooming {
+      transform: translateZ(280px) scale(1.25) !important;
+    }
+
+    @keyframes idleSinusoidal {
+      0%, 100% {
+        transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1.05);
+      }
+      50% {
+        transform: translateY(-9px) rotateX(2deg) rotateZ(0.5deg) scale(1.08);
+      }
+    }
+
+    .console-img-real {
+      width: 240px;
+      height: 180px;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,0.85));
+      transition: transform 0.4s ease;
+    }
+    .console-card-3d.focused .console-img-real {
+      transform: scale(1.15) translateY(-8px);
+    }
+
+    /* 4. BARRA DE CONTROL INFERIOR Y COMPONENT SWAPPING BUTTON */
+    .hud-bottom-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* COMPONENT SWAPPING: SONIC CAPSULE SVG BUTTON */
+    .sonic-capsule-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 44px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .sonic-capsule-button:hover {
+      transform: scale(1.08) translateY(-3px);
+    }
+    .sonic-capsule-button:active {
+      transform: scale(0.95);
+    }
+    .capsule-svg-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 10px 25px rgba(0, 85, 255, 0.6));
+    }
+    .capsule-text {
+      position: relative;
+      z-index: 2;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+
+    /* MINECRAFT STONE BUTTON SKIN */
+    .minecraft-stone-button {
+      padding: 12px 36px;
+      background: #8a8a8a;
+      box-shadow: inset -4px -4px 0px #373737, inset 4px 4px 0px #ffffff, 0 6px 0px #000000;
+      border: none;
+      color: #1e1e1e;
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* GLASS PILL BUTTON SKIN */
+    .glass-pill-button {
+      padding: 12px 38px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(200,240,255,0.3) 50%, rgba(150,220,255,0.5) 100%);
+      box-shadow: 0 12px 30px rgba(0,110,200,0.3), inset 0 2px 6px rgba(255,255,255,1), inset 0 -2px 6px rgba(0,80,180,0.3);
+      border: 1.5px solid rgba(255,255,255,0.9);
+      color: #002b4d;
+      font-weight: 900;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* DOCK SELECTOR DE MORFOLOGÍA */
+    .morph-switcher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 0.75rem;
+      font-mono: true;
+    }
+    .morph-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .morph-btn.active {
+      background: var(--himawari-secondary);
+      color: black;
+      border-color: var(--himawari-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. CAPAS PARALLAX DINÁMICAS (SONIC GREEN HILL) -->
+  <div class="parallax-viewport">
+    <div class="parallax-layer parallax-layer-1" id="pLayer1"></div>
+    <div class="parallax-layer parallax-layer-2" id="pLayer2"></div>
+    <div class="parallax-layer parallax-layer-3" id="pLayer3"></div>
+    <div class="ambient-glow-core" id="ambientGlowCore"></div>
+    <div class="vignette-overlay"></div>
+  </div>
+
+  <!-- 2. HUD SOCIAL Y DE PERFIL (GLASSMORPHISM) -->
+  <div class="hud-layer">
+    
+    <!-- TOP-LEFT: PERFIL DE USUARIA CON BANNER Y DATOS SQLITE -->
+    <div class="user-profile-card">
+      <div class="user-profile-banner">
+        <img id="userBanner" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80" alt="Banner">
+        <div class="banner-fade-gradient"></div>
+      </div>
+      <div class="user-profile-body">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div class="avatar-wrapper">
+            <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraHimawari" class="user-avatar-img" alt="Avatar">
+            <span class="user-online-led"></span>
+          </div>
+          <div style="display: flex; gap: 12px; text-align: right;">
+            <div>
+              <div id="userGamesCount" style="font-size: 0.85rem; font-weight: 900; font-family: monospace;">442</div>
+              <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--himawari-text-muted);">Juegos</div>
+            </div>
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2);"></div>
+            <div>
+              <div id="userHoursPlayed" style="font-size: 0.85rem; font-weight: 900; color: #ffd700; font-family: monospace;">184h</div>
+              <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--himawari-text-muted);">Tiempo</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 8px;">
+          <h2 id="userDisplayName" style="font-size: 1.15rem; font-weight: 900; line-height: 1;">Sara</h2>
+          <p id="userHandle" style="font-size: 0.75rem; color: var(--himawari-text-muted); font-family: monospace;">@saragamer</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: LIVE FRIENDS CON WEBSOCKETS -->
+    <div class="friends-column" id="friendsColumn">
+      <div style="font-size: 0.65rem; font-weight: 900; letter-spacing: 1.5px; color: #00ff88; font-family: monospace;">
+        ● WEBSOCKETS EN VIVO (2)
+      </div>
+
+      <div class="friend-card-hud" id="friendCardAbel">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Abel" class="friend-avatar-hud">
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-weight: 800; font-size: 0.8rem;">Abel_Fox</span>
+            <span id="abelBadge" style="font-size: 0.65rem; font-weight: 900; color: #ffd700; font-family: monospace;">N64</span>
+          </div>
+          <p id="abelGame" style="font-size: 0.75rem; color: #00ff88; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ▶ Super Mario 64
+          </p>
+        </div>
+      </div>
+
+      <div class="friend-card-hud">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Queen" class="friend-avatar-hud">
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-weight: 800; font-size: 0.8rem;">PixelQueen</span>
+            <span style="font-size: 0.65rem; font-weight: 900; color: #00d2d3; font-family: monospace;">Genesis</span>
+          </div>
+          <p style="font-size: 0.75rem; color: #9ec5fe; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ▶ Sonic The Hedgehog 2
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 3. ESCENARIO CENTRAL COVER FLOW 3D -->
+  <main class="himawari-stage-3d">
+    <div class="himawari-track-3d" id="himawariTrack">
+      <!-- Inyectado por JS -->
+    </div>
+
+    <!-- TÍTULO HERO Y BOTÓN DINÁMICO SWAPPING -->
+    <div style="text-align: center; margin-top: 18px; z-index: 25;">
+      <h1 id="heroConsoleTitle" style="font-size: 2.8rem; font-weight: 900; font-family: var(--himawari-font-display); letter-spacing: 2px;">
+        SEGA MEGA DRIVE
+      </h1>
+      <p id="heroConsoleSpecs" style="font-size: 0.85rem; font-family: monospace; color: var(--himawari-text-muted);">
+        Motorola 68000 • 16-Bit Blast Processing • 820 Títulos Indexados
+      </p>
+
+      <!-- 4. BOTONES SWAPPING (SONIC CAPSULE / MINECRAFT / GLASS PILL) -->
+      <div class="hud-bottom-bar">
+        <!-- SKIN 1: SONIC CAPSULE SVG -->
+        <button class="sonic-capsule-button" id="btnSonicCapsule" onclick="launchCinematicSystem()">
+          <svg class="capsule-svg-bg" viewBox="0 0 220 54" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sonicGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#ffd700" />
+                <stop offset="25%" stopColor="#ffffff" />
+                <stop offset="50%" stopColor="#0055ff" />
+                <stop offset="100%" stopColor="#001855" />
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="216" height="50" rx="25" fill="url(#sonicGrad)" stroke="#ffd700" stroke-width="3" />
+          </svg>
+          <span class="capsule-text">▶ INICIAR CONSOLA</span>
+        </button>
+
+        <!-- SKIN 2: MINECRAFT STONE BLOCK -->
+        <button class="minecraft-stone-button" id="btnMinecraftStone" onclick="launchCinematicSystem()">
+          [ INICIAR SISTEMA ]
+        </button>
+
+        <!-- SKIN 3: GLASS PILL -->
+        <button class="glass-pill-button" id="btnGlassPill" onclick="launchCinematicSystem()">
+          ▶ INICIAR CONSOLA
+        </button>
+
+        <!-- SWITCHER DE MORFOLOGÍA -->
+        <div class="morph-switcher">
+          <span style="color: var(--himawari-secondary); font-weight: 900;">SKIN:</span>
+          <button class="morph-btn active" id="btnSkinCapsule" onclick="setButtonSkin('sonic')">Sonic</button>
+          <button class="morph-btn" id="btnSkinMinecraft" onclick="setButtonSkin('minecraft')">Stone</button>
+          <button class="morph-btn" id="btnSkinGlass" onclick="setButtonSkin('glass')">Aero</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 5. MOTOR DE AUDIO ESPACIAL 3D, HÁPTICA Y PARALLAX EN JAVASCRIPT -->
+  <script>
+    const CONSOLES = [
+      {
+        id: 'genesis',
+        name: 'Sega Mega Drive',
+        maker: 'Sega',
+        year: '1988',
+        specs: 'Motorola 68000 • 16-Bit Blast Processing • 820 Títulos',
+        img: 'assets/consoles/genesis.png',
+        color: '#0055ff',
+        glow: 'rgba(255, 215, 0, 0.75)',
+        dominant: '#ffd700'
+      },
+      {
+        id: 'n64',
+        name: 'Nintendo 64',
+        maker: 'Nintendo',
+        year: '1996',
+        specs: 'Silicon Graphics VR4300 • 64-Bit Reality • 388 Títulos',
+        img: 'assets/consoles/n64.png',
+        color: '#ff4757',
+        glow: 'rgba(255, 71, 87, 0.75)',
+        dominant: '#ff4757'
+      },
+      {
+        id: 'ps1',
+        name: 'Sony PlayStation',
+        maker: 'Sony',
+        year: '1994',
+        specs: '32-Bit MIPS R3000A • CD-ROM Revolution • 1,420 Títulos',
+        img: 'assets/consoles/ps1.png',
+        color: '#00a8ff',
+        glow: 'rgba(0, 168, 255, 0.75)',
+        dominant: '#00a8ff'
+      },
+      {
+        id: 'snes',
+        name: 'Super Nintendo',
+        maker: 'Nintendo',
+        year: '1990',
+        specs: '16-Bit Ricoh 5A22 • Mode 7 Graphics • 780 Títulos',
+        img: 'assets/consoles/snes.png',
+        color: '#00d2d3',
+        glow: 'rgba(0, 210, 211, 0.75)',
+        dominant: '#00d2d3'
+      },
+      {
+        id: 'gba',
+        name: 'Game Boy Advance',
+        maker: 'Nintendo',
+        year: '2001',
+        specs: '32-Bit ARM7TDMI • 16.78 MHz • 1,040 Títulos',
+        img: 'assets/consoles/gba.png',
+        color: '#a55eea',
+        glow: 'rgba(165, 94, 234, 0.75)',
+        dominant: '#a55eea'
+      }
+    ];
+
+    let selectedIndex = 0;
+    let parallaxOffset = 0;
+
+    // AUDIO ESPACIAL CON STEREOPANNERNODE
+    let audioCtx = null;
+    function getAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playSpatialSound(freq, panDirection = 'center') {
+      const ctx = getAudio();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      let panner = null;
+      try {
+        panner = ctx.createStereoPanner();
+        const panVal = panDirection === 'left' ? -0.65 : panDirection === 'right' ? 0.65 : 0;
+        panner.pan.setValueAtTime(panVal, now);
+      } catch (e) {}
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+      if (panner) {
+        osc.connect(gain);
+        gain.connect(panner);
+        panner.connect(ctx.destination);
+      } else {
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+      }
+
+      osc.start(now);
+      osc.stop(now + 0.04);
+    }
+
+    // HÁPTICA DUAL RUMBLE
+    function playHapticRumble(weak = 0.35, strong = 0.1, duration = 35) {
+      const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+      const gp = gps[0];
+      if (gp && gp.vibrationActuator) {
+        gp.vibrationActuator.playEffect('dual-rumble', {
+          startDelay: 0,
+          duration,
+          weakMagnitude: weak,
+          strongMagnitude: strong
+        }).catch(() => {});
+      }
+    }
+
+    // RENDERIZADO COVER FLOW 3D
+    function render3DTrack() {
+      const track = document.getElementById('himawariTrack');
+      track.innerHTML = '';
+
+      CONSOLES.forEach((c, idx) => {
+        const offset = idx - selectedIndex;
+        const absOffset = Math.abs(offset);
+        const isFocused = offset === 0;
+
+        const card = document.createElement('div');
+        card.className = `console-card-3d ${isFocused ? 'focused' : ''}`;
+
+        const tx = offset * 270;
+        const tz = isFocused ? 150 : -absOffset * 140;
+        const ry = isFocused ? 0 : offset > 0 ? -40 : 40;
+        const opacity = isFocused ? 1 : Math.max(0.2, 1 - absOffset * 0.35);
+
+        card.style.transform = `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry}deg)`;
+        card.style.opacity = opacity;
+        card.style.zIndex = 50 - absOffset;
+        card.style.borderColor = isFocused ? c.dominant : 'rgba(255,255,255,0.15)';
+
+        // Motion Blur condicional en consolas no enfocadas
+        if (!isFocused) {
+          card.style.filter = `blur(${Math.min(8, absOffset * 3)}px) brightness(0.65)`;
+        }
+
+        card.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight: 800; font-family: monospace; color: ${c.dominant};">${c.maker}</div>
+          <img src="${c.img}" alt="${c.name}" class="console-img-real" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${c.id}'">
+          <div style="text-align: center;">
+            <h3 style="font-size: 1.15rem; font-weight: 900; margin-bottom: 2px;">${c.name}</h3>
+            <span style="font-size: 0.75rem; color: var(--himawari-text-muted);">${c.year}</span>
+          </div>
+        `;
+
+        card.onclick = () => {
+          if (idx !== selectedIndex) {
+            navigate(idx > selectedIndex ? 'right' : 'left');
+          } else {
+            launchCinematicSystem();
+          }
+        };
+
+        track.appendChild(card);
+      });
+    }
+
+    function updateView() {
+      const c = CONSOLES[selectedIndex];
+      document.getElementById('heroConsoleTitle').textContent = c.name;
+      document.getElementById('heroConsoleSpecs').textContent = c.specs;
+      document.getElementById('ambientGlowCore').style.background = `radial-gradient(circle at 50% 45%, ${c.glow} 0%, transparent 65%)`;
+
+      // ACTUALIZAR CAPAS PARALLAX BASADAS EN INERCIA
+      document.getElementById('pLayer1').style.transform = `translateX(${-parallaxOffset * 0.12}px)`;
+      document.getElementById('pLayer2').style.transform = `translateX(${-parallaxOffset * 0.42}px)`;
+      document.getElementById('pLayer3').style.transform = `translateX(${-parallaxOffset * 0.88}px)`;
+
+      render3DTrack();
+    }
+
+    function navigate(dir) {
+      if (dir === 'left') {
+        selectedIndex = (selectedIndex - 1 + CONSOLES.length) % CONSOLES.length;
+        parallaxOffset -= 140;
+        playSpatialSound(1280, 'left');
+        playHapticRumble(0.35, 0.08, 35);
+      } else {
+        selectedIndex = (selectedIndex + 1) % CONSOLES.length;
+        parallaxOffset += 140;
+        playSpatialSound(1280, 'right');
+        playHapticRumble(0.35, 0.08, 35);
+      }
+      updateView();
+    }
+
+    // ZOOM IN ELÁSTICO E IMPACTO HÁPTICO
+    function launchCinematicSystem() {
+      const focusedCard = document.querySelector('.console-card-3d.focused');
+      if (focusedCard) focusedCard.classList.add('zooming');
+
+      playSpatialSound(1760, 'center');
+      playHapticRumble(0.8, 0.98, 420); // Vibración intensa
+
+      const c = CONSOLES[selectedIndex];
+      setTimeout(() => {
+        if (focusedCard) focusedCard.classList.remove('zooming');
+        alert(`[Himawari 120Hz Engine]: Lanzamiento cinematográfico con impacto háptico de ${c.name}`);
+      }, 550);
+    }
+
+    // MORFOLOGÍA SWAPPING DE BOTONES
+    function setButtonSkin(skin) {
+      document.querySelectorAll('.morph-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btnSonicCapsule').style.display = 'none';
+      document.getElementById('btnMinecraftStone').style.display = 'none';
+      document.getElementById('btnGlassPill').style.display = 'none';
+
+      if (skin === 'sonic') {
+        document.getElementById('btnSonicCapsule').style.display = 'inline-flex';
+        document.getElementById('btnSkinCapsule').classList.add('active');
+      } else if (skin === 'minecraft') {
+        document.getElementById('btnMinecraftStone').style.display = 'block';
+        document.getElementById('btnSkinMinecraft').classList.add('active');
+      } else {
+        document.getElementById('btnGlassPill').style.display = 'block';
+        document.getElementById('btnSkinGlass').classList.add('active');
+      }
+    }
+
+    // CONSUMIR DATOS DE SQLITE DE LA USUARIA SARA
+    fetch('/api/user/profile')
+      .then(res => res.json())
+      .then(d => {
+        if (d.success && d.profile) {
+          document.getElementById('userDisplayName').textContent = d.profile.display_name;
+          document.getElementById('userHandle').textContent = d.profile.username;
+          document.getElementById('userGamesCount').textContent = d.profile.games_count;
+          document.getElementById('userHoursPlayed').textContent = `${d.profile.hours_played}h`;
+        }
+      })
+      .catch(() => {});
+
+    // SIMULACIÓN DE WEBSOCKET P2P EN VIVO (ANIMATED POP)
+    setInterval(() => {
+      const card = document.getElementById('friendCardAbel');
+      card.classList.add('popped');
+      playSpatialSound(1760, 'right');
+
+      const games = [
+        { badge: 'Genesis', title: 'Sonic The Hedgehog 2' },
+        { badge: 'N64', title: 'Super Mario 64' },
+        { badge: 'PS1', title: 'Crash Bandicoot 3' }
+      ];
+      const g = games[Math.floor(Math.random() * games.length)];
+      document.getElementById('abelBadge').textContent = g.badge;
+      document.getElementById('abelGame').textContent = `▶ ${g.title}`;
+
+      setTimeout(() => card.classList.remove('popped'), 1500);
+    }, 10000);
+
+    // CONTROL POR TECLADO
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') navigate('left');
+      if (e.key === 'ArrowRight') navigate('right');
+      if (e.key === 'Enter') launchCinematicSystem();
+    });
+
+    // INICIAR ESCENARIO
+    updateView();
+  </script>
+</body>
+</html>

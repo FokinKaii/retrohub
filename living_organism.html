@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetroHub • Living Organism AAA Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Space+Grotesk:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    /* VARIABLES DINÁMICAS DEL ORGANISMO VIVO */
+    :root {
+      --primary: #00a8ff;
+      --secondary: #00e8c6;
+      --accent: #1dd1a1;
+      --accent-glow: rgba(0, 232, 198, 0.55);
+      --bg-ambient: radial-gradient(circle at 50% 30%, #03213d 0%, #020b14 80%);
+      --surface-glass: rgba(200, 240, 255, 0.25);
+      --surface-border: rgba(255, 255, 255, 0.65);
+      --text-main: #ffffff;
+      --text-muted: #8cd3ff;
+      --border-radius-window: 32px;
+      --border-radius-card: 22px;
+      --font-primary: 'Outfit', sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --box-shadow-acrylic: 0 24px 60px rgba(0, 110, 200, 0.25), inset 0 2px 8px rgba(255, 255, 255, 1), inset 0 -3px 8px rgba(0, 80, 180, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+      color: var(--text-main);
+      font-family: var(--font-primary);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* 1. LIENZO DE BURBUJAS Y PARTICULAS FLOTANTES (Frutiger Aero) */
+    #particlesCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* 2. CAPA DE FONDO AMBIENTAL CON EXTRACCIÓN DE COLOR */
+    .ambient-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--bg-ambient);
+      transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ambient-glow-orb {
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      top: -250px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
+      filter: blur(100px);
+      pointer-events: none;
+      transition: all 0.8s ease;
+    }
+
+    /* 3. HUD SUPERIOR FLOTANTE */
+    .hud-header {
+      position: relative;
+      z-index: 10;
+      height: 70px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 0.75rem;
+      font-family: monospace;
+    }
+
+    /* 4. ESCENARIO CENTRAL DEL CARRUSEL 3D CON ALMA CINÉTICA */
+    .kinetic-stage {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .kinetic-track {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+
+    /* TARJETA 3D CINÉTICA */
+    .kinetic-card-3d {
+      position: absolute;
+      width: 320px;
+      height: 340px;
+      border-radius: var(--border-radius-card);
+      background: var(--surface-glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 2px solid var(--surface-border);
+      box-shadow: var(--box-shadow-acrylic);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transform-origin: center center;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.45s ease,
+                  filter 0.45s ease,
+                  box-shadow 0.45s ease;
+    }
+
+    /* RESPIRACIÓN (IDLE ANIMATION) EN LA TARJETA ENFOCADA */
+    .kinetic-card-3d.focused {
+      border-color: var(--accent);
+      box-shadow: 0 30px 80px var(--accent-glow), inset 0 2px 10px rgba(255, 255, 255, 1);
+      animation: idleBreathing 3.6s ease-in-out infinite;
+      z-index: 50;
+      filter: blur(0px) brightness(1);
+    }
+
+    .kinetic-card-3d.unfocused {
+      filter: blur(5px) brightness(0.65);
+      pointer-events: auto;
+    }
+
+    @keyframes idleBreathing {
+      0%, 100% {
+        transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1.05);
+      }
+      50% {
+        transform: translateY(-10px) rotateX(2deg) rotateZ(0.6deg) scale(1.08);
+      }
+    }
+
+    .console-real-hardware {
+      width: 240px;
+      height: 180px;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 25px rgba(0,0,0,0.7));
+      transition: transform 0.5s ease;
+    }
+    .kinetic-card-3d.focused .console-real-hardware {
+      transform: scale(1.18) translateY(-12px);
+    }
+
+    /* 5. ECOSISTEMA SOCIAL FLOTANTE (P2P RICH PRESENCE) */
+    .social-floating-deck {
+      position: absolute;
+      top: 90px;
+      right: 40px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      pointer-events: none;
+    }
+
+    .social-presence-bubble {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: var(--surface-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--surface-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: jellyPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .social-presence-bubble:hover {
+      transform: scale(1.08) translateX(-8px);
+      border-color: var(--accent);
+    }
+
+    @keyframes jellyPop {
+      0% { transform: scale(0.3) translateY(20px); opacity: 0; }
+      70% { transform: scale(1.15) translateY(-4px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .social-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    .social-tag {
+      display: flex;
+      flex-direction: column;
+    }
+    .social-user {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .social-game {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* 6. BOTÓN HERO DE ACCIÓN Y METADATOS */
+    .hero-dashboard-info {
+      text-align: center;
+      margin-top: 18px;
+      z-index: 10;
+    }
+    .hero-title-main {
+      font-size: 2.6rem;
+      font-weight: 900;
+      font-family: var(--font-display);
+      letter-spacing: 2px;
+      text-shadow: 0 6px 25px rgba(0,0,0,0.8);
+    }
+    .hero-specs-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      margin-top: 4px;
+    }
+
+    .btn-launch-hero {
+      margin-top: 14px;
+      padding: 12px 36px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #00223a;
+      background: linear-gradient(180deg, #ffffff 0%, var(--accent) 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 10px 30px var(--accent-glow), inset 0 2px 4px #ffffff;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-launch-hero:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 15px 45px var(--accent-glow);
+    }
+    .btn-launch-hero:active {
+      transform: scale(0.96);
+    }
+
+    /* 7. HUD INFERIOR Y THEME SELECTOR */
+    .hud-footer {
+      position: relative;
+      z-index: 10;
+      height: 64px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--surface-border);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(20px);
+    }
+
+    .theme-dock-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-trigger-btn {
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-trigger-btn:hover {
+      background: var(--accent);
+      color: #000;
+      transform: scale(1.05);
+    }
+    .theme-trigger-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* TEMAS PREDEFINIDOS (Pilar 3) */
+    body.theme-voxel {
+      --primary: #55ff55;
+      --secondary: #ffaa00;
+      --accent: #00aa00;
+      --accent-glow: rgba(85, 255, 85, 0.4);
+      --bg-ambient: radial-gradient(circle at 50% 50%, #4a752c 0%, #17260d 100%);
+      --surface-glass: rgba(198, 198, 198, 0.9);
+      --surface-border: #373737;
+      --text-main: #111111;
+      --text-muted: #444444;
+      --border-radius-window: 0px;
+      --border-radius-card: 0px;
+      --font-primary: 'VT323', monospace;
+      --font-display: 'VT323', monospace;
+      --box-shadow-acrylic: inset -4px -4px 0px #373737, inset 4px 4px 0px #ffffff;
+    }
+
+    body.theme-underground {
+      --primary: #ff0000;
+      --secondary: #ffff00;
+      --accent: #ff0000;
+      --accent-glow: rgba(255, 0, 0, 0.7);
+      --bg-ambient: #000000;
+      --surface-glass: rgba(10, 10, 10, 0.95);
+      --surface-border: #ffffff;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --border-radius-window: 0px;
+      --border-radius-card: 0px;
+      --font-primary: 'VT323', monospace;
+      --font-display: 'VT323', monospace;
+      --box-shadow-acrylic: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. FONDO AMBIENTAL REACTIVO Y ORBE DE EXTRACCIÓN DE COLOR -->
+  <div class="ambient-backdrop" id="ambientBackdrop"></div>
+  <div class="ambient-glow-orb" id="ambientGlowOrb"></div>
+
+  <!-- 2. LIENZO DE PARTICULAS Y BURBUJAS (FRUTIGER AERO) -->
+  <canvas id="particlesCanvas"></canvas>
+
+  <!-- 3. HUD SUPERIOR -->
+  <header class="hud-header">
+    <div class="brand-mark">
+      <span>🫧</span> RETROHUB • LIVING ORGANISM <span style="font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: #00223a;">120Hz ULTRA</span>
+    </div>
+
+    <!-- PRESENCIA SOCIAL P2P FLOTANTE -->
+    <div class="social-floating-deck" id="socialDeck">
+      <div class="social-presence-bubble">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Abel" class="social-avatar">
+        <div class="social-tag">
+          <span class="social-user">Abel_Fox ● En Vivo</span>
+          <span class="social-game">Super Mario 64 (120★ PB)</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="status-pill" id="hapticStatus">
+        🎮 HAPTICS: RUMBLE READY
+      </div>
+      <button class="theme-trigger-btn" onclick="window.location.href='index.html'">🏠 Launcher</button>
+    </div>
+  </header>
+
+  <!-- 4. ESCENARIO CENTRAL COVER FLOW 3D -->
+  <main class="kinetic-stage" id="kineticStage">
+    <div class="kinetic-track" id="kineticTrack">
+      <!-- Inyectado por JavaScript -->
+    </div>
+
+    <div class="hero-dashboard-info">
+      <h1 class="hero-title-main" id="heroTitle">NINTENDO 64</h1>
+      <p class="hero-specs-sub" id="heroSpecs">Silicon Graphics Reality Coprocessor • 1996 • 388 ROMs</p>
+      <button class="btn-launch-hero" onclick="launchSystemHero()">
+        ▶ INICIAR SISTEMA (HAPTIC IMPACT)
+      </button>
+    </div>
+  </main>
+
+  <!-- 5. HUD INFERIOR CON SELECTOR DE TEMAS Y AUDIO BUSES -->
+  <footer class="hud-footer">
+    <div style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted);">
+      INPUT: JOINT VELOCITY + SINUSOIDAL BREATHING (120 FPS LOCKED)
+    </div>
+
+    <div class="theme-dock-pill">
+      <span style="font-size: 0.75rem; font-weight: 900; color: var(--accent);">IDENTIDAD:</span>
+      <button class="theme-trigger-btn active" id="btnThemeFrutiger" onclick="switchThemePreset('frutiger')">Frutiger Aero</button>
+      <button class="theme-trigger-btn" id="btnThemeVoxel" onclick="switchThemePreset('voxel')">Voxel Overworld</button>
+      <button class="theme-trigger-btn" id="btnThemeUnderground" onclick="switchThemePreset('underground')">Underground Core</button>
+    </div>
+  </footer>
+
+  <!-- MOTOR CINÉTICO, AUDIO DUAL-BUS, COLOR EXTRACTION Y HÁPTICA -->
+  <script>
+    // 1. DATASET DE CONSOLAS
+    const CONSOLES = [
+      {
+        id: 'n64',
+        name: 'Nintendo 64',
+        maker: 'Nintendo',
+        year: '1996',
+        specs: 'Silicon Graphics VR4300 • 64-Bit Reality • 388 ROMs',
+        img: 'assets/consoles/n64.png',
+        dominantColor: '#ff4757',
+        glow: 'rgba(255, 71, 87, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #3d0c11 0%, #03080e 80%)'
+      },
+      {
+        id: 'ps1',
+        name: 'Sony PlayStation',
+        maker: 'Sony',
+        year: '1994',
+        specs: '32-Bit MIPS R3000A • CD-ROM Revolution • 1,420 ROMs',
+        img: 'assets/consoles/ps1.png',
+        dominantColor: '#00a8ff',
+        glow: 'rgba(0, 168, 255, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #041f3d 0%, #020812 80%)'
+      },
+      {
+        id: 'snes',
+        name: 'Super Nintendo',
+        maker: 'Nintendo',
+        year: '1990',
+        specs: '16-Bit Ricoh 5A22 • Mode 7 Graphics • 780 ROMs',
+        img: 'assets/consoles/snes.png',
+        dominantColor: '#00d2d3',
+        glow: 'rgba(0, 210, 211, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #063131 0%, #020b0e 80%)'
+      },
+      {
+        id: 'gba',
+        name: 'Game Boy Advance',
+        maker: 'Nintendo',
+        year: '2001',
+        specs: '32-Bit ARM7TDMI • 16.78 MHz • 1,040 ROMs',
+        img: 'assets/consoles/gba.png',
+        dominantColor: '#a55eea',
+        glow: 'rgba(165, 94, 234, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #240c3d 0%, #080312 80%)'
+      },
+      {
+        id: 'genesis',
+        name: 'Sega Mega Drive',
+        maker: 'Sega',
+        year: '1988',
+        specs: 'Motorola 68000 • 16-Bit Blast Processing • 820 ROMs',
+        img: 'assets/consoles/genesis.png',
+        dominantColor: '#3742fa',
+        glow: 'rgba(55, 66, 250, 0.65)',
+        bg: 'radial-gradient(circle at 50% 30%, #0c103d 0%, #030412 80%)'
+      }
+    ];
+
+    let activeIndex = 0;
+
+    // 2. AUDIO DUAL-BUS (CROSSFADE & DUCKING)
+    let audioCtx = null;
+    let masterGain = null;
+    let bgmGainA = null;
+    let bgmGainB = null;
+    let activeBus = 'A';
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        bgmGainA = audioCtx.createGain();
+        bgmGainB = audioCtx.createGain();
+
+        bgmGainA.connect(masterGain);
+        bgmGainB.connect(masterGain);
+        masterGain.connect(audioCtx.destination);
+
+        bgmGainA.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        bgmGainB.gain.setValueAtTime(0.0, audioCtx.currentTime);
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, dur = 0.05, type = 'sine') {
+      initAudio();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      g.gain.setValueAtTime(0.25, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.connect(g);
+      g.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + dur);
+    }
+
+    // AUTO-DUCKING (-30% en BGM durante SFX fuerte)
+    function triggerDucking() {
+      if (!audioCtx || !bgmGainA) return;
+      const now = audioCtx.currentTime;
+      const bus = activeBus === 'A' ? bgmGainA : bgmGainB;
+      bus.gain.setTargetAtTime(0.35, now, 0.04);
+      setTimeout(() => {
+        if (audioCtx) bus.gain.setTargetAtTime(0.5, audioCtx.currentTime, 0.2);
+      }, 700);
+    }
+
+    // 3. HAPTICS (GAMEPAD DUAL RUMBLE)
+    function triggerRumble(weak = 0.3, strong = 0.1, duration = 40) {
+      const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+      const gp = gps[0] || gps[1];
+      if (gp && gp.vibrationActuator) {
+        gp.vibrationActuator.playEffect('dual-rumble', {
+          startDelay: 0,
+          duration,
+          weakMagnitude: weak,
+          strongMagnitude: strong
+        }).catch(() => {});
+      }
+    }
+
+    // 4. RENDERIZADO DEL CARRUSEL 3D
+    function renderKineticCards() {
+      const track = document.getElementById('kineticTrack');
+      track.innerHTML = '';
+
+      CONSOLES.forEach((c, idx) => {
+        const offset = idx - activeIndex;
+        const absOffset = Math.abs(offset);
+        const isFocused = offset === 0;
+
+        const card = document.createElement('div');
+        card.className = `kinetic-card-3d ${isFocused ? 'focused' : 'unfocused'}`;
+
+        const tx = offset * 260;
+        const tz = isFocused ? 140 : -absOffset * 130;
+        const ry = isFocused ? 0 : offset > 0 ? -38 : 38;
+        const opacity = isFocused ? 1 : Math.max(0.3, 1 - absOffset * 0.35);
+
+        card.style.transform = `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry}deg)`;
+        card.style.opacity = opacity;
+        card.style.zIndex = 50 - absOffset;
+
+        card.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight: 800; color: ${c.dominantColor}; font-family: monospace;">${c.maker}</div>
+          <img src="${c.img}" alt="${c.name}" class="console-real-hardware" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${c.id}'">
+          <div style="text-align: center;">
+            <h3 style="font-size: 1.15rem; font-weight: 900; margin-bottom: 2px;">${c.name}</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${c.year}</span>
+          </div>
+        `;
+
+        card.onclick = () => {
+          activeIndex = idx;
+          updateActiveConsole();
+          triggerRumble(0.35, 0.1, 40);
+          playTone(700, 0.04, 'triangle');
+        };
+
+        track.appendChild(card);
+      });
+    }
+
+    function updateActiveConsole() {
+      const c = CONSOLES[activeIndex];
+      document.getElementById('heroTitle').textContent = c.name;
+      document.getElementById('heroSpecs').textContent = c.specs;
+
+      // EXTRACCIÓN DE COLOR AMBIENTAL EN VIVO
+      document.documentElement.style.setProperty('--accent', c.dominantColor);
+      document.documentElement.style.setProperty('--accent-glow', c.glow);
+      document.getElementById('ambientBackdrop').style.background = c.bg;
+
+      renderKineticCards();
+    }
+
+    // FÍSICAS DE VELOCIDAD Y TILT CON RATÓN / JOYSTICK
+    window.addEventListener('mousemove', (e) => {
+      const focusedCard = document.querySelector('.kinetic-card-3d.focused');
+      if (!focusedCard) return;
+
+      const rect = focusedCard.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const deltaX = (e.clientX - centerX) / (window.innerWidth / 2);
+      const deltaY = (e.clientY - centerY) / (window.innerHeight / 2);
+
+      const tiltX = -deltaY * 18;
+      const tiltY = deltaX * 22;
+
+      focusedCard.style.transform = `translateX(0px) translateZ(140px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.06)`;
+    });
+
+    // NAVEGACIÓN TECLADO
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        activeIndex = (activeIndex - 1 + CONSOLES.length) % CONSOLES.length;
+        updateActiveConsole();
+        triggerRumble(0.35, 0.1, 40);
+        playTone(550, 0.03, 'triangle');
+      }
+      if (e.key === 'ArrowRight') {
+        activeIndex = (activeIndex + 1) % CONSOLES.length;
+        updateActiveConsole();
+        triggerRumble(0.35, 0.1, 40);
+        playTone(720, 0.03, 'triangle');
+      }
+      if (e.key === 'Enter') {
+        launchSystemHero();
+      }
+    });
+
+    function launchSystemHero() {
+      triggerDucking();
+      triggerRumble(0.8, 0.95, 380); // Impacto fuerte háptico
+      playTone(1046.5, 0.4, 'sawtooth');
+      const c = CONSOLES[activeIndex];
+      alert(`[RetroHub Organismo]: ¡Lanzamiento con impacto háptico de ${c.name}!`);
+    }
+
+    // 5. MOTOR DE PARTICULAS (BURBUJAS ACUÁTICAS FRUTIGER AERO)
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+    let bubbles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 35; i++) {
+      bubbles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 4 + Math.random() * 14,
+        speedY: 0.4 + Math.random() * 1.2,
+        wobble: Math.random() * Math.PI * 2
+      });
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 1.5;
+
+      bubbles.forEach(b => {
+        b.y -= b.speedY;
+        b.wobble += 0.02;
+        const currentX = b.x + Math.sin(b.wobble) * 8;
+
+        if (b.y < -30) {
+          b.y = canvas.height + 20;
+          b.x = Math.random() * canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(currentX, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.fill();
+        ctx.stroke();
+
+        // Reflejo blanco specular
+        ctx.beginPath();
+        ctx.arc(currentX - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.25, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // 6. CAMBIO DE IDENTIDAD (TEMAS EXTREMOS)
+    function switchThemePreset(themeKey) {
+      playTone(840, 0.08, 'sawtooth');
+      document.body.className = '';
+      document.querySelectorAll('.theme-trigger-btn').forEach(b => b.classList.remove('active'));
+
+      if (themeKey === 'voxel') {
+        document.body.classList.add('theme-voxel');
+        document.getElementById('btnThemeVoxel').classList.add('active');
+        document.getElementById('particlesCanvas').style.display = 'none';
+      } else if (themeKey === 'underground') {
+        document.body.classList.add('theme-underground');
+        document.getElementById('btnThemeUnderground').classList.add('active');
+        document.getElementById('particlesCanvas').style.display = 'none';
+      } else {
+        document.getElementById('btnThemeFrutiger').classList.add('active');
+        document.getElementById('particlesCanvas').style.display = 'block';
+      }
+
+      updateActiveConsole();
+    }
+
+    // Inicializar carrusel cinético
+    updateActiveConsole();
+  </script>
+</body>
+</html>

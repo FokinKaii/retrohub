@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130" width="200" height="130">
+  <defs>
+    <linearGradient id="snesGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="8%" stop-color="#94a3b8"/>
+      <stop offset="95%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="180" height="110" rx="12" fill="url(#snesGrad)" stroke="#334155" stroke-width="2"/>
+  <rect x="30" y="30" width="140" height="75" rx="6" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+  <rect x="35" y="35" width="130" height="65" rx="4" fill="#f59e0b" opacity="0.85"/>
+  <text x="100" y="72" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="12" text-anchor="middle" letter-spacing="1">SUPER NINTENDO</text>
+  <rect x="15" y="100" width="170" height="8" fill="#334155" rx="2"/>
+  <circle cx="24" cy="22" r="4" fill="#8b5cf6"/>
+  <circle cx="36" cy="22" r="4" fill="#8b5cf6"/>
+</svg>

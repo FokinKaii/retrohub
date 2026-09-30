@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 130" width="160" height="130">
+  <defs>
+    <linearGradient id="smsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="20%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect x="15" y="15" width="130" height="100" rx="8" fill="url(#smsGrad)" stroke="#64748b" stroke-width="2"/>
+  <rect x="30" y="35" width="100" height="60" rx="4" fill="#be123c"/>
+  <text x="80" y="65" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="11" text-anchor="middle" letter-spacing="0.5">MASTER SYSTEM</text>
+  <text x="80" y="80" fill="#fef08a" font-family="sans-serif" font-weight="700" font-size="8" text-anchor="middle">SEGA 8-BIT</text>
+</svg>

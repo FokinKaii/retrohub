@@ -1,0 +1,160 @@
+{
+  "$schema": "https://retrohub.org/schemas/living-organism-theme-v2.json",
+  "id": "frutiger_aero",
+  "name": "Frutiger Aero (Mint Glass 2006)",
+  "author": "Human Interface Guidelines 2006 AAA",
+  "version": "2.0.0",
+  "description": "Organismo vivo Frutiger Aero con simulación de respiración cinética, físicas de inclinación por velocidad (Framer Motion), partículas de burbujas flotantes, retroalimentación háptica y atenuación sonora inteligente.",
+
+  "kinetics": {
+    "engine": "framer-motion",
+    "springPhysics": {
+      "stiffness": 280,
+      "damping": 22,
+      "mass": 0.9,
+      "restDelta": 0.001
+    },
+    "idleBreathing": {
+      "enabled": true,
+      "amplitudeY": 8,
+      "rotationPeriodSeconds": 3.6,
+      "scaleRange": [1.0, 1.025],
+      "tiltAngle": 1.2
+    },
+    "velocityTilt": {
+      "enabled": true,
+      "maxAngleX": 18,
+      "maxAngleY": 25,
+      "sensitivity": 1.35,
+      "dampingRatio": 0.75
+    },
+    "haptics": {
+      "enabled": true,
+      "onScroll": {
+        "type": "dual-rumble",
+        "duration": 40,
+        "weakMagnitude": 0.3,
+        "strongMagnitude": 0.1
+      },
+      "onSelect": {
+        "type": "dual-rumble",
+        "duration": 70,
+        "weakMagnitude": 0.5,
+        "strongMagnitude": 0.3
+      },
+      "onEmulatorLaunch": {
+        "type": "dual-rumble",
+        "duration": 380,
+        "weakMagnitude": 0.7,
+        "strongMagnitude": 0.95
+      }
+    },
+    "colorExtraction": {
+      "enabled": true,
+      "algorithm": "canvas-dominant-palette",
+      "blurRadius": 110,
+      "glowOpacity": 0.6,
+      "fallbackColor": "#00d2d3"
+    },
+    "particles": {
+      "type": "water-bubbles",
+      "count": 32,
+      "minRadius": 4,
+      "maxRadius": 18,
+      "minSpeedY": 0.4,
+      "maxSpeedY": 1.4,
+      "wobbleAmplitude": 12,
+      "highlightRefraction": true
+    }
+  },
+
+  "layout": {
+    "type": "css-grid",
+    "gridTemplateAreas": [
+      "\"hud-top hud-top hud-top\"",
+      "\"hero-stage hero-stage social-presence\"",
+      "\"hud-dock hud-dock hud-dock\""
+    ],
+    "gridTemplateColumns": "1fr 1fr 360px",
+    "gridTemplateRows": "70px 1fr 90px",
+    "gap": "16px",
+    "padding": "24px",
+    "maxContentWidth": "1680px",
+    "windowMode": "floating-glass",
+    "borderRadiusWindow": "32px",
+    "activeModules": {
+      "hudTop": { "enabled": true, "showPrompts": true, "showStats": true },
+      "heroStage": { "enabled": true, "viewMode": "3d-cover-flow", "depthPerspective": 1200 },
+      "socialPresence": { "enabled": true, "floatingPills": true, "jellyBubbles": true },
+      "hudDock": { "enabled": true, "magnification": true, "reflection": true }
+    }
+  },
+
+  "morphology": {
+    "borderRadiusGlobal": "22px",
+    "buttonStyle": "acrylic-jelly",
+    "borderStyle": "solid",
+    "borderWidth": "2px",
+    "borderLightColor": "rgba(255, 255, 255, 0.95)",
+    "borderDarkColor": "rgba(0, 168, 255, 0.35)",
+    "surfaceTexture": "linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.2) 48%, rgba(200,240,255,0.3) 52%, rgba(150,220,255,0.5) 100%)",
+    "boxShadow": "0 24px 60px rgba(0, 110, 200, 0.25), inset 0 2px 8px rgba(255, 255, 255, 1), inset 0 -3px 8px rgba(0, 80, 180, 0.35)",
+    "fontFamilyPrimary": "'Segoe UI', 'Outfit', sans-serif",
+    "fontFamilyDisplay": "'Space Grotesk', sans-serif",
+    "fontScale": 1.05
+  },
+
+  "colors": {
+    "primary": "#00a8ff",
+    "secondary": "#00e8c6",
+    "accent": "#1dd1a1",
+    "accentGlow": "rgba(0, 232, 198, 0.55)",
+    "surface": "rgba(230, 248, 255, 0.65)",
+    "surfaceGlass": "rgba(200, 240, 255, 0.42)",
+    "surfaceHighlight": "rgba(255, 255, 255, 0.98)",
+    "textMain": "#003254",
+    "textMuted": "#346284",
+    "textInverted": "#ffffff"
+  },
+
+  "background": {
+    "type": "composite",
+    "videoSource": "/assets/themes/frutiger_aero/backgrounds/aqua_water_loop.mp4",
+    "fallbackImage": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80",
+    "cssGradient": "linear-gradient(135deg, #74b9ff 0%, #81ecec 45%, #55efc4 85%, #a8ff78 130%)",
+    "backdropBlur": "22px",
+    "overlayOpacity": 0.18,
+    "overlayColor": "#e0f7fa"
+  },
+
+  "shaders": {
+    "crtEffect": { "enabled": false },
+    "waterRefraction": { "enabled": true, "distortion": 0.03 }
+  },
+
+  "cursors": {
+    "default": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"28\" viewBox=\"0 0 28 28\"><path d=\"M2 2l8 22 4-8 8-4L2 2z\" fill=\"%2300a8ff\" stroke=\"%23ffffff\" stroke-width=\"2.5\"/><circle cx=\"8\" cy=\"8\" r=\"3\" fill=\"%23ffffff\"/></svg>') 2 2, auto",
+    "pointer": "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"28\" viewBox=\"0 0 28 28\"><path d=\"M2 2l8 22 4-8 8-4L2 2z\" fill=\"%2300e8c6\" stroke=\"%23ffffff\" stroke-width=\"2.5\"/><circle cx=\"8\" cy=\"8\" r=\"3\" fill=\"%23ffffff\"/></svg>') 2 2, pointer"
+  },
+
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.85,
+    "bgmVolume": 0.5,
+    "sfxVolume": 0.85,
+    "crossfadeDuration": 1.6,
+    "duckingRatio": 0.3,
+    "duckingDuration": 0.85,
+    "backgroundMusic": {
+      "src": "/assets/themes/frutiger_aero/audio/aqua_ambient_loop.mp3",
+      "loop": true
+    },
+    "sfx": {
+      "hover": { "type": "synth-bubble-pop", "frequency": 1450, "duration": 0.04 },
+      "click": { "type": "synth-water-drop", "frequency": 720, "duration": 0.08 },
+      "scroll": { "type": "synth-tick", "frequency": 900, "duration": 0.02 },
+      "launch": { "type": "synth-fanfare-crystal", "frequencies": [523.25, 659.25, 783.99, 1046.5], "duration": 0.65 },
+      "socialPop": { "type": "synth-jelly-chime", "frequencies": [440, 880], "duration": 0.25 }
+    }
+  }
+}
