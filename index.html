@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RetroHub • Estación Arcade</title>
     <script src="coi-serviceworker.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1660,10 +1661,10 @@
 
         /* Modal Perfil y Social */
         .modal-perfil-caja {
-            max-width: 660px !important;
+            max-width: 760px !important;
             width: 100% !important;
             text-align: left;
-            padding: 24px !important;
+            padding: 22px !important;
         }
 
         .modal-social-header {
@@ -2169,6 +2170,417 @@
             text-transform: uppercase;
             margin-left: 4px;
         }
+
+        /* --- ESTILOS DEL SISTEMA DE CHAT EN DIRECTO P2P --- */
+        .badge-unread-chat {
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            margin-left: 4px;
+        }
+
+        .banner-red-id {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .banner-red-id-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .chip-id-grande {
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 800;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 8px;
+            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip-id-grande:hover {
+            background: rgba(16, 185, 129, 0.3);
+            transform: scale(1.03);
+        }
+
+        .banner-p2p-test-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* Contenedor del Chat */
+        .chat-container-layout {
+            display: grid;
+            grid-template-columns: 230px 1fr;
+            gap: 12px;
+            height: 440px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 680px) {
+            .chat-container-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .chat-sidebar-amigos {
+                max-height: 130px;
+                border-right: none !important;
+                border-bottom: 1px solid var(--card-border);
+            }
+            .chat-mensajes-lista {
+                height: 260px !important;
+            }
+        }
+
+        .chat-sidebar-amigos {
+            border-right: 1px solid var(--card-border);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 6px;
+            gap: 4px;
+        }
+
+        .chat-sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .chat-sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-sidebar-item.activo {
+            background: rgba(139, 92, 246, 0.18);
+            border-color: rgba(139, 92, 246, 0.45);
+        }
+
+        .chat-sidebar-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-sidebar-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .chat-sidebar-nombre {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-sidebar-previo {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-sidebar-unread-badge {
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .chat-area-principal {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .chat-header-conversacion {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.25);
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .chat-header-avatar {
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-header-chip-id {
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--secondary);
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 4px;
+            padding: 1px 5px;
+            cursor: pointer;
+        }
+
+        .chat-header-chip-id:hover {
+            border-color: var(--secondary);
+            background: rgba(6, 182, 212, 0.25);
+        }
+
+        .chat-header-sub {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-header-acciones {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-chat-header-opt {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-chat-header-opt:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .chat-mensajes-lista {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .burbuja-msg {
+            max-width: 82%;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            animation: fadeInMsg 0.18s ease;
+        }
+
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .burbuja-msg.propio {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .burbuja-msg.ajeno {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .burbuja-cuerpo {
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12.5px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .burbuja-msg.propio .burbuja-cuerpo {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.85) 0%, rgba(99, 102, 241, 0.85) 100%);
+            color: #fff;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .burbuja-msg.ajeno .burbuja-cuerpo {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #f1f5f9;
+            border-bottom-left-radius: 2px;
+        }
+
+        .burbuja-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9.5px;
+            color: var(--text-muted);
+            padding: 0 4px;
+        }
+
+        .burbuja-reto-box {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .chat-reacciones-rapidas {
+            display: flex;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--card-border);
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+
+        .chip-reaccion-rapida {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 11px;
+            color: #cbd5e1;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+
+        .chip-reaccion-rapida:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .chat-input-form {
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.35);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .chat-input-form input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #fff;
+            font-size: 12.5px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-form input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .btn-enviar-chat {
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 9px 16px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-enviar-chat:hover {
+            background: #a855f7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
     </style>
 </head>
 <body>
@@ -2201,7 +2613,10 @@
                 <span>📊</span> <span>Estadísticas</span>
             </button>
             <button class="btn-toggle-top" id="btn-top-social" onclick="abrirModalPerfil('amigos')" title="Comunidad, Amigos y Desafíos Retro" style="background: rgba(59, 130, 246, 0.14); border-color: rgba(59, 130, 246, 0.45); color: #93c5fd;">
-                <span>👥</span> <span id="badge-top-social">Amigos (<span id="cont-amigos-online">3</span>)</span>
+                <span>👥</span> <span id="badge-top-social">Amigos (<span id="cont-amigos-online">0</span>)</span>
+            </button>
+            <button class="btn-toggle-top" id="btn-top-chat" onclick="abrirModalPerfil('chat')" title="Chat en Directo P2P con tus Amigos" style="background: rgba(16, 185, 129, 0.14); border-color: rgba(16, 185, 129, 0.45); color: #6ee7b7; position: relative;">
+                <span>💬</span> <span>Chat</span> <span id="cont-chat-top-unread" style="display:none; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 6px; margin-left: 2px;">0</span>
             </button>
             <button class="btn-toggle-top" id="btn-top-sugerencias" onclick="abrirModalSugerencias()" title="Sugerir juegos o contactar con la creadora" style="background: rgba(192, 132, 252, 0.12); border-color: rgba(192, 132, 252, 0.45); color: #e9d5ff;">
                 <span>💡</span> <span>Sugerencias</span>
@@ -2831,7 +3246,8 @@
             <div class="modal-social-header">
                 <div class="tabs-perfil-modal">
                     <button type="button" class="tab-perfil-btn activo" id="tab-btn-perfil" onclick="cambiarPestanaPerfil('perfil')">🎮 Mi Perfil</button>
-                    <button type="button" class="tab-perfil-btn" id="tab-btn-amigos" onclick="cambiarPestanaPerfil('amigos')">👥 Amigos (<span id="cont-amigos-badge">3</span>)</button>
+                    <button type="button" class="tab-perfil-btn" id="tab-btn-amigos" onclick="cambiarPestanaPerfil('amigos')">👥 Amigos (<span id="cont-amigos-badge">0</span>)</button>
+                    <button type="button" class="tab-perfil-btn" id="tab-btn-chat" onclick="cambiarPestanaPerfil('chat')">💬 Chat <span id="badge-chat-unread" style="display:none;" class="badge-unread-chat">0</span></button>
                     <button type="button" class="tab-perfil-btn" id="tab-btn-muro" onclick="cambiarPestanaPerfil('muro')">📢 Muro Social</button>
                 </div>
                 <button type="button" class="btn-secundario" style="border: none; padding: 4px 10px; cursor: pointer; border-radius: 6px; font-size: 16px; color: #fff;" onclick="cerrarModalPerfil()">✕</button>
@@ -2946,33 +3362,112 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 2: AMIGOS & DESAFÍOS -->
+            <!-- PESTAÑA 2: AMIGOS & CONEXIÓN REAL P2P -->
             <div id="panel-sub-amigos" class="panel-perfil-seccion" style="display: none;">
-                <!-- CAJA AÑADIR AMIGO -->
+                <!-- BANNER CON TU ID REAL DE RED -->
+                <div class="banner-red-id">
+                    <div class="banner-red-id-info">
+                        <span style="font-size: 11px; color: #6ee7b7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🆔 Tu ID Real de Red (P2P):</span>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px;">
+                            <span class="chip-id-grande" id="badge-tu-id-real" onclick="copiarMiIdReal()" title="Haz clic para copiar tu ID">
+                                <span id="texto-tu-id-real">RHUB-CARGANDO</span>
+                                <span>📋</span>
+                            </span>
+                            <span style="font-size: 11px; color: var(--text-muted);" id="estado-red-p2p-dot">🟢 Red Activa</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secundario" onclick="copiarMiIdReal()" style="padding: 7px 12px; font-size: 11px; color: #fff;">
+                        📋 Copiar mi ID
+                    </button>
+                </div>
+
+                <!-- NOTA DE PRUEBA RÁPIDA -->
+                <div class="banner-p2p-test-hint">
+                    💡 <strong>¿Cómo probarlo?</strong> Copia tu ID arriba, abre una ventana de incógnito en este mismo navegador, pega aquí el ID de la otra ventana y conéctate. ¡Podrás chatear y retaros en directo de inmediato!
+                </div>
+
+                <!-- CAJA AÑADIR AMIGO REAL POR ID -->
                 <div class="caja-add-amigo">
-                    <input type="text" id="input-nuevo-amigo" placeholder="Escribe el nombre o Código de Amigo (#RHUB-1234)..." style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
-                    <button type="button" class="btn-accion" onclick="agregarAmigoManual()" style="padding: 9px 16px; font-size: 12px; white-space: nowrap;">➕ Añadir Amigo</button>
+                    <input type="text" id="input-nuevo-amigo" placeholder="Escribe el ID Real de tu amigo (Ej: RHUB-XXXXXX)..." style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                    <button type="button" class="btn-accion" onclick="conectarAmigoDesdeInput()" style="padding: 9px 16px; font-size: 12px; white-space: nowrap;">➕ Conectar Amigo</button>
                 </div>
 
                 <!-- COMPARTIR ENLACE DE INVITACIÓN RÁPIDA -->
                 <div class="caja-invitar-banner">
                     <div>
-                        <strong style="color: #fff; font-size: 12px;">🎮 ¡Invita a tus amigos reales a RetroHub!</strong>
-                        <p style="font-size: 11px; color: var(--text-muted); margin: 2px 0 0;">Pásales tu enlace para agregarte al instante y echar partidas juntos:</p>
+                        <strong style="color: #fff; font-size: 12px;">🎮 ¡Pásale tu ID a tus amigos por WhatsApp!</strong>
+                        <p style="font-size: 11px; color: var(--text-muted); margin: 2px 0 0;">Recibirán tu enlace con tu ID pre-cargado para conectar al instante:</p>
                     </div>
-                    <button type="button" class="btn-accion" onclick="invitarAmigosGlobal()" style="padding: 6px 12px; font-size: 11px; white-space: nowrap;">
-                        🚀 Invitar
+                    <button type="button" class="btn-accion" onclick="compartirIdWhatsApp()" style="padding: 6px 12px; font-size: 11px; white-space: nowrap; background: rgba(37, 211, 102, 0.2); border-color: rgba(37, 211, 102, 0.5); color: #4ade80;">
+                        📲 WhatsApp
                     </button>
                 </div>
 
                 <!-- LISTA DE AMIGOS -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span style="font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase;">👥 Lista de Amigos (<span id="cont-lista-amigos">0</span>)</span>
-                    <button type="button" onclick="restaurarAmigosPredeterminados()" style="background: none; border: none; color: var(--text-muted); font-size: 10px; cursor: pointer; text-decoration: underline;">Restaurar amigos sugeridos</button>
+                    <button type="button" onclick="restaurarAmigosPredeterminados()" style="background: none; border: none; color: var(--text-muted); font-size: 10px; cursor: pointer; text-decoration: underline;">Restaurar lista sugerida</button>
                 </div>
 
                 <div class="lista-amigos-retro" id="lista-amigos-retro">
                     <!-- Inyectado por JS -->
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: CHAT EN DIRECTO P2P -->
+            <div id="panel-sub-chat" class="panel-perfil-seccion" style="display: none;">
+                <div class="chat-container-layout">
+                    <!-- SIDEBAR DE AMIGOS / CONVERSACIONES -->
+                    <div class="chat-sidebar-amigos" id="chat-sidebar-amigos">
+                        <!-- Inyectado dinámicamente -->
+                    </div>
+
+                    <!-- ÁREA PRINCIPAL DE CHAT -->
+                    <div class="chat-area-principal" id="chat-area-principal">
+                        <!-- HEADER CONVERSACIÓN -->
+                        <div class="chat-header-conversacion" id="chat-header-conversacion">
+                            <div class="chat-header-info">
+                                <span class="chat-header-avatar" id="chat-header-avatar">🎮</span>
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <strong id="chat-header-nombre" style="color: #fff; font-size: 13.5px;">Selecciona un amigo</strong>
+                                        <span class="chat-header-chip-id" id="chat-header-id" onclick="copiarTexto(this.innerText)"></span>
+                                    </div>
+                                    <div class="chat-header-sub" id="chat-header-sub">
+                                        <span class="gamer-status-dot online" id="chat-header-status-dot"></span>
+                                        <span id="chat-header-status-text">Desconectado</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-header-acciones" id="chat-header-acciones">
+                                <button type="button" class="btn-chat-header-opt" onclick="retarAmigoChatActivo()" title="Retar a tu juego actual">⚔️ Retar</button>
+                                <button type="button" class="btn-chat-header-opt" onclick="saludarAmigoChatActivo()" title="Enviar toque retro">👋 Ping</button>
+                            </div>
+                        </div>
+
+                        <!-- ZONA DE MENSAJES -->
+                        <div class="chat-mensajes-lista" id="chat-mensajes-lista">
+                            <!-- Inyectado dinámicamente -->
+                        </div>
+
+                        <!-- REACCIONES RÁPIDAS -->
+                        <div class="chat-reacciones-rapidas">
+                            <button type="button" class="chip-reaccion-rapida" onclick="enviarReaccionRapida('🕹️ ¡Vamos a jugar!')">🕹️ ¡Vamos a jugar!</button>
+                            <button type="button" class="chip-reaccion-rapida" onclick="enviarReaccionRapida('🎮 GG')">🎮 GG</button>
+                            <button type="button" class="chip-reaccion-rapida" onclick="enviarReaccionRapida('⚔️ ¡Te reto!')">⚔️ ¡Te reto!</button>
+                            <button type="button" class="chip-reaccion-rapida" onclick="enviarReaccionRapida('🔥 ¡Qué buena!')">🔥 ¡Qué buena!</button>
+                            <button type="button" class="chip-reaccion-rapida" onclick="enviarReaccionRapida('👾 Modo Retro')">👾 Modo Retro</button>
+                        </div>
+
+                        <!-- FORMULARIO DE ENVÍO -->
+                        <form class="chat-input-form" onsubmit="event.preventDefault(); enviarMensajeActual();">
+                            <input type="text" id="input-mensaje-chat" placeholder="Escribe un mensaje en tiempo real... (Presiona Enter)" autocomplete="off" maxlength="300">
+                            <button type="submit" class="btn-enviar-chat" id="btn-enviar-chat">
+                                <span>Enviar</span>
+                                <span>🚀</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -3299,6 +3794,33 @@
                         gain.connect(ctx.destination);
                         osc.start(ctx.currentTime + i * 0.08);
                         osc.stop(ctx.currentTime + i * 0.08 + 0.3);
+                    });
+                } else if (tipo === 'chat_send') {
+                    // Beep suave de mensaje enviado
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } else if (tipo === 'chat_recv') {
+                    // Doble chime retro agudo de mensaje recibido
+                    [783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
+                        gain.gain.setValueAtTime(0.14, ctx.currentTime + i * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.18);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + i * 0.07);
+                        osc.stop(ctx.currentTime + i * 0.07 + 0.2);
                     });
                 } else if (tipo === 'konami') {
                     [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
@@ -4491,31 +5013,24 @@
 
         const AMIGOS_PREDETERMINADOS = [
             {
-                id: 'amigo-sara',
+                id: 'sara-bot',
                 nombre: 'Sara (Creadora)',
-                avatar: '👑',
-                codigo: '#RHUB-0001-SARA',
+                avatar: '👩‍💻',
+                codigo: 'RHUB-CREATOR',
                 estado: 'online',
-                actividad: 'Paper Mario (N64)',
-                bio: '¡Bienvenidos a RetroHub! Disfrutad de los juegos.'
+                actividad: 'Super Mario World (SNES)',
+                bio: '¡Creadora de RetroHub! Escríbeme en el chat cuando quieras.',
+                esBot: true
             },
             {
-                id: 'amigo-alex',
+                id: 'alex-bot',
                 nombre: 'Alex Pixel',
                 avatar: '🦊',
-                codigo: '#RHUB-3891',
-                estado: 'jugando',
-                actividad: 'Anguna (GBA)',
-                bio: 'Speedrunner de clásicos 16 y 32 bits.'
-            },
-            {
-                id: 'amigo-retrogamer',
-                nombre: 'RetroGamer99',
-                avatar: '👾',
-                codigo: '#RHUB-7412',
+                codigo: 'RHUB-PIXEL8',
                 estado: 'online',
-                actividad: '31 In 1 Multicart (NES)',
-                bio: '¡Retos a 2 jugadores los fines de semana!'
+                actividad: 'Anguna: Goblin King (GBA)',
+                bio: 'Speedrunner de clásicos 16 y 32 bits.',
+                esBot: true
             }
         ];
 
@@ -4523,9 +5038,9 @@
             {
                 id: 'post-1',
                 autor: 'Sara (Creadora)',
-                avatar: '👑',
+                avatar: '👩‍💻',
                 fecha: 'Hace 1 hora',
-                texto: '¡Bienvenidos a RetroHub! Hemos optimizado el motor gráfico ParaLLEl para Paper Mario N64. ¿A qué juego os gustaría jugar hoy?',
+                texto: '¡Bienvenidos a RetroHub! Ahora contamos con sistema de chat en tiempo real P2P con IDs únicos. ¡Pruébalo con tus amigos!',
                 reacciones: { '❤️': 8, '🔥': 5, '🕹️': 12, '👏': 6 }
             },
             {
@@ -4541,14 +5056,23 @@
         let avatarPerfilTemp = '🎮';
         let bannerPerfilTemp = 'neon';
 
-        function cargarPerfilGamer() {
-            let defaultCode = localStorage.getItem('retrohub_friend_code');
-            if (!defaultCode) {
-                const randNum = Math.floor(1000 + Math.random() * 9000);
-                defaultCode = `#RHUB-${randNum}`;
-                localStorage.setItem('retrohub_friend_code', defaultCode);
+        // --- GESTIÓN DE ID REAL P2P Y PERFIL ---
+        function obtenerOInicializarPeerId() {
+            let id = localStorage.getItem('retrohub_peer_real_id');
+            if (!id) {
+                const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                let sufijo = '';
+                for (let i = 0; i < 6; i++) {
+                    sufijo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+                }
+                id = 'RHUB-' + sufijo;
+                localStorage.setItem('retrohub_peer_real_id', id);
             }
+            return id.toUpperCase();
+        }
 
+        function cargarPerfilGamer() {
+            const realId = obtenerOInicializarPeerId();
             const actualNombre = localStorage.getItem('retrohub_player') || 'Player 1';
             let perfil = {
                 nombre: actualNombre,
@@ -4558,7 +5082,7 @@
                 juego: 'Paper Mario',
                 banner: 'neon',
                 estado: 'online',
-                codigo: defaultCode
+                codigo: realId
             };
 
             try {
@@ -4570,6 +5094,7 @@
                     }
                 }
             } catch(e) {}
+            perfil.codigo = realId;
             return perfil;
         }
 
@@ -4614,9 +5139,12 @@
             const m = document.getElementById('modal-perfil-social');
             if (!m) return;
 
+            actualizarTextoMiIdUI();
+            actualizarIndicadorRedUI();
             sincronizarCamposPerfilForm();
             cambiarPestanaPerfil(pestanaInicial || 'perfil');
             renderizarListaAmigos();
+            renderizarSidebarChat();
             renderizarMuroSocial();
 
             m.classList.add('activo');
@@ -4633,7 +5161,7 @@
 
         function cambiarPestanaPerfil(pestana) {
             try { sonidoClick('select'); } catch(e) {}
-            const tabs = ['perfil', 'amigos', 'muro'];
+            const tabs = ['perfil', 'amigos', 'chat', 'muro'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 const panel = document.getElementById(`panel-sub-${t}`);
@@ -4641,6 +5169,23 @@
                 if (btn) btn.classList.toggle('activo', activo);
                 if (panel) panel.style.display = activo ? 'block' : 'none';
             });
+
+            if (pestana === 'chat') {
+                renderizarSidebarChat();
+                if (!amigoChatActivoId) {
+                    const amigos = cargarAmigos();
+                    if (amigos.length > 0) {
+                        seleccionarAmigoChat(amigos[0].id || amigos[0].codigo);
+                    }
+                } else {
+                    renderizarCabeceraChat();
+                    renderizarMensajesConversacion(amigoChatActivoId);
+                }
+            } else if (pestana === 'amigos') {
+                renderizarListaAmigos();
+                actualizarTextoMiIdUI();
+                actualizarIndicadorRedUI();
+            }
         }
 
         function sincronizarCamposPerfilForm() {
@@ -4850,7 +5395,685 @@
             });
         }
 
-        // --- SISTEMA DE AMIGOS RETRO ---
+        // --- SISTEMA DE RED P2P REAL (WebRTC) & AMIGOS ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function copiarTexto(txt) {
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(() => {
+                sonidoClick('coin');
+                mostrarToast(`Copiado: ${txt}`);
+            }).catch(() => {});
+        }
+
+        let miPeerId = obtenerOInicializarPeerId();
+        let peerInstance = null;
+        let estadoRedP2P = 'conectando';
+        const conexionesAmigos = {};
+        let amigoChatActivoId = null;
+
+        function actualizarTextoMiIdUI() {
+            miPeerId = obtenerOInicializarPeerId();
+            const el = document.getElementById('texto-tu-id-real');
+            if (el) el.innerText = miPeerId;
+
+            const chipGamer = document.getElementById('gamer-code-chip');
+            if (chipGamer) chipGamer.innerText = `${miPeerId} 📋`;
+
+            const elHeaderId = document.getElementById('chat-header-id');
+            if (elHeaderId && amigoChatActivoId) elHeaderId.innerText = amigoChatActivoId;
+        }
+
+        function actualizarIndicadorRedUI() {
+            const dot = document.getElementById('estado-red-p2p-dot');
+            if (!dot) return;
+            if (estadoRedP2P === 'online') {
+                dot.innerHTML = `<span style="color: #4ade80;">🟢 Red Activa (Listo)</span>`;
+            } else if (estadoRedP2P === 'conectando') {
+                dot.innerHTML = `<span style="color: #facc15;">🟡 Conectando a red...</span>`;
+            } else {
+                dot.innerHTML = `<span style="color: #f87171;">🔴 Sin red (Reintentar)</span>`;
+            }
+        }
+
+        function inicializarRedP2P() {
+            miPeerId = obtenerOInicializarPeerId();
+            actualizarTextoMiIdUI();
+            actualizarIndicadorRedUI();
+
+            if (typeof Peer === 'undefined') {
+                console.warn('[RetroHub P2P] Esperando librería PeerJS...');
+                setTimeout(inicializarRedP2P, 800);
+                return;
+            }
+
+            try {
+                if (peerInstance && !peerInstance.destroyed) {
+                    try { peerInstance.destroy(); } catch(e) {}
+                }
+
+                peerInstance = new Peer(miPeerId, {
+                    debug: 1,
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:global.stun.twilio.com:3478' }
+                        ]
+                    }
+                });
+
+                peerInstance.on('open', (idConfirmado) => {
+                    miPeerId = idConfirmado;
+                    localStorage.setItem('retrohub_peer_real_id', idConfirmado);
+                    estadoRedP2P = 'online';
+                    console.log('[RetroHub P2P] Conectado al broker con ID Real:', idConfirmado);
+                    actualizarTextoMiIdUI();
+                    actualizarIndicadorRedUI();
+                    autoReconectarAmigosGuardados();
+                });
+
+                peerInstance.on('connection', (conn) => {
+                    console.log('[RetroHub P2P] Conexión entrante de:', conn.peer);
+                    configurarConexionPeer(conn);
+                });
+
+                peerInstance.on('error', (err) => {
+                    console.warn('[RetroHub P2P] Error:', err);
+                    if (err.type === 'unavailable-id') {
+                        const nuevoSufijo = Math.random().toString(36).substring(2, 8).toUpperCase();
+                        const nuevoId = 'RHUB-' + nuevoSufijo;
+                        localStorage.setItem('retrohub_peer_real_id', nuevoId);
+                        miPeerId = nuevoId;
+                        setTimeout(inicializarRedP2P, 400);
+                        return;
+                    }
+                    estadoRedP2P = 'error';
+                    actualizarIndicadorRedUI();
+                });
+
+                peerInstance.on('disconnected', () => {
+                    estadoRedP2P = 'conectando';
+                    actualizarIndicadorRedUI();
+                    try { peerInstance.reconnect(); } catch(e) {}
+                });
+            } catch(e) {
+                console.error('[RetroHub P2P] Error al inicializar Peer:', e);
+                estadoRedP2P = 'error';
+                actualizarIndicadorRedUI();
+            }
+        }
+
+        function configurarConexionPeer(conn) {
+            const amigoId = conn.peer;
+            conexionesAmigos[amigoId] = conn;
+
+            conn.on('open', () => {
+                console.log('[RetroHub P2P] Canal abierto con:', amigoId);
+                const perfil = cargarPerfilGamer();
+                conn.send({
+                    tipo: 'HANDSHAKE',
+                    senderId: miPeerId,
+                    nombre: perfil.nombre,
+                    avatar: perfil.avatar,
+                    actividad: perfil.actividad || 'En el menú principal',
+                    estado: perfil.estado || 'online',
+                    bio: perfil.bio || ''
+                });
+                renderizarListaAmigos();
+                renderizarSidebarChat();
+                if (amigoChatActivoId === amigoId) renderizarCabeceraChat();
+            });
+
+            conn.on('data', (datos) => {
+                procesarPaqueteP2P(amigoId, datos);
+            });
+
+            conn.on('close', () => {
+                console.log('[RetroHub P2P] Conexión cerrada con:', amigoId);
+                delete conexionesAmigos[amigoId];
+                renderizarListaAmigos();
+                renderizarSidebarChat();
+                if (amigoChatActivoId === amigoId) renderizarCabeceraChat();
+            });
+
+            conn.on('error', (err) => {
+                console.warn('[RetroHub P2P] Error en canal con:', amigoId, err);
+                delete conexionesAmigos[amigoId];
+                renderizarListaAmigos();
+                renderizarSidebarChat();
+                if (amigoChatActivoId === amigoId) renderizarCabeceraChat();
+            });
+        }
+
+        function conectarConAmigoReal(amigoId, cb) {
+            if (!amigoId) return;
+            if (amigoId === miPeerId) return;
+
+            if (!peerInstance || peerInstance.destroyed) {
+                inicializarRedP2P();
+            }
+
+            try {
+                const conn = peerInstance.connect(amigoId, { reliable: true });
+                configurarConexionPeer(conn);
+                if (cb) {
+                    conn.on('open', () => cb(conn));
+                }
+            } catch(e) {
+                console.warn('[RetroHub P2P] No se pudo conectar con:', amigoId, e);
+            }
+        }
+
+        function autoReconectarAmigosGuardados() {
+            const amigos = cargarAmigos();
+            amigos.forEach(amigo => {
+                const cod = amigo.codigo || amigo.id;
+                if (!amigo.esBot && cod && cod.startsWith('RHUB-') && cod !== miPeerId) {
+                    conectarConAmigoReal(cod);
+                }
+            });
+        }
+
+        function difundirActividadAmigos(actividad) {
+            const perfil = cargarPerfilGamer();
+            Object.keys(conexionesAmigos).forEach(peerId => {
+                const conn = conexionesAmigos[peerId];
+                if (conn && conn.open) {
+                    try {
+                        conn.send({
+                            tipo: 'ACTIVIDAD',
+                            senderId: miPeerId,
+                            nombre: perfil.nombre,
+                            actividad: actividad
+                        });
+                    } catch(e) {}
+                }
+            });
+        }
+
+        function procesarPaqueteP2P(amigoId, datos) {
+            if (!datos || !datos.tipo) return;
+
+            if (datos.tipo === 'HANDSHAKE' || datos.tipo === 'HANDSHAKE_REPLY') {
+                const amigos = cargarAmigos();
+                let amigo = amigos.find(a => (a.id === amigoId || a.codigo === amigoId));
+                if (!amigo) {
+                    amigo = {
+                        id: amigoId,
+                        codigo: amigoId,
+                        nombre: datos.nombre || ('Jugador ' + amigoId.slice(-4)),
+                        avatar: datos.avatar || '🎮',
+                        actividad: datos.actividad || 'En el menú principal',
+                        estado: 'online',
+                        bio: datos.bio || '',
+                        conectadoP2P: true
+                    };
+                    amigos.unshift(amigo);
+                } else {
+                    amigo.nombre = datos.nombre || amigo.nombre;
+                    amigo.avatar = datos.avatar || amigo.avatar;
+                    amigo.actividad = datos.actividad || amigo.actividad;
+                    amigo.estado = 'online';
+                    amigo.conectadoP2P = true;
+                }
+                guardarAmigos(amigos);
+
+                if (datos.tipo === 'HANDSHAKE') {
+                    const conn = conexionesAmigos[amigoId];
+                    if (conn && conn.open) {
+                        const perfil = cargarPerfilGamer();
+                        conn.send({
+                            tipo: 'HANDSHAKE_REPLY',
+                            senderId: miPeerId,
+                            nombre: perfil.nombre,
+                            avatar: perfil.avatar,
+                            actividad: perfil.actividad || 'En el menú principal',
+                            estado: perfil.estado || 'online',
+                            bio: perfil.bio || ''
+                        });
+                    }
+                }
+
+                sonidoClick('fanfarria');
+                mostrarNotificacionSocial(datos.avatar || '🎮', '¡Amigo Conectado en Directo!', `${datos.nombre} (${amigoId}) está en línea.`);
+                renderizarListaAmigos();
+                renderizarSidebarChat();
+                if (amigoChatActivoId === amigoId) renderizarCabeceraChat();
+            }
+            else if (datos.tipo === 'CHAT') {
+                const msg = {
+                    id: datos.id || ('msg-' + Date.now()),
+                    de: amigoId,
+                    nombre: datos.nombre || 'Amigo',
+                    avatar: datos.avatar || '🎮',
+                    texto: datos.texto,
+                    esMio: false,
+                    tiempo: datos.tiempo || Date.now()
+                };
+                guardarMensajeChat(amigoId, msg);
+                sonidoClick('chat_recv');
+
+                const modal = document.getElementById('modal-perfil-social');
+                const modalAbierto = modal && modal.classList.contains('activo');
+                const tabChatActiva = document.getElementById('tab-btn-chat') && document.getElementById('tab-btn-chat').classList.contains('activo');
+
+                if (modalAbierto && tabChatActiva && amigoChatActivoId === amigoId) {
+                    renderizarMensajesConversacion(amigoId);
+                } else {
+                    incrementarNoLeidosChat(amigoId);
+                    mostrarNotificacionSocial(datos.avatar || '💬', `${datos.nombre}:`, `"${datos.texto}"`);
+                }
+
+                renderizarSidebarChat();
+                actualizarBadgesChatGlobal();
+            }
+            else if (datos.tipo === 'ACTIVIDAD') {
+                const amigos = cargarAmigos();
+                const amigo = amigos.find(a => (a.id === amigoId || a.codigo === amigoId));
+                if (amigo) {
+                    amigo.actividad = datos.actividad || 'En el menú';
+                    amigo.estado = 'jugando';
+                    guardarAmigos(amigos);
+                    renderizarListaAmigos();
+                    renderizarSidebarChat();
+                    if (amigoChatActivoId === amigoId) renderizarCabeceraChat();
+                }
+            }
+            else if (datos.tipo === 'RETO') {
+                sonidoClick('fanfarria');
+                mostrarNotificacionSocial('⚔️', `¡DESAFÍO de ${datos.nombre}!`, `Te reta a jugar a ${datos.juego || 'su juego actual'}.`);
+                const msg = {
+                    id: 'reto-' + Date.now(),
+                    de: amigoId,
+                    nombre: datos.nombre,
+                    avatar: '⚔️',
+                    texto: `⚔️ ¡Te he desafiado a una partida de ${datos.juego || 'este juego'}! ¿Aceptas el reto?`,
+                    esReto: true,
+                    juego: datos.juego,
+                    esMio: false,
+                    tiempo: Date.now()
+                };
+                guardarMensajeChat(amigoId, msg);
+                renderizarSidebarChat();
+                if (amigoChatActivoId === amigoId) renderizarMensajesConversacion(amigoId);
+            }
+            else if (datos.tipo === 'PING') {
+                sonidoClick('coin');
+                mostrarNotificacionSocial(datos.avatar || '👋', `¡Saludo de ${datos.nombre}!`, 'Te ha enviado un ping retro.');
+                mostrarToast(`👋 ${datos.nombre} te ha enviado un saludo`);
+            }
+        }
+
+        // --- SISTEMA DE ALMACENAMIENTO DE CHAT & NO LEÍDOS ---
+        function cargarMensajesChat(amigoId) {
+            try {
+                const guardados = JSON.parse(localStorage.getItem('retrohub_chat_' + amigoId) || '[]');
+                if (Array.isArray(guardados)) return guardados;
+            } catch(e) {}
+            return [];
+        }
+
+        function guardarMensajeChat(amigoId, msg) {
+            try {
+                const msgs = cargarMensajesChat(amigoId);
+                msgs.push(msg);
+                if (msgs.length > 150) msgs.shift();
+                localStorage.setItem('retrohub_chat_' + amigoId, JSON.stringify(msgs));
+            } catch(e) {}
+        }
+
+        function cargarMapaNoLeidos() {
+            try {
+                return JSON.parse(localStorage.getItem('retrohub_chat_noleidos') || '{}');
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function guardarMapaNoLeidos(mapa) {
+            try {
+                localStorage.setItem('retrohub_chat_noleidos', JSON.stringify(mapa));
+            } catch(e) {}
+        }
+
+        function incrementarNoLeidosChat(amigoId) {
+            const m = cargarMapaNoLeidos();
+            m[amigoId] = (m[amigoId] || 0) + 1;
+            guardarMapaNoLeidos(m);
+            actualizarBadgesChatGlobal();
+        }
+
+        function limpiarNoLeidosChat(amigoId) {
+            const m = cargarMapaNoLeidos();
+            if (m[amigoId]) {
+                delete m[amigoId];
+                guardarMapaNoLeidos(m);
+                actualizarBadgesChatGlobal();
+            }
+        }
+
+        function actualizarBadgesChatGlobal() {
+            const m = cargarMapaNoLeidos();
+            const total = Object.values(m).reduce((acc, v) => acc + (v || 0), 0);
+
+            const bTop = document.getElementById('cont-chat-top-unread');
+            if (bTop) {
+                bTop.innerText = total;
+                bTop.style.display = total > 0 ? 'inline-block' : 'none';
+            }
+
+            const bModal = document.getElementById('badge-chat-unread');
+            if (bModal) {
+                bModal.innerText = total;
+                bModal.style.display = total > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // --- INTERFAZ DEL CHAT EN DIRECTO ---
+        function abrirChatConAmigo(amigoId) {
+            abrirModalPerfil('chat');
+            seleccionarAmigoChat(amigoId);
+        }
+
+        function seleccionarAmigoChat(amigoId) {
+            amigoChatActivoId = amigoId;
+            limpiarNoLeidosChat(amigoId);
+            actualizarBadgesChatGlobal();
+            renderizarSidebarChat();
+            renderizarCabeceraChat();
+            renderizarMensajesConversacion(amigoId);
+            const inMsg = document.getElementById('input-mensaje-chat');
+            if (inMsg) inMsg.focus();
+        }
+
+        function renderizarSidebarChat() {
+            const cont = document.getElementById('chat-sidebar-amigos');
+            if (!cont) return;
+
+            const amigos = cargarAmigos();
+            if (amigos.length === 0) {
+                cont.innerHTML = `<div style="padding: 14px; font-size: 11px; color: var(--text-muted); text-align: center;">No tienes amigos aún. Añade uno con su ID en la pestaña Amigos.</div>`;
+                return;
+            }
+
+            const noLeidosMap = cargarMapaNoLeidos();
+
+            cont.innerHTML = amigos.map(amigo => {
+                const aId = amigo.id || amigo.codigo;
+                const esActivo = (aId === amigoChatActivoId);
+                const estaOnline = amigo.esBot || !!conexionesAmigos[aId] || amigo.conectadoP2P;
+                const noLeidos = noLeidosMap[aId] || 0;
+
+                const msgs = cargarMensajesChat(aId);
+                const ultimoMsg = msgs.length > 0 ? msgs[msgs.length - 1].texto : (amigo.actividad || 'Toca para chatear');
+
+                return `
+                    <div class="chat-sidebar-item ${esActivo ? 'activo' : ''}" onclick="seleccionarAmigoChat('${aId}')">
+                        <div class="chat-sidebar-avatar-wrap">
+                            <span>${amigo.avatar || '🎮'}</span>
+                            <span class="gamer-status-dot ${estaOnline ? 'online' : 'ausente'}" style="position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px;"></span>
+                        </div>
+                        <div class="chat-sidebar-info">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span class="chat-sidebar-nombre">${escapeHTML(amigo.nombre)}</span>
+                                ${noLeidos > 0 ? `<span class="chat-sidebar-unread-badge">${noLeidos}</span>` : ''}
+                            </div>
+                            <span class="chat-sidebar-previo">${escapeHTML(ultimoMsg)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderizarCabeceraChat() {
+            if (!amigoChatActivoId) return;
+            const amigos = cargarAmigos();
+            const amigo = amigos.find(a => (a.id === amigoChatActivoId || a.codigo === amigoChatActivoId));
+            if (!amigo) return;
+
+            const elAv = document.getElementById('chat-header-avatar');
+            const elNom = document.getElementById('chat-header-nombre');
+            const elId = document.getElementById('chat-header-id');
+            const elDot = document.getElementById('chat-header-status-dot');
+            const elTxt = document.getElementById('chat-header-status-text');
+
+            const estaOnline = amigo.esBot || !!conexionesAmigos[amigoChatActivoId] || amigo.conectadoP2P;
+
+            if (elAv) elAv.innerText = amigo.avatar || '🎮';
+            if (elNom) elNom.innerText = amigo.nombre || 'Amigo';
+            if (elId) elId.innerText = amigo.codigo || amigo.id || '';
+            if (elDot) elDot.className = `gamer-status-dot ${estaOnline ? 'online' : 'ausente'}`;
+            if (elTxt) {
+                if (amigo.esBot) {
+                    elTxt.innerHTML = `🟢 Bot Retro Activo • 🕹️ ${escapeHTML(amigo.actividad || 'En línea')}`;
+                } else if (estaOnline) {
+                    elTxt.innerHTML = `🟢 Conectado en directo P2P • 🕹️ ${escapeHTML(amigo.actividad || 'Listo')}`;
+                } else {
+                    elTxt.innerHTML = `⚪ Desconectado P2P (${escapeHTML(amigo.codigo || 'Esperando')})`;
+                }
+            }
+        }
+
+        function renderizarMensajesConversacion(amigoId) {
+            const cont = document.getElementById('chat-mensajes-lista');
+            if (!cont) return;
+
+            const msgs = cargarMensajesChat(amigoId);
+            const amigos = cargarAmigos();
+            const amigo = amigos.find(a => (a.id === amigoId || a.codigo === amigoId));
+            const nombreAmigo = amigo ? amigo.nombre : 'Amigo';
+
+            if (msgs.length === 0) {
+                cont.innerHTML = `
+                    <div style="margin: auto; text-align: center; color: var(--text-muted); padding: 20px;">
+                        <div style="font-size: 32px; margin-bottom: 6px;">💬</div>
+                        <strong style="color: #fff; font-size: 13px;">Conversación con ${escapeHTML(nombreAmigo)}</strong>
+                        <p style="font-size: 11px; margin: 4px 0 0;">Los mensajes se transmiten en tiempo real directo por WebRTC y quedan guardados.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cont.innerHTML = msgs.map(m => {
+                const hora = m.tiempo ? new Date(m.tiempo).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                const esMio = !!m.esMio;
+
+                if (m.esReto) {
+                    return `
+                        <div class="burbuja-msg ${esMio ? 'propio' : 'ajeno'}" style="width: 100%; max-width: 100%;">
+                            <div class="burbuja-reto-box">
+                                <strong style="color: #f87171; font-size: 13px;">⚔️ ¡DESAFÍO RETRO!</strong>
+                                <span style="font-size: 12px; color: #fff;">${escapeHTML(m.texto)}</span>
+                                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                                    <button type="button" class="btn-accion" style="padding: 5px 12px; font-size: 11px;" onclick="aceptarDesafioDesdeChat('${encodeURIComponent(m.juego || '')}')">🎮 Aceptar y Jugar</button>
+                                </div>
+                                <span style="font-size: 9px; color: var(--text-muted);">${hora}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="burbuja-msg ${esMio ? 'propio' : 'ajeno'}">
+                        <div class="burbuja-cuerpo">
+                            ${!esMio ? `<div style="font-size: 10px; font-weight: 700; color: #93c5fd; margin-bottom: 2px;">${escapeHTML(m.nombre || nombreAmigo)}</div>` : ''}
+                            <div>${escapeHTML(m.texto)}</div>
+                        </div>
+                        <div class="burbuja-meta">
+                            <span>${hora}</span>
+                            ${esMio ? '<span>✓✓</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            cont.scrollTop = cont.scrollHeight;
+        }
+
+        function enviarMensajeActual() {
+            if (!amigoChatActivoId) {
+                mostrarToast('⚠️ Selecciona un amigo para chatear');
+                return;
+            }
+
+            const input = document.getElementById('input-mensaje-chat');
+            if (!input) return;
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            input.value = '';
+            enviarMensajeChat(amigoChatActivoId, texto);
+        }
+
+        function enviarReaccionRapida(texto) {
+            if (!amigoChatActivoId) {
+                mostrarToast('⚠️ Selecciona un amigo para enviar la reacción');
+                return;
+            }
+            enviarMensajeChat(amigoChatActivoId, texto);
+        }
+
+        function enviarMensajeChat(amigoId, texto) {
+            const perfil = cargarPerfilGamer();
+            const msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
+            const ahora = Date.now();
+
+            const msgObj = {
+                id: msgId,
+                de: miPeerId,
+                nombre: perfil.nombre,
+                avatar: perfil.avatar,
+                texto: texto,
+                esMio: true,
+                tiempo: ahora
+            };
+
+            guardarMensajeChat(amigoId, msgObj);
+            sonidoClick('chat_send');
+            renderizarMensajesConversacion(amigoId);
+            renderizarSidebarChat();
+
+            const amigos = cargarAmigos();
+            const amigo = amigos.find(a => (a.id === amigoId || a.codigo === amigoId));
+
+            if (amigo && amigo.esBot) {
+                setTimeout(() => {
+                    const resp = responderBotRetro(amigo.nombre, texto);
+                    const botMsg = {
+                        id: 'bot-' + Date.now(),
+                        de: amigoId,
+                        nombre: amigo.nombre,
+                        avatar: amigo.avatar,
+                        texto: resp,
+                        esMio: false,
+                        tiempo: Date.now()
+                    };
+                    guardarMensajeChat(amigoId, botMsg);
+                    sonidoClick('chat_recv');
+                    if (amigoChatActivoId === amigoId) {
+                        renderizarMensajesConversacion(amigoId);
+                    }
+                    renderizarSidebarChat();
+                }, 650);
+                return;
+            }
+
+            const conn = conexionesAmigos[amigoId];
+            if (conn && conn.open) {
+                conn.send({
+                    tipo: 'CHAT',
+                    id: msgId,
+                    senderId: miPeerId,
+                    nombre: perfil.nombre,
+                    avatar: perfil.avatar,
+                    texto: texto,
+                    tiempo: ahora
+                });
+            } else {
+                conectarConAmigoReal(amigoId, (nuevaConn) => {
+                    if (nuevaConn && nuevaConn.open) {
+                        nuevaConn.send({
+                            tipo: 'CHAT',
+                            id: msgId,
+                            senderId: miPeerId,
+                            nombre: perfil.nombre,
+                            avatar: perfil.avatar,
+                            texto: texto,
+                            tiempo: ahora
+                        });
+                    }
+                });
+            }
+        }
+
+        function responderBotRetro(nombreBot, textoUsuario) {
+            const txt = (textoUsuario || '').toLowerCase();
+            if (txt.includes('hola') || txt.includes('buenas') || txt.includes('que tal') || txt.includes('hey')) {
+                return `¡Hola! 👋 ¡Qué bien tenerte por aquí! ¿Listo para echar una partida en RetroHub?`;
+            }
+            if (txt.includes('reto') || txt.includes('desafio') || txt.includes('partida') || txt.includes('jugar')) {
+                return `⚔️ ¡Acepto el reto con gusto! Elige juego y a ver quién aguanta sin perder vidas 🔥`;
+            }
+            if (txt.includes('mario') || txt.includes('paper') || txt.includes('n64')) {
+                return `🍄 ¡Paper Mario y Mario 64 son leyendas! Recuerda que en N64 tienes activado el motor fix para que se vea impecable.`;
+            }
+            if (txt.includes('zelda') || txt.includes('anguna') || txt.includes('gba')) {
+                return `🗡️ ¡Anguna en GBA es puro feeling de los 90s! Los puzles y combates son una maravilla.`;
+            }
+            if (txt.includes('gg') || txt.includes('buena') || txt.includes('genial') || txt.includes('crack')) {
+                return `🔥 ¡GG! ¡Jugada de maestro arcade! 🕹️`;
+            }
+            const respuestas = [
+                `¡Clasicazo total! Recuerda que puedes pasarle tu ID (${miPeerId}) a tus amigos para chatear entre ordenadores o móviles en directo.`,
+                `¡Qué gran título! Con la tecla Escape puedes pausar y guardar estado rápido en cualquier momento.`,
+                `¡A tope con el modo retro! 👾 Si tienes un mando de consola, conéctalo y el emulador lo detecta directo.`,
+                `¡Brutal! Me encanta ese detalle del juego. ¡A seguir viciando!`
+            ];
+            return respuestas[Math.floor(Math.random() * respuestas.length)];
+        }
+
+        function retarAmigoChatActivo() {
+            if (!amigoChatActivoId) return;
+            retarAmigo(amigoChatActivoId);
+        }
+
+        function saludarAmigoChatActivo() {
+            if (!amigoChatActivoId) return;
+            saludarAmigo(amigoChatActivoId);
+        }
+
+        function aceptarDesafioDesdeChat(encJuego) {
+            const juegoNom = decodeURIComponent(encJuego || '');
+            sonidoClick('coin');
+            mostrarToast(`⚔️ ¡Aceptando desafío a ${juegoNom}!`);
+            cerrarModalPerfil();
+
+            let encontrado = false;
+            for (const sysId in catalogo) {
+                const sys = catalogo[sysId];
+                if (sys && sys.juegos) {
+                    const match = sys.juegos.find(j => (j.titulo || j.nombreArchivo || '').toLowerCase().includes(juegoNom.toLowerCase()));
+                    if (match) {
+                        arrancarJuego(match.archivo, sys.core, match.titulo || match.nombreArchivo);
+                        encontrado = true;
+                        break;
+                    }
+                }
+            }
+            if (!encontrado) {
+                cambiarVista('vista-emuladores');
+            }
+        }
+
+        // --- SISTEMA DE LISTA DE AMIGOS RETRO ---
         function renderizarListaAmigos() {
             const lista = cargarAmigos();
             const cont = document.getElementById('lista-amigos-retro');
@@ -4861,7 +6084,7 @@
             if (contBadge) contBadge.innerText = lista.length;
             if (badgeModal) badgeModal.innerText = lista.length;
 
-            const countOnline = lista.filter(a => a.estado === 'online' || a.estado === 'jugando').length;
+            const countOnline = lista.filter(a => a.esBot || conexionesAmigos[a.id || a.codigo] || a.conectadoP2P).length;
             if (badgeTop) badgeTop.innerText = countOnline;
 
             if (!cont) return;
@@ -4871,7 +6094,7 @@
                     <div style="text-align: center; padding: 24px; color: var(--text-muted); background: rgba(0,0,0,0.25); border-radius: 12px; border: 1px dashed var(--card-border);">
                         <div style="font-size: 30px; margin-bottom: 6px;">👥</div>
                         <p style="margin: 0; font-size: 13px; color: #fff;">Aún no tienes amigos en tu lista.</p>
-                        <p style="margin: 4px 0 12px; font-size: 11px;">Introduce su código de amigo arriba o pulsa el botón para restaurar los sugeridos.</p>
+                        <p style="margin: 4px 0 12px; font-size: 11px;">Introduce su ID Real de Red arriba o pulsa el botón para restaurar los sugeridos.</p>
                         <button type="button" class="btn-accion" style="padding: 6px 14px; font-size: 11px; margin: 0 auto;" onclick="restaurarAmigosPredeterminados()">Restaurar Amigos Sugeridos</button>
                     </div>
                 `;
@@ -4879,32 +6102,36 @@
             }
 
             cont.innerHTML = lista.map((amigo, idx) => {
-                const sNom = String(amigo.nombre || '').replace(/[<>&"]/g, '');
-                const sCod = String(amigo.codigo || '').replace(/[<>&"]/g, '');
-                const sAct = String(amigo.actividad || 'En el menú principal').replace(/[<>&"]/g, '');
+                const sNom = escapeHTML(amigo.nombre || '');
+                const sCod = escapeHTML(amigo.codigo || amigo.id || '');
+                const sAct = escapeHTML(amigo.actividad || 'En el menú principal');
                 const sAv = amigo.avatar || '🎮';
-                const sEst = amigo.estado || 'online';
+                const aId = amigo.id || amigo.codigo;
+                const estaOnline = amigo.esBot || !!conexionesAmigos[aId] || amigo.conectadoP2P;
 
                 return `
                 <div class="item-amigo-card">
                     <div class="amigo-left">
                         <div class="amigo-avatar-box">
                             <span>${sAv}</span>
-                            <span class="gamer-status-dot ${sEst}"></span>
+                            <span class="gamer-status-dot ${estaOnline ? 'online' : 'ausente'}" title="${estaOnline ? 'En línea P2P' : 'Desconectado'}"></span>
                         </div>
                         <div class="amigo-info-col">
                             <div class="amigo-nombre-row">
                                 <span class="amigo-nombre">${sNom}</span>
-                                <span class="amigo-code">${sCod}</span>
+                                <span class="amigo-code" onclick="copiarTexto('${sCod}')" title="Copiar ID de amigo">${sCod} 📋</span>
                             </div>
                             <span class="amigo-actividad">🕹️ ${sAct}</span>
                         </div>
                     </div>
                     <div class="amigo-acciones">
-                        <button type="button" class="btn-amigo-accion" onclick="retarAmigo('${encodeURIComponent(sNom)}', '${encodeURIComponent(sAct)}')" title="Retar a este amigo a una partida">
+                        <button type="button" class="btn-amigo-accion" onclick="abrirChatConAmigo('${aId}')" title="Abrir chat en directo con ${sNom}" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">
+                            <span>💬</span> <span>Chat</span>
+                        </button>
+                        <button type="button" class="btn-amigo-accion" onclick="retarAmigo('${aId}')" title="Retar a una partida">
                             <span>⚔️</span> <span>Retar</span>
                         </button>
-                        <button type="button" class="btn-amigo-accion" onclick="saludarAmigo('${encodeURIComponent(sNom)}', '${sAv}')" title="Enviar un saludo 8-bit">
+                        <button type="button" class="btn-amigo-accion" onclick="saludarAmigo('${aId}')" title="Enviar toque retro">
                             <span>👋</span>
                         </button>
                         <button type="button" class="btn-amigo-del" onclick="eliminarAmigo(${idx})" title="Eliminar de amigos">✕</button>
@@ -4914,93 +6141,215 @@
             }).join('');
         }
 
-        function agregarAmigoManual() {
+        function conectarAmigoDesdeInput(idForzado) {
             const input = document.getElementById('input-nuevo-amigo');
-            if (!input) return;
-            const val = input.value.trim();
+            const val = (idForzado ? idForzado.trim() : (input ? input.value.trim() : '')).toUpperCase();
             if (!val) {
-                mostrarToast('⚠️ Escribe el nombre o código de amigo');
-                input.focus();
+                mostrarToast('⚠️ Escribe el ID Real de tu amigo (Ej: RHUB-XXXXXX)');
+                if (input) input.focus();
+                return;
+            }
+
+            if (val === miPeerId) {
+                mostrarToast('⚠️ Ese es tu propio ID. Abre una ventana de incógnito para probarlo.');
                 return;
             }
 
             const amigos = cargarAmigos();
-            const existe = amigos.some(a => a.nombre.toLowerCase() === val.toLowerCase() || a.codigo.toLowerCase() === val.toLowerCase());
+            const existe = amigos.find(a => (a.codigo && a.codigo.toUpperCase() === val) || (a.id && a.id.toUpperCase() === val));
             if (existe) {
-                mostrarToast('ℹ️ Este amigo ya está en tu lista');
+                input.value = '';
+                abrirChatConAmigo(existe.id || existe.codigo);
+                mostrarToast(`ℹ️ ${existe.nombre} ya está en tu lista. ¡Abriendo chat!`);
                 return;
             }
 
             const avataresRandom = ['👾', '🦊', '⚡', '🎮', '🍄', '🛡️', '🤖', '👑', '🐉'];
             const avatarAleatorio = avataresRandom[Math.floor(Math.random() * avataresRandom.length)];
-            const nuevoCode = val.startsWith('#') ? val : `#RHUB-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            amigos.unshift({
-                id: 'amigo-' + Date.now(),
-                nombre: val.replace(/^#RHUB-\d+[-_]?/, '') || val,
+            const nuevoAmigo = {
+                id: val,
+                nombre: 'Jugador ' + val.replace(/^RHUB-/, ''),
                 avatar: avatarAleatorio,
-                codigo: nuevoCode,
+                codigo: val,
                 estado: 'online',
-                actividad: 'En el menú de consolas',
-                bio: 'Amigo retro añadido recientemente'
-            });
+                actividad: 'Conectando por WebRTC...',
+                bio: 'Amigo conectado por ID Real',
+                conectadoP2P: false
+            };
 
+            amigos.unshift(nuevoAmigo);
             guardarAmigos(amigos);
             input.value = '';
             renderizarListaAmigos();
             sonidoClick('coin');
-            mostrarToast(`🎉 ¡${val} ha sido añadido a tu lista de amigos!`);
+            mostrarToast(`📡 Conectando con ${val}...`);
+
+            conectarConAmigoReal(val, () => {
+                mostrarToast(`🎉 ¡Conexión establecida con ${val}!`);
+            });
+
+            abrirChatConAmigo(val);
+        }
+
+        function copiarMiIdReal() {
+            const miId = miPeerId || obtenerOInicializarPeerId();
+            navigator.clipboard.writeText(miId).then(() => {
+                sonidoClick('coin');
+                mostrarToast(`¡Tu ID Real (${miId}) copiado al portapapeles! Pásaselo a un amigo 🚀`);
+            }).catch(() => {
+                mostrarToast(`Tu ID Real es: ${miId}`);
+            });
+        }
+
+        function copiarCodigoAmigo() {
+            copiarMiIdReal();
+        }
+
+        function compartirIdWhatsApp() {
+            const miId = miPeerId || obtenerOInicializarPeerId();
+            const perfil = cargarPerfilGamer();
+            const urlWeb = window.location.href.split('?')[0];
+            const urlConAmigo = `${urlWeb}?friend=${miId}`;
+            const msg = `🎮 *¡Hola! Agrégame en RetroHub Emulator para jugar y chatear:*\n👤 *Gamertag:* ${perfil.nombre} (${perfil.avatar})\n🆔 *Mi ID Real:* ${miId}\n\n👉 *Pulsa aquí para conectarte conmigo al instante:*\n${urlConAmigo}`;
+            const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(urlWA, '_blank');
+            sonidoClick('coin');
+            mostrarToast('📲 Abriendo WhatsApp para compartir ID...');
         }
 
         function invitarAmigosGlobal() {
-            const perfil = cargarPerfilGamer();
-            const urlWeb = window.location.href.split('?')[0];
-            const texto = `🎮 *¡Únete a mi sala de juegos retro en RetroHub Emulator!*\n🕹️ Juega a Nintendo 64, GBA, NES y más directo en tu navegador sin instalar nada.\n👤 Mi Gamertag: *${perfil.nombre}* (${perfil.codigo})\n👉 Entra ahora gratis: ${urlWeb}`;
-            
-            const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-            window.open(urlWA, '_blank');
-            sonidoClick('coin');
-            mostrarToast('📲 Abriendo WhatsApp para invitar amigos...');
+            compartirIdWhatsApp();
         }
 
         function restaurarAmigosPredeterminados() {
             guardarAmigos(JSON.parse(JSON.stringify(AMIGOS_PREDETERMINADOS)));
             renderizarListaAmigos();
+            renderizarSidebarChat();
             sonidoClick('select');
             mostrarToast('Lista de amigos sugeridos restaurada');
         }
 
-        function retarAmigo(encNom, encAct) {
-            const nom = decodeURIComponent(encNom);
-            const act = decodeURIComponent(encAct);
+        function retarAmigo(idAmigo) {
+            const amigos = cargarAmigos();
+            const amigo = amigos.find(a => (a.id === idAmigo || a.codigo === idAmigo || a.nombre === idAmigo));
+            const nom = amigo ? amigo.nombre : idAmigo;
+            const aId = amigo ? (amigo.id || amigo.codigo) : idAmigo;
             const perfil = cargarPerfilGamer();
-            const urlJuego = window.location.href;
+            const juegoActual = (partidaActual && partidaActual.nombre) ? partidaActual.nombre : (perfil.actividad || 'Juegos Retro');
 
-            const retoMsg = `⚔️ *¡DESAFÍO RETROHUB!* ⚔️\nHola ${nom}, ${perfil.nombre} te ha desafiado a una partida de emulador.\n🕹️ Actividad actual: ${act}\n🔗 Pulsa aquí para aceptar el reto y jugar:\n${urlJuego}`;
+            const msgReto = {
+                id: 'reto-' + Date.now(),
+                de: miPeerId,
+                nombre: perfil.nombre,
+                avatar: '⚔️',
+                texto: `⚔️ ¡Te he retado a una partida de ${juegoActual}!`,
+                esReto: true,
+                juego: juegoActual,
+                esMio: true,
+                tiempo: Date.now()
+            };
+            guardarMensajeChat(aId, msgReto);
 
-            navigator.clipboard.writeText(retoMsg).then(() => {
-                sonidoClick('coin');
-                mostrarNotificacionSocial('⚔️', '¡Desafío Copiado!', `Has retado a ${nom}. Pégale el enlace en su chat.`);
-                mostrarToast(`¡Desafío a ${nom} copiado al portapapeles! ⚔️`);
-            }).catch(() => {
-                mostrarToast(`¡Desafío a ${nom} preparado!`);
-            });
+            const conn = conexionesAmigos[aId];
+            if (conn && conn.open) {
+                conn.send({
+                    tipo: 'RETO',
+                    senderId: miPeerId,
+                    nombre: perfil.nombre,
+                    juego: juegoActual
+                });
+                sonidoClick('fanfarria');
+                mostrarToast(`⚔️ ¡Desafío enviado a ${nom} en directo!`);
+            } else {
+                const urlJuego = window.location.href;
+                const textoReto = `⚔️ *¡DESAFÍO RETROHUB!* ⚔️\nHola ${nom}, ${perfil.nombre} (${miPeerId}) te ha desafiado a jugar a ${juegoActual}.\n🔗 Pulsa aquí para entrar y jugar juntos:\n${urlJuego}`;
+                navigator.clipboard.writeText(textoReto).then(() => {
+                    sonidoClick('coin');
+                    mostrarNotificacionSocial('⚔️', '¡Desafío Copiado!', `Has retado a ${nom}. Pásale el enlace para jugar.`);
+                    mostrarToast(`⚔️ ¡Desafío a ${nom} copiado al portapapeles!`);
+                }).catch(() => {
+                    mostrarToast(`¡Desafío a ${nom} listo!`);
+                });
+            }
+
+            if (amigo && amigo.esBot) {
+                setTimeout(() => {
+                    const botMsg = {
+                        id: 'bot-reto-' + Date.now(),
+                        de: aId,
+                        nombre: amigo.nombre,
+                        avatar: amigo.avatar,
+                        texto: `⚔️ ¡Desafío aceptado en ${juegoActual}! ¡Que gane el mejor! 🕹️`,
+                        esMio: false,
+                        tiempo: Date.now()
+                    };
+                    guardarMensajeChat(aId, botMsg);
+                    sonidoClick('chat_recv');
+                    if (amigoChatActivoId === aId) renderizarMensajesConversacion(aId);
+                    renderizarSidebarChat();
+                }, 700);
+            }
+
+            if (amigoChatActivoId === aId) renderizarMensajesConversacion(aId);
+            renderizarSidebarChat();
         }
 
-        function saludarAmigo(encNom, av) {
-            const nom = decodeURIComponent(encNom);
-            sonidoClick('coin');
-            mostrarNotificacionSocial(av || '👋', `¡Saludaste a ${nom}!`, 'Le has enviado un ping retro amistoso.');
-            mostrarToast(`👋 Has saludado a ${nom}`);
+        function saludarAmigo(idAmigo) {
+            const amigos = cargarAmigos();
+            const amigo = amigos.find(a => (a.id === idAmigo || a.codigo === idAmigo || a.nombre === idAmigo));
+            const nom = amigo ? amigo.nombre : idAmigo;
+            const aId = amigo ? (amigo.id || amigo.codigo) : idAmigo;
+            const perfil = cargarPerfilGamer();
+
+            const conn = conexionesAmigos[aId];
+            if (conn && conn.open) {
+                conn.send({
+                    tipo: 'PING',
+                    senderId: miPeerId,
+                    nombre: perfil.nombre,
+                    avatar: perfil.avatar
+                });
+                sonidoClick('coin');
+                mostrarToast(`👋 Has saludado a ${nom} en directo`);
+            } else {
+                sonidoClick('coin');
+                mostrarNotificacionSocial(amigo ? amigo.avatar : '👋', `¡Saludaste a ${nom}!`, 'Le has enviado un saludo retro.');
+                mostrarToast(`👋 Has saludado a ${nom}`);
+            }
+
+            if (amigo && amigo.esBot) {
+                setTimeout(() => {
+                    const botMsg = {
+                        id: 'bot-saludo-' + Date.now(),
+                        de: aId,
+                        nombre: amigo.nombre,
+                        avatar: amigo.avatar,
+                        texto: `👋 ¡Hola ${perfil.nombre}! ¡Qué ilusión verte por aquí! ¿Echamos una partida?`,
+                        esMio: false,
+                        tiempo: Date.now()
+                    };
+                    guardarMensajeChat(aId, botMsg);
+                    sonidoClick('chat_recv');
+                    if (amigoChatActivoId === aId) renderizarMensajesConversacion(aId);
+                    renderizarSidebarChat();
+                }, 600);
+            }
         }
 
         function eliminarAmigo(idx) {
             const amigos = cargarAmigos();
             if (idx >= 0 && idx < amigos.length) {
                 const borrado = amigos[idx].nombre;
+                const aId = amigos[idx].id || amigos[idx].codigo;
+                if (conexionesAmigos[aId]) {
+                    try { conexionesAmigos[aId].close(); } catch(e) {}
+                    delete conexionesAmigos[aId];
+                }
                 amigos.splice(idx, 1);
                 guardarAmigos(amigos);
                 renderizarListaAmigos();
+                renderizarSidebarChat();
                 sonidoClick('select');
                 mostrarToast(`Amigo ${borrado} eliminado de tu lista`);
             }
@@ -5425,13 +6774,14 @@
             registrarInicioPartida(nombreLimpio, coreSistema);
             iniciarContadorTiempo(nombreLimpio);
 
-            // Sincronizar actividad en el perfil gamer
+            // Sincronizar actividad en el perfil gamer y difundir a amigos P2P
             try {
                 const perfil = cargarPerfilGamer();
                 perfil.actividad = `${nombreLimpio} (${coreSistema.toUpperCase()})`;
                 perfil.estado = 'jugando';
                 guardarPerfilGamer(perfil);
                 aplicarPerfilGlobalUI();
+                difundirActividadAmigos(perfil.actividad);
             } catch(e) {}
 
             let urlIframe = `player.html?core=${coreSistema}&rom=${encodeURIComponent(rutaRom)}&name=${encodeURIComponent(nombreLimpio)}&theme=${temaActual}`;
@@ -5565,6 +6915,12 @@
             cargarCatalogoServidor();
             actualizarListaRecientesUI();
             aplicarPerfilGlobalUI();
+            actualizarTextoMiIdUI();
+            actualizarIndicadorRedUI();
+            actualizarBadgesChatGlobal();
+
+            // Arrancar conexión de red P2P con ID real
+            inicializarRedP2P();
 
             const params = new URLSearchParams(window.location.search);
             const emu = params.get('emu');
@@ -5575,6 +6931,17 @@
             if (n64c) cambiarMotorN64(n64c);
             if (emu && rom) {
                 arrancarJuego(rom, emu, rom.split('/').pop().replace(/\.[^/.]+$/, ""));
+            }
+
+            // Detectar conexión directa si el enlace trae ?friend=RHUB-XXXX
+            const amigoParam = params.get('friend');
+            if (amigoParam) {
+                const idLimpio = amigoParam.trim().toUpperCase();
+                if (idLimpio && idLimpio !== miPeerId) {
+                    setTimeout(() => {
+                        conectarAmigoDesdeInput(idLimpio);
+                    }, 1400);
+                }
             }
         });
     </script>
