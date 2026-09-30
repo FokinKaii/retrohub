@@ -1577,10 +1577,239 @@
             .guia-acciones { width: 100%; justify-content: flex-start; }
             #contenedor-iframe { height: 420px; }
             .barra-superior-global { flex-direction: column; gap: 8px; align-items: flex-start; }
+        /* --- SISTEMA DE LOGROS RETRO Y PESTAÑAS DE MODAL --- */
+        .banner-logro-notif {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, rgba(20, 24, 40, 0.96) 0%, rgba(38, 26, 64, 0.96) 100%);
+            border: 1px solid #f59e0b;
+            border-left: 5px solid #f59e0b;
+            border-radius: 14px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 25px rgba(245, 158, 11, 0.35);
+            z-index: 999999;
+            backdrop-filter: blur(12px);
+            transform: translateX(125%);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            pointer-events: none;
+            max-width: 380px;
+        }
+
+        .banner-logro-notif.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .logro-notif-icono {
+            font-size: 32px;
+            filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.6));
+            animation: rotarTrofeo 0.6s ease;
+        }
+
+        @keyframes rotarTrofeo {
+            0% { transform: scale(0.6) rotate(-20deg); }
+            50% { transform: scale(1.2) rotate(15deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .logro-notif-textos {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-align: left;
+        }
+
+        .logro-notif-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logro-notif-titulo {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .logro-notif-desc {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Pestañas de Estadísticas / Logros */
+        .tabs-stats-modal {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .tab-stats-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-stats-btn:hover {
+            color: #fff;
+        }
+
+        .tab-stats-btn.activo {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .resumen-logros-card {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .progreso-logros-bar {
+            width: 100%;
+            height: 7px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progreso-logros-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #10b981);
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+
+        .grid-lista-logros {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .item-logro-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .item-logro-card.desbloqueado {
+            background: rgba(245, 158, 11, 0.06);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .item-logro-card.bloqueado {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            opacity: 0.6;
+        }
+
+        .item-logro-card.desbloqueado:hover {
+            background: rgba(245, 158, 11, 0.12);
+            transform: translateX(3px);
+        }
+
+        .logro-card-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logro-card-icon {
+            font-size: 22px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .item-logro-card.desbloqueado .logro-card-icon {
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+        }
+
+        .logro-card-textos {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .logro-card-nombre {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .item-logro-card.desbloqueado .logro-card-nombre {
+            color: #fde68a;
+        }
+
+        .logro-card-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .logro-card-badge-pts {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 999px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .item-logro-card.desbloqueado .logro-card-badge-pts {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .item-logro-card.bloqueado .logro-card-badge-pts {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
+
+    <!-- BANNER FLOTANTE DE NOTIFICACIÓN DE LOGRO -->
+    <div id="banner-logro-flotante" class="banner-logro-notif">
+        <div class="logro-notif-icono" id="logro-notif-icono">🏆</div>
+        <div class="logro-notif-textos">
+            <span class="logro-notif-label">¡LOGRO DESBLOQUEADO!</span>
+            <strong class="logro-notif-titulo" id="logro-notif-titulo">Primer Cartucho</strong>
+            <span class="logro-notif-desc" id="logro-notif-desc">Has insertado tu primer juego en la consola</span>
+        </div>
+    </div>
 
     <!-- LIENZO DE FONDO ANIMADO -->
     <canvas id="retro-canvas-fondo"></canvas>
@@ -1598,6 +1827,9 @@
             </button>
             <button class="btn-toggle-top" onclick="abrirModalEstadisticas()" title="Ver tus estadísticas y tiempo de juego">
                 <span>📊</span> <span>Estadísticas</span>
+            </button>
+            <button class="btn-toggle-top" id="btn-top-logros" onclick="abrirModalLogros()" title="Ver tus logros y trofeos desbloqueados" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+                <span>🏆</span> <span id="badge-top-logros">Logros (0/10)</span>
             </button>
             <button class="btn-toggle-top" id="btn-top-sugerencias" onclick="abrirModalSugerencias()" title="Sugerir juegos o contactar con la creadora" style="background: rgba(192, 132, 252, 0.12); border-color: rgba(192, 132, 252, 0.45); color: #e9d5ff;">
                 <span>💡</span> <span>Sugerencias</span>
@@ -2220,61 +2452,94 @@
         </div>
     </div>
 
-    <!-- MODAL DE ESTADÍSTICAS GAMER -->
+    <!-- MODAL DE ESTADÍSTICAS Y LOGROS GAMER -->
     <div class="modal-overlay" id="modal-estadisticas" onclick="if(event.target === this) cerrarModalEstadisticas()">
-        <div class="modal-caja" style="max-width: 600px; text-align: left;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">📊 Estadísticas de Juego</h3>
+        <div class="modal-caja" style="max-width: 620px; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px;">
+                <!-- PESTAÑAS DEL MODAL -->
+                <div class="tabs-stats-modal">
+                    <button type="button" class="tab-stats-btn activo" id="tab-btn-stats" onclick="cambiarPestanaStats('stats')">📊 Estadísticas</button>
+                    <button type="button" class="tab-stats-btn" id="tab-btn-logros" onclick="cambiarPestanaStats('logros')">🏆 Logros Retro (<span id="cont-logros-badge">0/10</span>)</button>
+                </div>
                 <button type="button" class="btn-secundario" style="border: none; padding: 4px 10px; cursor: pointer; border-radius: 6px; font-size: 16px; color: #fff;" onclick="cerrarModalEstadisticas()">✕</button>
             </div>
 
-            <!-- PERFIL RESUMEN GAMER -->
-            <div class="perfil-gamer-card">
-                <div class="perfil-gamer-info">
-                    <div class="perfil-gamer-avatar">🎮</div>
-                    <div class="perfil-gamer-textos">
-                        <h4 id="stats-nombre-jugador">Player 1</h4>
-                        <span class="badge-rango-gamer" id="stats-rango-badge">⭐ Jugador Casual</span>
+            <!-- CONTENIDO PESTAÑA 1: ESTADÍSTICAS -->
+            <div id="panel-pestana-stats">
+                <!-- PERFIL RESUMEN GAMER -->
+                <div class="perfil-gamer-card">
+                    <div class="perfil-gamer-info">
+                        <div class="perfil-gamer-avatar">🎮</div>
+                        <div class="perfil-gamer-textos">
+                            <h4 id="stats-nombre-jugador">Player 1</h4>
+                            <span class="badge-rango-gamer" id="stats-rango-badge">⭐ Jugador Casual</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; color: var(--text-muted);">Nivel de Colección</span>
+                        <div id="stats-nivel-txt" style="font-size: 15px; font-weight: 700; color: var(--secondary);">Nivel 1</div>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 11px; color: var(--text-muted);">Nivel de Colección</span>
-                    <div id="stats-nivel-txt" style="font-size: 15px; font-weight: 700; color: var(--secondary);">Nivel 1</div>
+
+                <!-- CUADRICULA DE 4 KPIS -->
+                <div class="grid-kpis-stats">
+                    <div class="kpi-card">
+                        <div class="kpi-card-header">⏱️ Tiempo Total</div>
+                        <div class="kpi-card-valor" id="kpi-tiempo-total">0m 00s</div>
+                        <div class="kpi-card-sub" id="kpi-tiempo-sub">Contabilizado al jugar</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card-header">🎮 Partidas Iniciadas</div>
+                        <div class="kpi-card-valor" id="kpi-partidas-total">0</div>
+                        <div class="kpi-card-sub">Sesiones de emulación</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card-header">🕹️ Consola Favorita</div>
+                        <div class="kpi-card-valor" id="kpi-consola-fav" style="font-size: 16px;">Ninguna aún</div>
+                        <div class="kpi-card-sub" id="kpi-consola-sub">Más jugada</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card-header">🏆 Juego Más Jugado</div>
+                        <div class="kpi-card-valor" id="kpi-juego-fav" style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ninguno aún</div>
+                        <div class="kpi-card-sub" id="kpi-juego-sub">0 partidas</div>
+                    </div>
+                </div>
+
+                <!-- HISTORIAL / DESGLOSE DE JUEGOS JUGADOS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase;">🎮 Juegos Registrados en tu Cuenta</span>
+                    <span id="stats-total-registrados" style="font-size: 11px; color: var(--text-muted);">0 títulos</span>
+                </div>
+
+                <div class="lista-desglose-juegos" id="lista-desglose-stats">
+                    <!-- Se llena con JS -->
                 </div>
             </div>
 
-            <!-- CUADRICULA DE 4 KPIS -->
-            <div class="grid-kpis-stats">
-                <div class="kpi-card">
-                    <div class="kpi-card-header">⏱️ Tiempo Total</div>
-                    <div class="kpi-card-valor" id="kpi-tiempo-total">0m 00s</div>
-                    <div class="kpi-card-sub" id="kpi-tiempo-sub">Contabilizado al jugar</div>
+            <!-- CONTENIDO PESTAÑA 2: LOGROS RETRO -->
+            <div id="panel-pestana-logros" style="display: none;">
+                <!-- RESUMEN DE PROGRESO DE LOGROS -->
+                <div class="resumen-logros-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div>
+                            <span style="font-size: 12px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.5px;">🏆 Progreso de Coleccionista</span>
+                            <div style="font-size: 11px; color: var(--text-muted);">Desbloquea logros jugando, explorando consolas e insertando cartuchos</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span id="txt-puntos-logros" style="font-size: 16px; font-weight: 800; color: #fbbf24;">0 Pts</span>
+                            <div id="txt-progreso-porcentaje" style="font-size: 11px; color: #34d399; font-weight: 700;">0%</div>
+                        </div>
+                    </div>
+                    <!-- BARRA DE PROGRESO -->
+                    <div class="progreso-logros-bar">
+                        <div id="progreso-logros-fill" class="progreso-logros-fill" style="width: 0%;"></div>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-card-header">🎮 Partidas Iniciadas</div>
-                    <div class="kpi-card-valor" id="kpi-partidas-total">0</div>
-                    <div class="kpi-card-sub">Sesiones de emulación</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-card-header">🕹️ Consola Favorita</div>
-                    <div class="kpi-card-valor" id="kpi-consola-fav" style="font-size: 16px;">Ninguna aún</div>
-                    <div class="kpi-card-sub" id="kpi-consola-sub">Más jugada</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-card-header">🏆 Juego Más Jugado</div>
-                    <div class="kpi-card-valor" id="kpi-juego-fav" style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ninguno aún</div>
-                    <div class="kpi-card-sub" id="kpi-juego-sub">0 partidas</div>
-                </div>
-            </div>
 
-            <!-- HISTORIAL / DESGLOSE DE JUEGOS JUGADOS -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase;">🎮 Juegos Registrados en tu Cuenta</span>
-                <span id="stats-total-registrados" style="font-size: 11px; color: var(--text-muted);">0 títulos</span>
-            </div>
-
-            <div class="lista-desglose-juegos" id="lista-desglose-stats">
-                <!-- Se llena con JS -->
+                <!-- LISTA DE LOGROS -->
+                <div class="grid-lista-logros" id="grid-lista-logros">
+                    <!-- Inyectado por JS -->
+                </div>
             </div>
 
             <!-- BOTONES DE ACCIÓN DEL MODAL -->
@@ -2490,6 +2755,33 @@
                     gain.connect(ctx.destination);
                     osc.start();
                     osc.stop(ctx.currentTime + 0.08);
+                } else if (tipo === 'insert') {
+                    // Sonido sordo físico de inserción de cartucho
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(140, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.12);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.15);
+                } else if (tipo === 'logro' || tipo === 'achievement') {
+                    // Fanfarria triunfal 8-bit de logro desbloqueado
+                    [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+                        gain.gain.setValueAtTime(0.14, ctx.currentTime + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.28);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + i * 0.08);
+                        osc.stop(ctx.currentTime + i * 0.08 + 0.3);
+                    });
                 } else if (tipo === 'konami') {
                     [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
                         const osc = ctx.createOscillator();
@@ -2578,6 +2870,7 @@
                 const nombreLimpio = nuevo.trim().substring(0, 16);
                 localStorage.setItem('retrohub_player', nombreLimpio);
                 inicializarNombreJugador();
+                try { desbloquearLogro('personalizador'); } catch(e) {}
                 sonidoClick('coin');
                 mostrarToast(`¡Bienvenido, ${nombreLimpio}! 🕹️`);
             }
@@ -2800,6 +3093,7 @@
                 lista.unshift(item);
                 localStorage.setItem('retrohub_sugerencias_guardadas', JSON.stringify(lista.slice(0, 30)));
                 actualizarHistorialSugerenciasUI();
+                try { desbloquearLogro('amigo_comunidad'); } catch(e) {}
             } catch(e) {}
         }
 
@@ -3421,6 +3715,7 @@
 
         function activarEasterEggKonami() {
             sonidoClick('konami');
+            try { desbloquearLogro('konami_legend'); } catch(e) {}
             const banner = document.getElementById('banner-konami');
             banner.style.display = 'block';
             setTimeout(() => { banner.style.display = 'none'; }, 4000);
@@ -3529,6 +3824,9 @@
                     stats.juegos[juegoEnPartidaActivo].tiempo = (stats.juegos[juegoEnPartidaActivo].tiempo || 0) + 2;
                 }
                 guardarEstadisticas(stats);
+                if (stats.tiempoTotalSegundos >= 300) {
+                    try { desbloquearLogro('maraton_gamer'); } catch(e) {}
+                }
             }, 2000);
         }
 
@@ -3561,7 +3859,7 @@
 
         function abrirModalEstadisticas() {
             try { sonidoClick('select'); } catch(e) {}
-            actualizarEstadisticasUI();
+            cambiarPestanaStats('stats');
             const m = document.getElementById('modal-estadisticas');
             if (m) {
                 m.classList.add('activo');
@@ -3667,12 +3965,240 @@
         }
 
         function reiniciarEstadisticasConfirm() {
-            if (confirm("¿Estás seguro de que quieres reiniciar todas tus estadísticas de juego a cero?")) {
+            if (confirm("¿Estás seguro de que quieres reiniciar todas tus estadísticas y logros de juego a cero?")) {
                 localStorage.removeItem('retrohub_stats');
+                localStorage.removeItem('retrohub_logros');
                 actualizarEstadisticasUI();
-                mostrarToast("Estadísticas reiniciadas correctamente");
+                actualizarBadgesLogrosUI();
+                renderizarGridLogros();
+                mostrarToast("Estadísticas y logros reiniciados correctamente");
                 sonidoClick('select');
             }
+        }
+
+        // --- SISTEMA DE LOGROS RETRO (RETRO ACHIEVEMENTS) ---
+        const DEFINICION_LOGROS = [
+            {
+                id: 'primer_cartucho',
+                icono: '💾',
+                titulo: '¡Primer Cartucho!',
+                desc: 'Inserta y arranca cualquier juego en la consola.',
+                pts: 50
+            },
+            {
+                id: 'veterano_n64',
+                icono: '🕹️',
+                titulo: 'Poder de 64 Bits',
+                desc: 'Inicia una partida en Nintendo 64 (ej: Paper Mario).',
+                pts: 100
+            },
+            {
+                id: 'portatil_gba',
+                icono: '🟣',
+                titulo: 'Bolsillo Legendario',
+                desc: 'Arranca un cartucho en Game Boy Advance.',
+                pts: 75
+            },
+            {
+                id: 'retro_8bit',
+                icono: '👾',
+                titulo: 'Pionero de 8-Bit',
+                desc: 'Revive la era de los 8 bits en NES / Famicom.',
+                pts: 75
+            },
+            {
+                id: 'explorador_consolas',
+                icono: '🌐',
+                titulo: 'Coleccionista Multiconsola',
+                desc: 'Prueba juegos en al menos 2 sistemas distintos.',
+                pts: 150
+            },
+            {
+                id: 'personalizador',
+                icono: '✏️',
+                titulo: 'Identidad Retro',
+                desc: 'Personaliza tu nombre o Gamertag de jugador.',
+                pts: 50
+            },
+            {
+                id: 'maraton_gamer',
+                icono: '⏱️',
+                titulo: 'Maratón Gamer',
+                desc: 'Acumula más de 5 minutos de tiempo total jugado.',
+                pts: 200
+            },
+            {
+                id: 'estratega_motor',
+                icono: '⚙️',
+                titulo: 'Ajuste Técnico',
+                desc: 'Cambia el motor gráfico de emulación de Nintendo 64.',
+                pts: 50
+            },
+            {
+                id: 'amigo_comunidad',
+                icono: '💡',
+                titulo: 'Colaborador Retro',
+                desc: 'Envía o copia una sugerencia o mensaje para Sara.',
+                pts: 100
+            },
+            {
+                id: 'konami_legend',
+                icono: '⭐',
+                titulo: 'Código Legendario',
+                desc: 'Descubre e introduce el Código Konami (↑ ↑ ↓ ↓ ← → ← → B A).',
+                pts: 250
+            }
+        ];
+
+        function cargarLogros() {
+            try {
+                const guardados = JSON.parse(localStorage.getItem('retrohub_logros') || '{}');
+                if (guardados && typeof guardados === 'object') return guardados;
+            } catch(e) {}
+            return {};
+        }
+
+        function guardarLogros(logros) {
+            try {
+                localStorage.setItem('retrohub_logros', JSON.stringify(logros));
+            } catch(e) {}
+        }
+
+        let timeoutBannerLogro = null;
+
+        function desbloquearLogro(idLogro) {
+            const logros = cargarLogros();
+            if (logros[idLogro]) return;
+
+            const def = DEFINICION_LOGROS.find(l => l.id === idLogro);
+            if (!def) return;
+
+            logros[idLogro] = {
+                fecha: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                pts: def.pts
+            };
+            guardarLogros(logros);
+
+            sonidoClick('logro');
+            mostrarBannerLogro(def);
+            actualizarBadgesLogrosUI();
+
+            const m = document.getElementById('modal-estadisticas');
+            if (m && m.classList.contains('activo')) {
+                renderizarGridLogros();
+            }
+        }
+
+        function mostrarBannerLogro(def) {
+            const banner = document.getElementById('banner-logro-flotante');
+            if (!banner) return;
+
+            const elIcono = document.getElementById('logro-notif-icono');
+            const elTitulo = document.getElementById('logro-notif-titulo');
+            const elDesc = document.getElementById('logro-notif-desc');
+
+            if (elIcono) elIcono.innerText = def.icono;
+            if (elTitulo) elTitulo.innerText = `${def.titulo} (+${def.pts} Pts)`;
+            if (elDesc) elDesc.innerText = def.desc;
+
+            if (timeoutBannerLogro) clearTimeout(timeoutBannerLogro);
+
+            banner.classList.add('show');
+            timeoutBannerLogro = setTimeout(() => {
+                banner.classList.remove('show');
+            }, 4500);
+        }
+
+        function actualizarBadgesLogrosUI() {
+            const logros = cargarLogros();
+            const desbloqueadosCount = Object.keys(logros).length;
+            const total = DEFINICION_LOGROS.length;
+
+            const badgeTop = document.getElementById('badge-top-logros');
+            if (badgeTop) {
+                badgeTop.innerText = `Logros (${desbloqueadosCount}/${total})`;
+            }
+
+            const contLogrosModal = document.getElementById('cont-logros-badge');
+            if (contLogrosModal) {
+                contLogrosModal.innerText = `${desbloqueadosCount}/${total}`;
+            }
+
+            let puntosTotales = 0;
+            let puntosMaximos = 0;
+            DEFINICION_LOGROS.forEach(l => {
+                puntosMaximos += l.pts;
+                if (logros[l.id]) puntosTotales += l.pts;
+            });
+
+            const elPuntos = document.getElementById('txt-puntos-logros');
+            if (elPuntos) elPuntos.innerText = `${puntosTotales} / ${puntosMaximos} Pts`;
+
+            const pct = total > 0 ? Math.round((desbloqueadosCount / total) * 100) : 0;
+            const elPct = document.getElementById('txt-progreso-porcentaje');
+            if (elPct) elPct.innerText = `${pct}% Desbloqueado`;
+
+            const barFill = document.getElementById('progreso-logros-fill');
+            if (barFill) barFill.style.width = `${pct}%`;
+        }
+
+        function renderizarGridLogros() {
+            actualizarBadgesLogrosUI();
+            const contenedor = document.getElementById('grid-lista-logros');
+            if (!contenedor) return;
+
+            const logros = cargarLogros();
+
+            contenedor.innerHTML = DEFINICION_LOGROS.map(def => {
+                const desbloqueado = !!logros[def.id];
+                const fechaDesbloqueo = desbloqueado ? logros[def.id].fecha : null;
+
+                return `
+                <div class="item-logro-card ${desbloqueado ? 'desbloqueado' : 'bloqueado'}">
+                    <div class="logro-card-left">
+                        <div class="logro-card-icon">${desbloqueado ? def.icono : '🔒'}</div>
+                        <div class="logro-card-textos">
+                            <span class="logro-card-nombre">${def.titulo}</span>
+                            <span class="logro-card-desc">${def.desc}</span>
+                            ${desbloqueado ? `<span style="font-size: 10px; color: #34d399; font-weight: 600;">✨ Conseguido: ${fechaDesbloqueo}</span>` : '<span style="font-size: 10px; color: var(--text-muted);">🔒 Bloqueado</span>'}
+                        </div>
+                    </div>
+                    <div class="logro-card-badge-pts">+${def.pts} Pts</div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function cambiarPestanaStats(pestana) {
+            try { sonidoClick('select'); } catch(e) {}
+            const btnStats = document.getElementById('tab-btn-stats');
+            const btnLogros = document.getElementById('tab-btn-logros');
+            const panelStats = document.getElementById('panel-pestana-stats');
+            const panelLogros = document.getElementById('panel-pestana-logros');
+
+            if (pestana === 'logros') {
+                if (btnStats) btnStats.classList.remove('activo');
+                if (btnLogros) btnLogros.classList.add('activo');
+                if (panelStats) panelStats.style.display = 'none';
+                if (panelLogros) panelLogros.style.display = 'block';
+                renderizarGridLogros();
+            } else {
+                if (btnStats) btnStats.classList.add('activo');
+                if (btnLogros) btnLogros.classList.remove('activo');
+                if (panelStats) panelStats.style.display = 'block';
+                if (panelLogros) panelLogros.style.display = 'none';
+                actualizarEstadisticasUI();
+            }
+        }
+
+        function abrirModalLogros() {
+            try { sonidoClick('select'); } catch(e) {}
+            const m = document.getElementById('modal-estadisticas');
+            if (m) {
+                m.classList.add('activo');
+                try { document.body.style.overflow = 'hidden'; } catch(e) {}
+            }
+            cambiarPestanaStats('logros');
         }
 
         // --- CATÁLOGO DE CONSOLAS Y ROMS CON CARTUCHOS Y CARÁTULAS ---
@@ -3853,6 +4379,7 @@
             motorN64Global = motor;
             document.getElementById('btn-motor-parallel').classList.toggle('activo', motor === 'parallel');
             document.getElementById('btn-motor-mupen').classList.toggle('activo', motor === 'mupen');
+            try { desbloquearLogro('estratega_motor'); } catch(e) {}
             sonidoClick('select');
         }
 
@@ -3959,7 +4486,7 @@
                     `;
 
                     item.onclick = () => {
-                        sonidoClick('coin');
+                        sonidoClick('insert');
                         item.classList.add('insertando');
                         setTimeout(() => {
                             arrancarJuego(juego.archivo, core, nombreLimpio);
@@ -3995,6 +4522,18 @@
             // Registrar estadísticas de sesión y arrancar cronómetro
             registrarInicioPartida(nombreLimpio, coreSistema);
             iniciarContadorTiempo(nombreLimpio);
+
+            // Desbloquear logros retro correspondientes
+            try {
+                desbloquearLogro('primer_cartucho');
+                if (coreSistema === 'n64') desbloquearLogro('veterano_n64');
+                if (coreSistema === 'gba') desbloquearLogro('portatil_gba');
+                if (coreSistema === 'nes') desbloquearLogro('retro_8bit');
+                const st = cargarEstadisticas();
+                if (st && st.consolas && Object.keys(st.consolas).length >= 2) {
+                    desbloquearLogro('explorador_consolas');
+                }
+            } catch(e) {}
 
             let urlIframe = `player.html?core=${coreSistema}&rom=${encodeURIComponent(rutaRom)}&name=${encodeURIComponent(nombreLimpio)}&theme=${temaActual}`;
             
@@ -4126,6 +4665,7 @@
             cargarInfoRed();
             cargarCatalogoServidor();
             actualizarListaRecientesUI();
+            actualizarBadgesLogrosUI();
 
             const params = new URLSearchParams(window.location.search);
             const emu = params.get('emu');
