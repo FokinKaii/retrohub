@@ -4,34 +4,50 @@
   "gb": [],
   "gba": [
     {
-      "titulo": "3Weeksinparadise",
+      "titulo": "3 Weeks in Paradise",
       "archivo": "ROMS/gba/3Weeksinparadise.gba",
-      "nombreArchivo": "3Weeksinparadise.gba"
+      "nombreArchivo": "3Weeksinparadise.gba",
+      "caratula": "ROMS/covers/3weeksinparadise.jpg",
+      "genero": "Aventura / Clásico",
+      "year": "1986 / GBA"
     },
     {
-      "titulo": "Anguna",
+      "titulo": "Anguna: Warriors of Demrav",
       "archivo": "ROMS/gba/Anguna.gba",
-      "nombreArchivo": "Anguna.gba"
+      "nombreArchivo": "Anguna.gba",
+      "caratula": "ROMS/covers/anguna_box.png",
+      "genero": "Acción / RPG Aventura",
+      "year": "2008 GBA"
     }
   ],
   "n64": [
     {
       "titulo": "Paper Mario (Europe) (En,Fr,De,Es)",
       "archivo": "ROMS/n64/Paper Mario (Europe) (En,Fr,De,Es).z64",
-      "nombreArchivo": "Paper Mario (Europe) (En,Fr,De,Es).z64"
+      "nombreArchivo": "Paper Mario (Europe) (En,Fr,De,Es).z64",
+      "caratula": "ROMS/covers/papermario.png",
+      "genero": "RPG / Mario Aventura",
+      "year": "2001 N64",
+      "fix": true
     }
   ],
   "nds": [],
   "nes": [
     {
-      "titulo": "31In1Realgame-Multicart",
+      "titulo": "31 In 1 Realgame Multicart",
       "archivo": "ROMS/nes/31In1Realgame-Multicart.nes",
-      "nombreArchivo": "31In1Realgame-Multicart.nes"
+      "nombreArchivo": "31In1Realgame-Multicart.nes",
+      "caratula": "ROMS/covers/31in1.png",
+      "genero": "Compilatorio Arcade 8-Bit",
+      "year": "NES Classic"
     },
     {
-      "titulo": "3In12Ppak",
+      "titulo": "3 In 1 2P Pak",
       "archivo": "ROMS/nes/3In12Ppak.nes",
-      "nombreArchivo": "3In12Ppak.nes"
+      "nombreArchivo": "3In12Ppak.nes",
+      "caratula": "ROMS/covers/3in1.png",
+      "genero": "Multijuego 2 Jugadores",
+      "year": "NES Classic"
     }
   ],
   "psp": [],
