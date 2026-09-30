@@ -118,6 +118,42 @@
             --bg-radial-3: rgba(5, 150, 105, 0.12);
         }
 
+        /* --- TEMA 7: CYBERPUNK 2077 --- */
+        [data-theme="cyberpunk"] {
+            --bg-color: #08090d;
+            --card-bg: rgba(20, 22, 33, 0.85);
+            --card-border: rgba(250, 204, 21, 0.28);
+            --primary: #facc15;
+            --primary-glow: rgba(250, 204, 21, 0.45);
+            --secondary: #06b6d4;
+            --accent-n64: #facc15;
+            --accent-gold: #fbbf24;
+            --text-main: #fefce8;
+            --text-muted: #fef08a;
+            --text-heading-accent: #facc15;
+            --bg-radial-1: rgba(250, 204, 21, 0.18);
+            --bg-radial-2: rgba(6, 182, 212, 0.16);
+            --bg-radial-3: rgba(244, 63, 94, 0.12);
+        }
+
+        /* --- TEMA 8: NEON ARCADE 80s --- */
+        [data-theme="arcade80s"] {
+            --bg-color: #0b0617;
+            --card-bg: rgba(29, 14, 56, 0.85);
+            --card-border: rgba(244, 63, 94, 0.28);
+            --primary: #f43f5e;
+            --primary-glow: rgba(244, 63, 94, 0.45);
+            --secondary: #22c55e;
+            --accent-n64: #f43f5e;
+            --accent-gold: #facc15;
+            --text-main: #fff1f2;
+            --text-muted: #fda4af;
+            --text-heading-accent: #fb7185;
+            --bg-radial-1: rgba(244, 63, 94, 0.2);
+            --bg-radial-2: rgba(34, 197, 94, 0.15);
+            --bg-radial-3: rgba(168, 85, 247, 0.14);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -1042,6 +1078,64 @@
             to { bottom: 10px; opacity: 0; }
         }
 
+        /* Pestañas selectoras para el pop-up de sugerencias y contacto */
+        .selector-tipo-sug {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 12px;
+        }
+
+        .btn-tab-sug {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-tab-sug:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-tab-sug.activo {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        /* Pills de juegos jugados recientemente */
+        .pill-reciente {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 11px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .pill-reciente:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            transform: translateY(-1px);
+        }
+
         /* --- FONDO ANIMADO --- */
         #retro-canvas-fondo {
             position: fixed;
@@ -1087,8 +1181,8 @@
             <button class="btn-toggle-top" onclick="abrirModalTemas()" title="Cambiar tema visual de la web">
                 <span>🎨</span> <span id="btn-texto-tema">Tema: Obsidian</span>
             </button>
-            <button class="btn-toggle-top" id="btn-top-sugerencias" onclick="abrirModalSugerencias()" title="Pedir un juego o enviar sugerencias a la creadora" style="background: rgba(192, 132, 252, 0.12); border-color: rgba(192, 132, 252, 0.45); color: #e9d5ff;">
-                <span>💡</span> <span>Sugerencias</span>
+            <button class="btn-toggle-top" id="btn-top-sugerencias" onclick="abrirModalSugerencias()" title="Sugerir juegos o contactar con la creadora" style="background: rgba(192, 132, 252, 0.12); border-color: rgba(192, 132, 252, 0.45); color: #e9d5ff;">
+                <span>💡</span> <span>Sugerencias & Contacto</span>
             </button>
             <button class="btn-toggle-top" onclick="abrirModalGuia()" title="Ver guía de cómo descargar y añadir juegos">
                 <span>📖</span> <span>Guía de ROMs</span>
@@ -1154,15 +1248,29 @@
                     <button class="btn-accion btn-secundario" style="padding: 8px 14px; font-size: 11px;" onclick="abrirModalGuia()">
                         Ver Instrucciones Completas
                     </button>
-                    <button class="btn-accion btn-secundario" style="padding: 8px 14px; font-size: 11px; border-color: rgba(192, 132, 252, 0.4); color: #c084fc;" onclick="abrirModalSugerencias()" title="¿Quieres que añadamos un juego? ¡Pídelo aquí!">
-                        💡 Pedir un Juego
-                    </button>
                 </div>
             </div>
 
-            <div class="seccion-titulo">
-                <span>🕹️ Elige una Consola</span>
-                <span style="font-size: 11px; text-transform: none; opacity: 0.8;">Haz clic en una consola para ver sus juegos o cargar uno</span>
+            <!-- SECCIÓN: JUGADOS RECIENTEMENTE -->
+            <div id="seccion-recientes" style="display: none; margin-bottom: 22px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.5px;">⭐ Partidas y Juegos Recientes</span>
+                    <button type="button" onclick="limpiarHistorialRecientes()" style="background: none; border: none; font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline;">Limpiar historial</button>
+                </div>
+                <div id="lista-recientes-pills" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+            </div>
+
+            <!-- CABECERA DEL CATÁLOGO CON BUSCADOR EN VIVO -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; flex-wrap: wrap;">
+                <div class="seccion-titulo" style="margin-bottom: 0;">
+                    <span>🕹️ Elige una Consola</span>
+                    <span style="font-size: 11px; text-transform: none; opacity: 0.8;">Haz clic en una consola para ver sus juegos o cargar uno</span>
+                </div>
+                <div style="position: relative; max-width: 250px; width: 100%;">
+                    <input type="text" id="filtro-consolas" placeholder="🔍 Filtrar consola (N64, GBA...)" oninput="filtrarConsolas(this.value)" style="width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--card-border); border-radius: 999px; padding: 7px 14px; font-size: 12px; color: #fff; outline: none; transition: border-color 0.2s;">
+                </div>
             </div>
 
             <!-- Grid de Sistemas -->
@@ -1388,6 +1496,32 @@
                         <p>Terminal hacker oscuro con destellos esmeralda</p>
                     </div>
                 </div>
+
+                <!-- Tema 7: Cyberpunk 2077 -->
+                <div class="card-tema" data-tema="cyberpunk" onclick="aplicarTema('cyberpunk')">
+                    <div class="swatches">
+                        <span style="background: #08090d;"></span>
+                        <span style="background: #facc15;"></span>
+                        <span style="background: #06b6d4;"></span>
+                    </div>
+                    <div class="tema-detalles">
+                        <h4>Cyberpunk 2077</h4>
+                        <p>Amarillo neón de alta energía y cian futurista</p>
+                    </div>
+                </div>
+
+                <!-- Tema 8: Neon Arcade 80s -->
+                <div class="card-tema" data-tema="arcade80s" onclick="aplicarTema('arcade80s')">
+                    <div class="swatches">
+                        <span style="background: #0b0617;"></span>
+                        <span style="background: #f43f5e;"></span>
+                        <span style="background: #22c55e;"></span>
+                    </div>
+                    <div class="tema-detalles">
+                        <h4>Neon Arcade 80s</h4>
+                        <p>Rosa fucsia y verde fósforo de recreativa clásica</p>
+                    </div>
+                </div>
             </div>
 
             <button class="btn-accion" style="width: 100%; justify-content: center; margin-top: 16px;" onclick="cerrarModalTemas()">Listo</button>
@@ -1463,60 +1597,94 @@
         </div>
     </div>
 
-    <!-- MODAL DE SUGERENCIAS Y PETICIONES A LA CREADORA -->
+    <!-- MODAL DE SUGERENCIAS Y CONTACTO DIRECTO -->
     <div class="modal-overlay" id="modal-sugerencias" onclick="if(event.target === this) cerrarModalSugerencias()">
-        <div class="modal-caja" style="max-width: 550px; text-align: left;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">💡 Buzón de Sugerencias & Peticiones</h3>
-                <button class="btn-secundario" style="border: none; padding: 4px 10px; cursor: pointer; border-radius: 6px; font-size: 16px; color: #fff;" onclick="cerrarModalSugerencias()">✕</button>
+        <div class="modal-caja" style="max-width: 560px; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">💡 Sugerencias & Contacto</h3>
+                <button type="button" class="btn-secundario" style="border: none; padding: 4px 10px; cursor: pointer; border-radius: 6px; font-size: 16px; color: #fff;" onclick="cerrarModalSugerencias()">✕</button>
             </div>
             
-            <p style="margin-bottom: 14px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                ¿Quieres que añada un juego concreto a alguna consola, tienes una idea o has visto un fallo? Escribe tu petición y elige cómo enviármela:
+            <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                ¿Falta algún juego, tienes una propuesta para la web o quieres contactar directamente con Sara? Selecciona el tipo de mensaje:
             </p>
 
+            <!-- SELECTOR DE PESTAÑAS (TIPO) -->
+            <div class="selector-tipo-sug">
+                <button type="button" class="btn-tab-sug activo" data-tipo="juego" onclick="cambiarTipoSugerencia('juego')">🎮 Pedir un Juego</button>
+                <button type="button" class="btn-tab-sug" data-tipo="idea" onclick="cambiarTipoSugerencia('idea')">💡 Sugerencia Web</button>
+                <button type="button" class="btn-tab-sug" data-tipo="contacto" onclick="cambiarTipoSugerencia('contacto')">✉️ Contactar a Sara</button>
+            </div>
+
             <div style="display: flex; flex-direction: column; gap: 11px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Tu Nombre / Gamertag:</label>
-                        <input type="text" id="sug-nombre" oninput="actualizarTicketPreview()" placeholder="Ej: MarioPlayer99" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                <!-- CAMPO NOMBRE (COMÚN) -->
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Tu Nombre / Gamertag:</label>
+                    <input type="text" id="sug-nombre" oninput="actualizarTicketPreview()" placeholder="Ej: Player 1" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                </div>
+
+                <!-- SECCIÓN 1: PEDIR JUEGO -->
+                <div id="sec-sug-juego">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 11px;">
+                        <div>
+                            <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Consola / Sistema:</label>
+                            <select id="sug-consola" onchange="actualizarTicketPreview()" style="width: 100%; box-sizing: border-box; background: #121422; border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 8px; color: #fff; font-size: 13px; font-family: inherit;">
+                                <option value="Nintendo 64">Nintendo 64</option>
+                                <option value="Game Boy Advance">Game Boy Advance</option>
+                                <option value="Super Nintendo">Super Nintendo (SNES)</option>
+                                <option value="PlayStation 1">PlayStation 1 (PSX)</option>
+                                <option value="PSP">Sony PSP</option>
+                                <option value="Nintendo DS">Nintendo DS</option>
+                                <option value="NES">NES (8-Bit)</option>
+                                <option value="Game Boy">Game Boy / Color</option>
+                                <option value="Sega Mega Drive">Sega Mega Drive</option>
+                                <option value="Arcade">Arcade / MAME</option>
+                                <option value="Atari 2600">Atari 2600</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Título del Juego:</label>
+                            <input type="text" id="sug-juego" oninput="actualizarTicketPreview()" placeholder="Ej: Mario Kart 64 / Pokémon..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                        </div>
                     </div>
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Consola / Sistema:</label>
-                        <select id="sug-consola" onchange="actualizarTicketPreview()" style="width: 100%; box-sizing: border-box; background: #121422; border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 8px; color: #fff; font-size: 13px; font-family: inherit;">
-                            <option value="Nintendo 64">Nintendo 64</option>
-                            <option value="Game Boy Advance">Game Boy Advance</option>
-                            <option value="Super Nintendo">Super Nintendo (SNES)</option>
-                            <option value="PlayStation 1">PlayStation 1 (PSX)</option>
-                            <option value="PSP">Sony PSP</option>
-                            <option value="Nintendo DS">Nintendo DS</option>
-                            <option value="NES">NES (8-Bit)</option>
-                            <option value="Game Boy">Game Boy / Color</option>
-                            <option value="Sega Mega Drive">Sega Mega Drive</option>
-                            <option value="Arcade">Arcade / MAME</option>
-                            <option value="General">Web / General</option>
-                        </select>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Detalles opcionales:</label>
+                        <textarea id="sug-mensaje" rows="2" oninput="actualizarTicketPreview()" placeholder="Ej: En español, versión europea o multijugador..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
                     </div>
                 </div>
 
-                <div>
-                    <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Juego que quieres pedir o Título de la sugerencia:</label>
-                    <input type="text" id="sug-juego" oninput="actualizarTicketPreview()" placeholder="Ej: Super Smash Bros / Mario Kart / Pokémon Esmeralda..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                <!-- SECCIÓN 2: IDEA O MEJORA WEB -->
+                <div id="sec-sug-idea" style="display: none;">
+                    <div style="margin-bottom: 11px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Propuesta o Idea:</label>
+                        <input type="text" id="sug-idea-titulo" oninput="actualizarTicketPreview()" placeholder="Ej: Nuevo filtro gráfico o compatibilidad mando bluetooth" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Detalles de la idea:</label>
+                        <textarea id="sug-idea-desc" rows="2" oninput="actualizarTicketPreview()" placeholder="Explica cómo te gustaría que funcionase..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
                 </div>
 
-                <div>
-                    <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Detalles o Mensaje (Opcional):</label>
-                    <textarea id="sug-mensaje" rows="2" oninput="actualizarTicketPreview()" placeholder="Ej: Si es posible en español, o para jugar multijugador..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
+                <!-- SECCIÓN 3: CONTACTO LIBRE -->
+                <div id="sec-sug-contacto" style="display: none;">
+                    <div style="margin-bottom: 11px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Asunto:</label>
+                        <input type="text" id="sug-contacto-asunto" oninput="actualizarTicketPreview()" placeholder="Ej: Saludo, pregunta sobre partidas o reporte de fallo" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; font-family: inherit;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; text-transform: uppercase;">Tu mensaje para Sara:</label>
+                        <textarea id="sug-contacto-mensaje" rows="2" oninput="actualizarTicketPreview()" placeholder="Escribe tu mensaje libremente..." style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 13px; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
                 </div>
 
                 <!-- FICHA DINÁMICA DE PREVISUALIZACIÓN -->
                 <div id="sug-ticket-preview" style="background: rgba(0, 0, 0, 0.45); border: 1px dashed var(--primary); border-radius: 10px; padding: 10px 14px; font-family: 'Space Grotesk', monospace; font-size: 12px; line-height: 1.5; color: #e2e8f0;">
                     <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-heading-accent); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 4px; margin-bottom: 6px;">
-                        <span>🎫 FICHA DE SUGERENCIA</span>
+                        <span>🎫 VISTA PREVIA</span>
                         <span id="ticket-consola-tag" style="background: var(--primary-glow); padding: 2px 8px; border-radius: 12px; font-size: 10px; color: #fff;">NINTENDO 64</span>
                     </div>
-                    <div>👤 <strong>Jugador:</strong> <span id="ticket-nombre-txt">Player 1</span></div>
-                    <div>🎮 <strong>Juego / Petición:</strong> <span id="ticket-juego-txt" style="color: var(--secondary);">Escribe el título arriba...</span></div>
+                    <div>👤 <strong>Remitente:</strong> <span id="ticket-nombre-txt">Player 1</span></div>
+                    <div>📌 <strong>Contenido:</strong> <span id="ticket-juego-txt" style="color: var(--secondary);">Escribe arriba...</span></div>
                     <div id="ticket-desc-line" style="display: none; color: #94a3b8; font-size: 11px; margin-top: 3px;">💬 <span id="ticket-desc-txt"></span></div>
                 </div>
 
@@ -1529,7 +1697,7 @@
 
                 <!-- ACCIONES DE ENVÍO DIRECTO -->
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Elige cómo enviármelo (1 Clic):</div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Enviar a Sara (1 Clic):</div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <!-- WhatsApp -->
@@ -1559,7 +1727,7 @@
                 <!-- HISTORIAL LOCAL -->
                 <div style="margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
                     <button type="button" onclick="alternarHistorialSugerencias()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; text-decoration: underline; font-size: 11px; padding: 0;">
-                        📁 <span id="btn-txt-historial">Ver sugerencias guardadas (0)</span>
+                        📁 <span id="btn-txt-historial">Ver mensajes guardados (0)</span>
                     </button>
                     <a href="https://github.com/FokinKaii/retrohub/issues/new" target="_blank" style="color: var(--secondary); text-decoration: none;">Abrir Issue en GitHub ↗</a>
                 </div>
@@ -1588,7 +1756,9 @@
             'synthwave': { nombre: 'Synthwave', icon: '🌆' },
             'snes': { nombre: 'SNES 16-Bit', icon: '🎮' },
             'crimson': { nombre: 'Crimson', icon: '🩸' },
-            'emerald': { nombre: 'Esmeralda', icon: '🟢' }
+            'emerald': { nombre: 'Esmeralda', icon: '🟢' },
+            'cyberpunk': { nombre: 'Cyberpunk', icon: '⚡' },
+            'arcade80s': { nombre: 'Arcade 80s', icon: '🕹️' }
         };
 
         let temaActual = localStorage.getItem('retrohub_theme') || 'obsidian';
@@ -1748,7 +1918,7 @@
             }
         }
 
-        // --- BUZÓN DE SUGERENCIAS Y PETICIONES A LA CREADORA ---
+        // --- BUZÓN DE SUGERENCIAS Y CONTACTO CON LA CREADORA ---
         const CORREO_PREDETERMINADO = 'saragomezmanzanares@gmail.com';
         let savedEmail = localStorage.getItem('retrohub_destino_email');
         if (!savedEmail || savedEmail === 'sargomman@alu.edu.gva.es') {
@@ -1757,10 +1927,12 @@
         }
         let correoDestino = savedEmail;
 
+        let tipoPeticionActual = 'juego';
+
         function cambiarCorreoDestino(e) {
             if (e) e.preventDefault();
             const actual = correoDestino;
-            const nuevo = prompt('Introduce el correo electrónico donde quieres recibir las sugerencias y peticiones de tus amigos (ej: tu_correo@gmail.com):', actual);
+            const nuevo = prompt('Introduce el correo electrónico donde quieres recibir los mensajes (ej: tu_correo@gmail.com):', actual);
             if (nuevo && nuevo.trim().includes('@')) {
                 correoDestino = nuevo.trim().toLowerCase();
                 localStorage.setItem('retrohub_destino_email', correoDestino);
@@ -1775,6 +1947,25 @@
             if (el) el.innerText = correoDestino;
         }
 
+        function cambiarTipoSugerencia(tipo) {
+            tipoPeticionActual = tipo;
+            try { sonidoClick('select'); } catch(e) {}
+
+            document.querySelectorAll('.btn-tab-sug').forEach(btn => {
+                btn.classList.toggle('activo', btn.getAttribute('data-tipo') === tipo);
+            });
+
+            const secJuego = document.getElementById('sec-sug-juego');
+            const secIdea = document.getElementById('sec-sug-idea');
+            const secContacto = document.getElementById('sec-sug-contacto');
+
+            if (secJuego) secJuego.style.display = (tipo === 'juego') ? 'block' : 'none';
+            if (secIdea) secIdea.style.display = (tipo === 'idea') ? 'block' : 'none';
+            if (secContacto) secContacto.style.display = (tipo === 'contacto') ? 'block' : 'none';
+
+            actualizarTicketPreview();
+        }
+
         function abrirModalSugerencias() {
             try { sonidoClick('select'); } catch(e) {}
             const modal = document.getElementById('modal-sugerencias');
@@ -1787,8 +1978,8 @@
                         const actualPlayer = localStorage.getItem('retrohub_player') || 'Player 1';
                         if (actualPlayer !== 'Player 1') inNombre.value = actualPlayer;
                     }
-                    actualizarTicketPreview();
                     actualizarTextoCorreoDestino();
+                    actualizarTicketPreview();
                     actualizarHistorialSugerenciasUI();
                 } catch(e) {
                     console.warn('Error inicializando campos de sugerencias:', e);
@@ -1807,62 +1998,135 @@
 
         function actualizarTicketPreview() {
             const inNombre = document.getElementById('sug-nombre');
-            const inConsola = document.getElementById('sug-consola');
-            const inJuego = document.getElementById('sug-juego');
-            const inMensaje = document.getElementById('sug-mensaje');
-
-            if (!inNombre || !inConsola || !inJuego) return;
-
             let defaultPlayer = 'Player 1';
             try { defaultPlayer = localStorage.getItem('retrohub_player') || 'Player 1'; } catch(e) {}
-            const nombre = inNombre.value.trim() || defaultPlayer;
-            const consola = inConsola.value || 'Nintendo 64';
-            const juego = inJuego.value.trim();
-            const mensaje = inMensaje ? inMensaje.value.trim() : '';
+            const nombre = (inNombre && inNombre.value.trim()) || defaultPlayer;
 
             const elNombre = document.getElementById('ticket-nombre-txt');
-            const elConsola = document.getElementById('ticket-consola-tag');
-            const elJuego = document.getElementById('ticket-juego-txt');
-
-            if (elNombre) elNombre.innerText = nombre;
-            if (elConsola) elConsola.innerText = consola.toUpperCase();
-            if (elJuego) elJuego.innerText = juego || 'Escribe el título arriba...';
-
+            const elTag = document.getElementById('ticket-consola-tag');
+            const elTitulo = document.getElementById('ticket-juego-txt');
             const descLine = document.getElementById('ticket-desc-line');
             const descTxt = document.getElementById('ticket-desc-txt');
-            if (descLine && descTxt) {
-                if (mensaje) {
-                    descLine.style.display = 'block';
-                    descTxt.innerText = `"${mensaje}"`;
-                } else {
-                    descLine.style.display = 'none';
+
+            if (elNombre) elNombre.innerText = nombre;
+
+            if (tipoPeticionActual === 'juego') {
+                const consola = document.getElementById('sug-consola') ? document.getElementById('sug-consola').value : 'Nintendo 64';
+                const juego = document.getElementById('sug-juego') ? document.getElementById('sug-juego').value.trim() : '';
+                const mensaje = document.getElementById('sug-mensaje') ? document.getElementById('sug-mensaje').value.trim() : '';
+
+                if (elTag) elTag.innerText = consola.toUpperCase();
+                if (elTitulo) elTitulo.innerText = juego || 'Escribe el juego arriba...';
+                if (descLine && descTxt) {
+                    if (mensaje) {
+                        descLine.style.display = 'block';
+                        descTxt.innerText = `"${mensaje}"`;
+                    } else {
+                        descLine.style.display = 'none';
+                    }
+                }
+            } else if (tipoPeticionActual === 'idea') {
+                const idea = document.getElementById('sug-idea-titulo') ? document.getElementById('sug-idea-titulo').value.trim() : '';
+                const desc = document.getElementById('sug-idea-desc') ? document.getElementById('sug-idea-desc').value.trim() : '';
+
+                if (elTag) elTag.innerText = '💡 IDEA / MEJORA';
+                if (elTitulo) elTitulo.innerText = idea || 'Escribe tu propuesta arriba...';
+                if (descLine && descTxt) {
+                    if (desc) {
+                        descLine.style.display = 'block';
+                        descTxt.innerText = `"${desc}"`;
+                    } else {
+                        descLine.style.display = 'none';
+                    }
+                }
+            } else {
+                const asunto = document.getElementById('sug-contacto-asunto') ? document.getElementById('sug-contacto-asunto').value.trim() : '';
+                const msg = document.getElementById('sug-contacto-mensaje') ? document.getElementById('sug-contacto-mensaje').value.trim() : '';
+
+                if (elTag) elTag.innerText = '✉️ MENSAJE A SARA';
+                if (elTitulo) elTitulo.innerText = asunto || 'Escribe el asunto arriba...';
+                if (descLine && descTxt) {
+                    if (msg) {
+                        descLine.style.display = 'block';
+                        descTxt.innerText = `"${msg}"`;
+                    } else {
+                        descLine.style.display = 'none';
+                    }
                 }
             }
         }
 
         function obtenerDatosSugerencia() {
-            const inJuego = document.getElementById('sug-juego');
-            const juego = inJuego.value.trim();
-            if (!juego) {
-                inJuego.focus();
-                inJuego.style.borderColor = '#ef4444';
-                setTimeout(() => inJuego.style.borderColor = 'var(--card-border)', 2000);
-                mostrarToast('⚠️ Escribe el título del juego que quieres pedir');
-                return null;
-            }
-
             const inNombre = document.getElementById('sug-nombre');
-            const nombre = inNombre.value.trim() || (localStorage.getItem('retrohub_player') || 'Player 1');
-            const consola = document.getElementById('sug-consola').value;
-            const mensaje = document.getElementById('sug-mensaje').value.trim();
+            const nombre = (inNombre && inNombre.value.trim()) || (localStorage.getItem('retrohub_player') || 'Player 1');
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            return {
-                nombre,
-                consola,
-                juego,
-                mensaje,
-                fecha: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-            };
+            if (tipoPeticionActual === 'juego') {
+                const inJuego = document.getElementById('sug-juego');
+                const juego = inJuego ? inJuego.value.trim() : '';
+                if (!juego) {
+                    if (inJuego) {
+                        inJuego.focus();
+                        inJuego.style.borderColor = '#ef4444';
+                        setTimeout(() => inJuego.style.borderColor = 'var(--card-border)', 2000);
+                    }
+                    mostrarToast('⚠️ Escribe el título del juego que quieres pedir');
+                    return null;
+                }
+                const consola = document.getElementById('sug-consola') ? document.getElementById('sug-consola').value : 'Nintendo 64';
+                const mensaje = document.getElementById('sug-mensaje') ? document.getElementById('sug-mensaje').value.trim() : '';
+                return {
+                    tipo: 'juego',
+                    nombre,
+                    consola,
+                    juego,
+                    mensaje,
+                    fecha
+                };
+            } else if (tipoPeticionActual === 'idea') {
+                const inIdea = document.getElementById('sug-idea-titulo');
+                const idea = inIdea ? inIdea.value.trim() : '';
+                if (!idea) {
+                    if (inIdea) {
+                        inIdea.focus();
+                        inIdea.style.borderColor = '#ef4444';
+                        setTimeout(() => inIdea.style.borderColor = 'var(--card-border)', 2000);
+                    }
+                    mostrarToast('⚠️ Escribe el título de tu propuesta');
+                    return null;
+                }
+                const desc = document.getElementById('sug-idea-desc') ? document.getElementById('sug-idea-desc').value.trim() : '';
+                return {
+                    tipo: 'idea',
+                    nombre,
+                    consola: 'Mejora Web',
+                    juego: idea,
+                    mensaje: desc,
+                    fecha
+                };
+            } else {
+                const inAsunto = document.getElementById('sug-contacto-asunto');
+                const asunto = inAsunto ? inAsunto.value.trim() : '';
+                const inMsg = document.getElementById('sug-contacto-mensaje');
+                const msg = inMsg ? inMsg.value.trim() : '';
+                if (!asunto && !msg) {
+                    if (inMsg) {
+                        inMsg.focus();
+                        inMsg.style.borderColor = '#ef4444';
+                        setTimeout(() => inMsg.style.borderColor = 'var(--card-border)', 2000);
+                    }
+                    mostrarToast('⚠️ Escribe tu mensaje para Sara');
+                    return null;
+                }
+                return {
+                    tipo: 'contacto',
+                    nombre,
+                    consola: 'Contacto Directo',
+                    juego: asunto || 'Mensaje de ' + nombre,
+                    mensaje: msg,
+                    fecha
+                };
+            }
         }
 
         function guardarSugerenciaLocal(item) {
@@ -1893,11 +2157,11 @@
                 lista = [];
             }
             
-            if (btn) btn.innerText = `Ver sugerencias guardadas (${lista.length})`;
+            if (btn) btn.innerText = `Ver mensajes guardados (${lista.length})`;
             if (!caja) return;
 
             if (lista.length === 0) {
-                caja.innerHTML = '<div style="color: #64748b; text-align: center; padding: 6px;">No hay peticiones guardadas en este navegador todavía.</div>';
+                caja.innerHTML = '<div style="color: #64748b; text-align: center; padding: 6px;">No hay mensajes guardados en este navegador todavía.</div>';
                 return;
             }
 
@@ -1925,10 +2189,18 @@
             sonidoClick('coin');
             guardarSugerenciaLocal(datos);
 
-            const textoMsg = `🎮 *Petición para RetroHub:*%0A👤 *De:* ${encodeURIComponent(datos.nombre)}%0A🕹️ *Consola:* ${encodeURIComponent(datos.consola)}%0A⭐ *Juego:* ${encodeURIComponent(datos.juego)}${datos.mensaje ? '%0A💬 *Detalles:* ' + encodeURIComponent(datos.mensaje) : ''}`;
+            let textoMsg = '';
+            if (datos.tipo === 'juego') {
+                textoMsg = `🎮 *Petición para RetroHub:*%0A👤 *De:* ${encodeURIComponent(datos.nombre)}%0A🕹️ *Consola:* ${encodeURIComponent(datos.consola)}%0A⭐ *Juego:* ${encodeURIComponent(datos.juego)}${datos.mensaje ? '%0A💬 *Detalles:* ' + encodeURIComponent(datos.mensaje) : ''}`;
+            } else if (datos.tipo === 'idea') {
+                textoMsg = `💡 *Sugerencia para RetroHub:*%0A👤 *De:* ${encodeURIComponent(datos.nombre)}%0A🚀 *Idea:* ${encodeURIComponent(datos.juego)}${datos.mensaje ? '%0A💬 *Detalles:* ' + encodeURIComponent(datos.mensaje) : ''}`;
+            } else {
+                textoMsg = `✉️ *Mensaje para Sara (RetroHub):*%0A👤 *De:* ${encodeURIComponent(datos.nombre)}%0A📌 *Asunto:* ${encodeURIComponent(datos.juego)}${datos.mensaje ? '%0A💬 *Mensaje:* ' + encodeURIComponent(datos.mensaje) : ''}`;
+            }
+
             const urlWhatsApp = `https://api.whatsapp.com/send?text=${textoMsg}`;
             window.open(urlWhatsApp, '_blank');
-            mostrarToast('📲 Abriendo WhatsApp para enviar la petición...');
+            mostrarToast('📲 Abriendo WhatsApp para enviar mensaje...');
         }
 
         // 2. ENVIAR POR CORREO DIRECTO (Gmail / Mailto)
@@ -1938,8 +2210,8 @@
             sonidoClick('coin');
             guardarSugerenciaLocal(datos);
 
-            const asunto = `[RetroHub] Petición de juego: ${datos.juego} (${datos.consola})`;
-            const cuerpo = `¡Hola!\n\nTe envío esta petición de juego para añadir a RetroHub:\n\n• Juego: ${datos.juego}\n• Consola: ${datos.consola}\n• De: ${datos.nombre}\n• Detalles: ${datos.mensaje || 'Sin detalles extra'}\n\n¡Un saludo!`;
+            const asunto = `[RetroHub] ${datos.consola}: ${datos.juego}`;
+            const cuerpo = `¡Hola Sara!\n\nTe envío este mensaje desde RetroHub:\n\n• De: ${datos.nombre}\n• Categoría: ${datos.consola}\n• Título/Asunto: ${datos.juego}\n• Mensaje: ${datos.mensaje || 'Sin detalles extra'}\n\n¡Un saludo!`;
 
             const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(correoDestino)}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
             const urlMailto = `mailto:${encodeURIComponent(correoDestino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
@@ -1957,18 +2229,18 @@
             if (!datos) return;
             guardarSugerenciaLocal(datos);
 
-            const ficha = `🎮 [RetroHub] Petición de Juego:\n• Título: ${datos.juego}\n• Consola: ${datos.consola}\n• Enviado por: ${datos.nombre}\n${datos.mensaje ? '• Detalles: ' + datos.mensaje + '\n' : ''}• Web: https://fokinkaii.github.io/retrohub/`;
+            const ficha = `🎮 [RetroHub] ${datos.consola}:\n• Título/Asunto: ${datos.juego}\n• De: ${datos.nombre}\n${datos.mensaje ? '• Mensaje: ' + datos.mensaje + '\n' : ''}• Web: https://fokinkaii.github.io/retrohub/`;
 
             navigator.clipboard.writeText(ficha).then(() => {
                 sonidoClick('coin');
-                mostrarToast('📋 ¡Ficha copiada! Pégala en Discord, Instagram o tu chat.');
+                mostrarToast('📋 ¡Mensaje copiado! Pégalo en Discord, Instagram o tu chat.');
             }).catch(() => {
                 sonidoClick('coin');
-                mostrarToast('📋 ¡Ficha guardada localmente!');
+                mostrarToast('📋 ¡Mensaje guardado localmente!');
             });
         }
 
-        // 4. ENVIAR POR LA WEB (FormSubmit con validación estricta y feedback honesto)
+        // 4. ENVIAR POR LA WEB (FormSubmit con feedback honesto)
         async function enviarSugerenciaWeb() {
             const datos = obtenerDatosSugerencia();
             if (!datos) return;
@@ -1989,11 +2261,11 @@
 
             const payload = {
                 Nombre: datos.nombre,
-                Consola: datos.consola,
-                Juego_O_Peticion: datos.juego,
-                Mensaje_Extra: datos.mensaje || 'Ninguno',
+                Categoria: datos.consola,
+                Titulo_O_Juego: datos.juego,
+                Mensaje: datos.mensaje || 'Ninguno',
                 Fecha_Envio: datos.fecha,
-                _subject: `🎮 [RetroHub] Petición de ${datos.nombre}: ${datos.juego} (${datos.consola})`,
+                _subject: `🎮 [RetroHub] ${datos.consola} de ${datos.nombre}: ${datos.juego}`,
                 _template: 'table',
                 _captcha: 'false'
             };
@@ -2014,9 +2286,13 @@
                     sonidoClick('coin');
                     estado.style.background = 'rgba(16, 185, 129, 0.2)';
                     estado.style.color = '#34d399';
-                    estado.innerHTML = `🎉 <strong>¡Petición enviada con éxito!</strong> Le llegará directamente al correo <code>${correoDestino}</code>.`;
-                    document.getElementById('sug-juego').value = '';
-                    if (document.getElementById('sug-mensaje')) document.getElementById('sug-mensaje').value = '';
+                    estado.innerHTML = `🎉 <strong>¡Mensaje enviado con éxito!</strong> Le llegará directamente al correo <code>${correoDestino}</code>.`;
+                    const inJ = document.getElementById('sug-juego'); if (inJ) inJ.value = '';
+                    const inM = document.getElementById('sug-mensaje'); if (inM) inM.value = '';
+                    const inI = document.getElementById('sug-idea-titulo'); if (inI) inI.value = '';
+                    const inID = document.getElementById('sug-idea-desc'); if (inID) inID.value = '';
+                    const inCA = document.getElementById('sug-contacto-asunto'); if (inCA) inCA.value = '';
+                    const inCM = document.getElementById('sug-contacto-mensaje'); if (inCM) inCM.value = '';
                     actualizarTicketPreview();
                 } else if (respuestaJson && respuestaJson.message && respuestaJson.message.toLowerCase().includes('activation')) {
                     estado.style.background = 'rgba(245, 158, 11, 0.2)';
@@ -2033,6 +2309,84 @@
                 btn.disabled = false;
                 txtBtn.innerText = 'Enviar por la Web';
             }
+        }
+
+        // --- FILTRO DE CONSOLAS EN TIEMPO REAL ---
+        function filtrarConsolas(texto) {
+            const query = (texto || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.card-consola');
+            cards.forEach(card => {
+                const nombre = (card.querySelector('.consola-nombre')?.innerText || '').toLowerCase();
+                const sys = (card.getAttribute('data-sys') || '').toLowerCase();
+                const visible = !query || nombre.includes(query) || sys.includes(query);
+                card.style.display = visible ? 'flex' : 'none';
+            });
+        }
+
+        // --- GESTIÓN DE JUEGOS JUGADOS RECIENTEMENTE ---
+        function guardarJuegoReciente(nombre, core, ruta) {
+            if (!nombre || !core) return;
+            try {
+                let recientes = JSON.parse(localStorage.getItem('retrohub_recientes') || '[]');
+                recientes = recientes.filter(r => r.nombre !== nombre);
+                recientes.unshift({
+                    nombre,
+                    core,
+                    ruta: ruta || '',
+                    fecha: Date.now()
+                });
+                localStorage.setItem('retrohub_recientes', JSON.stringify(recientes.slice(0, 8)));
+                actualizarListaRecientesUI();
+            } catch(e) {}
+        }
+
+        function actualizarListaRecientesUI() {
+            const sec = document.getElementById('seccion-recientes');
+            const cont = document.getElementById('lista-recientes-pills');
+            if (!sec || !cont) return;
+
+            let recientes = [];
+            try {
+                recientes = JSON.parse(localStorage.getItem('retrohub_recientes') || '[]');
+                if (!Array.isArray(recientes)) recientes = [];
+            } catch(e) {
+                recientes = [];
+            }
+
+            if (recientes.length === 0) {
+                sec.style.display = 'none';
+                return;
+            }
+
+            sec.style.display = 'block';
+            cont.innerHTML = recientes.map(r => `
+                <div class="pill-reciente" onclick="lanzarJuegoReciente('${encodeURIComponent(r.nombre)}', '${r.core}', '${encodeURIComponent(r.ruta || '')}')" title="Reanudar partida en ${r.core.toUpperCase()}">
+                    <span>🕹️</span>
+                    <strong>${r.nombre}</strong>
+                    <span style="opacity: 0.6; font-size: 10px;">(${r.core.toUpperCase()})</span>
+                </div>
+            `).join('');
+        }
+
+        function lanzarJuegoReciente(encNombre, core, encRuta) {
+            const nombre = decodeURIComponent(encNombre);
+            const ruta = decodeURIComponent(encRuta);
+            if (ruta && !ruta.startsWith('blob:')) {
+                sonidoClick('coin');
+                arrancarJuego(ruta, core, nombre);
+            } else {
+                sonidoClick('select');
+                seleccionarEmulador(core);
+                mostrarToast(`Selecciona tu ROM de ${nombre} para continuar`);
+            }
+        }
+
+        function limpiarHistorialRecientes() {
+            try {
+                localStorage.removeItem('retrohub_recientes');
+                actualizarListaRecientesUI();
+                mostrarToast('Historial de juegos limpiado');
+            } catch(e) {}
         }
 
         // ========================================================
@@ -2247,6 +2601,19 @@
                 });
 
             } else {
+                let colorLinea = '139, 92, 246';
+                let colorP1 = 'rgba(139, 92, 246,';
+                let colorP2 = 'rgba(6, 182, 212,';
+                if (temaActual === 'cyberpunk') {
+                    colorLinea = '250, 204, 21';
+                    colorP1 = 'rgba(250, 204, 21,';
+                    colorP2 = 'rgba(6, 182, 212,';
+                } else if (temaActual === 'arcade80s') {
+                    colorLinea = '244, 63, 94';
+                    colorP1 = 'rgba(244, 63, 94,';
+                    colorP2 = 'rgba(34, 197, 94,';
+                }
+
                 for (let i = 0; i < particulas.length; i++) {
                     for (let j = i + 1; j < particulas.length; j++) {
                         const dx = particulas[i].x - particulas[j].x;
@@ -2254,7 +2621,7 @@
                         const dist = Math.sqrt(dx * dx + dy * dy);
                         if (dist < 110) {
                             const alpha = (1 - (dist / 110)) * 0.22;
-                            ctxFondo.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                            ctxFondo.strokeStyle = `rgba(${colorLinea}, ${alpha})`;
                             ctxFondo.lineWidth = 0.8;
                             ctxFondo.beginPath();
                             ctxFondo.moveTo(particulas[i].x, particulas[i].y);
@@ -2270,7 +2637,7 @@
                     p.pulso += p.velocidadPulso;
                     const a = (Math.sin(p.pulso) + 1) / 2 * 0.55 + 0.2;
 
-                    ctxFondo.fillStyle = Math.random() > 0.5 ? `rgba(139, 92, 246, ${a})` : `rgba(6, 182, 212, ${a})`;
+                    ctxFondo.fillStyle = Math.random() > 0.5 ? `${colorP1} ${a})` : `${colorP2} ${a})`;
                     ctxFondo.beginPath();
                     ctxFondo.arc(p.x, p.y, p.radio, 0, Math.PI * 2);
                     ctxFondo.fill();
@@ -2611,6 +2978,10 @@
             emuladorActual = coreSistema;
             partidaActual = { ruta: rutaRom, core: coreSistema, nombre: nombreJuego };
 
+            if (nombreJuego && nombreJuego !== 'Juego') {
+                guardarJuegoReciente(nombreJuego, coreSistema, rutaRom);
+            }
+
             let urlIframe = `player.html?core=${coreSistema}&rom=${encodeURIComponent(rutaRom)}&name=${encodeURIComponent(nombreJuego || 'Juego')}&theme=${temaActual}`;
             
             if (coreSistema === 'n64') {
@@ -2744,6 +3115,7 @@
             actualizarFiltroCRT();
             cargarInfoRed();
             cargarCatalogoServidor();
+            actualizarListaRecientesUI();
 
             const params = new URLSearchParams(window.location.search);
             const emu = params.get('emu');
