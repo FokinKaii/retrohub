@@ -840,218 +840,190 @@
             }
         }
 
+        /* --- ESCAPARATE DE CARTUCHOS PUROS FLOTANTES --- */
+        @keyframes balanceoCartuchoPuro {
+            0% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+            25% {
+                transform: translateY(-9px) rotate(-4.5deg) translateX(-7px);
+            }
+            50% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+            75% {
+                transform: translateY(-9px) rotate(4.5deg) translateX(7px);
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+        }
+
+        @keyframes sombraCartuchoPuro {
+            0%, 100% {
+                transform: scale(1) translateX(0);
+                opacity: 0.55;
+            }
+            25% {
+                transform: scale(0.84, 0.88) translateX(7px);
+                opacity: 0.35;
+            }
+            50% {
+                transform: scale(1) translateX(0);
+                opacity: 0.55;
+            }
+            75% {
+                transform: scale(0.84, 0.88) translateX(-7px);
+                opacity: 0.35;
+            }
+        }
+
         .grid-caratulas {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 36px 24px;
             width: 100%;
             max-width: 980px;
-            margin-bottom: 22px;
+            margin-top: 10px;
+            margin-bottom: 26px;
+            justify-items: center;
         }
 
-        .card-juego-caratula {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(13, 16, 28, 0.88) 100%);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            overflow: hidden;
+        .cartucho-item-puro {
             display: flex;
             flex-direction: column;
-            transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            align-items: center;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+            padding: 14px 12px 16px;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            width: 100%;
+            max-width: 300px;
         }
 
-        .card-juego-caratula:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--primary);
-            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.6), 0 0 32px var(--primary-glow);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(18, 22, 40, 0.95) 100%);
+        .cartucho-item-puro:hover {
+            background: radial-gradient(ellipse at 50% 55%, rgba(255, 255, 255, 0.05) 0%, transparent 72%);
         }
 
-        /* Escenario 3D del Cartucho Físico */
-        .escenario-cartucho {
+        /* Escenario libre para el cartucho flotante sin marcos */
+        .cartucho-stage {
             position: relative;
             width: 100%;
-            height: 220px;
-            background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.06) 0%, rgba(8, 10, 20, 0.92) 80%);
+            height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .escenario-cartucho::before {
-            content: '';
-            position: absolute;
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-            opacity: 0.3;
-            filter: blur(20px);
-            pointer-events: none;
-            transition: transform 0.35s ease, opacity 0.35s ease;
-        }
-
-        .card-juego-caratula:hover .escenario-cartucho::before {
-            opacity: 0.75;
-            transform: scale(1.35);
-        }
-
-        .cartucho-contenedor {
-            position: relative;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            padding: 10px 0;
-        }
-
-        .cartucho-img {
+        .cartucho-img-puro {
             width: auto;
-            max-width: 82%;
-            max-height: 145px;
+            max-width: 92%;
+            max-height: 165px;
             object-fit: contain;
-            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.72));
-            animation: balanceoCartucho 4.8s ease-in-out infinite;
+            filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.78));
+            animation: balanceoCartuchoPuro 4.8s ease-in-out infinite;
             transform-origin: 50% 65%;
-            transition: filter 0.3s ease;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
             will-change: transform;
+            z-index: 2;
         }
 
-        .card-juego-caratula:hover .cartucho-img {
-            animation-duration: 2.3s;
-            filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.88)) drop-shadow(0 0 16px var(--primary-glow));
-        }
-
-        /* Sombra dinámica sincronizada */
-        .cartucho-sombra {
-            width: 120px;
-            height: 15px;
+        .cartucho-sombra-puro {
+            width: 150px;
+            height: 18px;
             border-radius: 50%;
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, transparent 75%);
-            margin-top: 6px;
-            animation: sombraCartucho 4.8s ease-in-out infinite;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.82) 0%, transparent 75%);
+            margin-top: 10px;
+            animation: sombraCartuchoPuro 4.8s ease-in-out infinite;
             transform-origin: center center;
             pointer-events: none;
             will-change: transform, opacity;
+            z-index: 1;
         }
 
-        .card-juego-caratula:hover .cartucho-sombra {
-            animation-duration: 2.3s;
-            opacity: 0.9;
+        /* Hover dinámico: el cartucho se eleva e ilumina hacia el usuario */
+        .cartucho-item-puro:hover .cartucho-img-puro {
+            animation-play-state: paused;
+            transform: translateY(-14px) scale(1.12);
+            filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 22px var(--primary-glow));
         }
 
-        .tag-consola-caratula {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 5;
-            background: rgba(15, 17, 28, 0.88);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .cartucho-item-puro:hover .cartucho-sombra-puro {
+            animation-play-state: paused;
+            transform: scale(0.82);
+            opacity: 0.3;
         }
 
-        .tag-fix-caratula {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 5;
-            background: rgba(16, 185, 129, 0.92);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
-            letter-spacing: 0.3px;
+        /* Animación física de inserción en la consola al hacer clic */
+        .cartucho-item-puro.insertando .cartucho-img-puro,
+        .cartucho-item-puro:active .cartucho-img-puro {
+            transform: translateY(16px) scale(0.95);
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.95));
+            transition: transform 0.14s ease, filter 0.14s ease;
         }
 
-        .badge-tipo-soporte {
-            position: absolute;
-            bottom: 8px;
-            right: 10px;
-            z-index: 5;
-            font-size: 9.5px;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            color: var(--secondary);
-            background: rgba(0, 0, 0, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            padding: 2px 8px;
-        }
-
-        .info-caratula {
-            padding: 14px 16px 16px;
+        .cartucho-label {
+            margin-top: 10px;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
-            justify-content: space-between;
-            gap: 10px;
-            background: rgba(14, 16, 28, 0.7);
-        }
-
-        .titulo-caratula {
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            line-height: 1.35;
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-align: left;
-        }
-
-        .meta-caratula {
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--text-muted);
+            text-align: center;
+            gap: 5px;
+            width: 100%;
         }
 
-        .btn-jugar-caratula {
-            width: 100%;
-            border: none;
-            padding: 9px 12px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
+        .cartucho-titulo-fila {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cartucho-titulo-texto {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.2px;
+            line-height: 1.3;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        .cartucho-item-puro:hover .cartucho-titulo-texto {
+            color: #fff;
+            text-shadow: 0 0 14px var(--primary-glow);
+        }
+
+        .cartucho-pill-fix {
+            font-size: 9px;
+            font-weight: 800;
+            color: #fff;
+            background: rgba(16, 185, 129, 0.9);
+            padding: 2px 7px;
+            border-radius: 6px;
+            letter-spacing: 0.4px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+        }
+
+        .cartucho-accion-hint {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 14px var(--primary-glow);
+            opacity: 0.85;
         }
 
-        .btn-jugar-caratula:hover {
-            filter: brightness(1.15);
-            transform: scale(1.02);
-        }
-
-        .btn-jugar-caratula.btn-fix {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        .cartucho-item-puro:hover .cartucho-accion-hint {
+            color: var(--primary);
+            opacity: 1;
+            transform: translateY(-1px);
         }
 
         /* --- ESTILOS DE ESTADÍSTICAS --- */
@@ -1864,7 +1836,7 @@
 
             <!-- Filtro de búsqueda rápida -->
             <div class="caja-busqueda">
-                <input type="text" id="input-filtro" class="input-busqueda" placeholder="🔍 Filtrar juegos por nombre..." oninput="filtrarJuegos(this.value)">
+                <input type="text" id="input-filtro" class="input-busqueda" placeholder="🔍 Buscar cartucho por título..." oninput="filtrarJuegos(this.value)">
             </div>
 
             <!-- Selector de Motor Gráfico (visible especialmente en N64) -->
@@ -1880,7 +1852,7 @@
             </div>
             
             <div id="lista-roms" class="grid-caratulas">
-                <!-- Se inyecta dinámicamente con carátulas -->
+                <!-- Se inyecta dinámicamente con cartuchos puros flotantes -->
             </div>
             
             <div class="zona-drop" onclick="document.getElementById('input-archivo-local').click()">
@@ -3955,13 +3927,13 @@
                 contenedorLista.appendChild(sinJuegos);
             } else {
                 juegos.forEach(juego => {
-                    const card = document.createElement('div');
-                    card.className = 'card-juego-caratula';
+                    const item = document.createElement('div');
+                    item.className = 'cartucho-item-puro';
 
                     const nombreLimpio = juego.titulo || juego.nombreArchivo || 'Juego';
                     const esPaperMario = nombreLimpio.toLowerCase().includes('paper mario');
                     
-                    // Prioridad de imagen de cartucho
+                    // Prioridad de imagen de cartucho auténtico
                     let cartuchoSrc = juego.cartucho;
                     if (!cartuchoSrc) {
                         if (esPaperMario) cartuchoSrc = 'ROMS/cartridges/cart_papermario.png';
@@ -3972,38 +3944,30 @@
                         else cartuchoSrc = `ROMS/cartridges/${idSistema}_clean.png`;
                     }
 
-                    const generoTxt = juego.genero || 'Aventura Retro';
-                    const yearTxt = juego.year || idSistema.toUpperCase();
-
-                    card.innerHTML = `
-                        <div class="escenario-cartucho">
-                            <span class="tag-consola-caratula">${idSistema.toUpperCase()}</span>
-                            ${(esPaperMario || juego.fix) ? '<span class="tag-fix-caratula">✨ FIX ACTIVO</span>' : ''}
-                            <span class="badge-tipo-soporte">💾 CARTUCHO FÍSICO</span>
-
-                            <div class="cartucho-contenedor">
-                                <img src="${cartuchoSrc}" alt="Cartucho ${nombreLimpio}" class="cartucho-img" loading="lazy" onerror="fallbackCartucho(this, '${idSistema}')">
-                                <div class="cartucho-sombra"></div>
-                            </div>
+                    item.innerHTML = `
+                        <div class="cartucho-stage" title="Haz clic en el cartucho para insertar y jugar">
+                            <img src="${cartuchoSrc}" alt="${nombreLimpio}" class="cartucho-img-puro" loading="lazy" onerror="fallbackCartucho(this, '${idSistema}')">
+                            <div class="cartucho-sombra-puro"></div>
                         </div>
-                        <div class="info-caratula">
-                            <h4 class="titulo-caratula" title="${nombreLimpio}">${nombreLimpio}</h4>
-                            <div class="meta-caratula">
-                                <span>${generoTxt}</span>
-                                <span>${yearTxt}</span>
+                        <div class="cartucho-label">
+                            <div class="cartucho-titulo-fila">
+                                <span class="cartucho-titulo-texto" title="${nombreLimpio}">${nombreLimpio}</span>
+                                ${(esPaperMario || juego.fix) ? '<span class="cartucho-pill-fix">✨ FIX N64</span>' : ''}
                             </div>
-                            <button type="button" class="btn-jugar-caratula ${(esPaperMario || juego.fix) ? 'btn-fix' : ''}">
-                                ▶ Insertar & Jugar
-                            </button>
+                            <span class="cartucho-accion-hint">▶ Clic en el cartucho para jugar</span>
                         </div>
                     `;
 
-                    card.onclick = () => {
+                    item.onclick = () => {
                         sonidoClick('coin');
-                        arrancarJuego(juego.archivo, core, nombreLimpio);
+                        item.classList.add('insertando');
+                        setTimeout(() => {
+                            arrancarJuego(juego.archivo, core, nombreLimpio);
+                            item.classList.remove('insertando');
+                        }, 250);
                     };
 
-                    contenedorLista.appendChild(card);
+                    contenedorLista.appendChild(item);
                 });
             }
         }
