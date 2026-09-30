@@ -8,6 +8,7 @@
       "archivo": "ROMS/gba/3Weeksinparadise.gba",
       "nombreArchivo": "3Weeksinparadise.gba",
       "caratula": "ROMS/covers/3weeksinparadise.jpg",
+      "cartucho": "ROMS/cartridges/cart_3weeksinparadise.png",
       "genero": "Aventura / Clásico",
       "year": "1986 / GBA"
     },
@@ -16,6 +17,7 @@
       "archivo": "ROMS/gba/Anguna.gba",
       "nombreArchivo": "Anguna.gba",
       "caratula": "ROMS/covers/anguna_box.png",
+      "cartucho": "ROMS/cartridges/cart_anguna.png",
       "genero": "Acción / RPG Aventura",
       "year": "2008 GBA"
     }
@@ -26,6 +28,7 @@
       "archivo": "ROMS/n64/Paper Mario (Europe) (En,Fr,De,Es).z64",
       "nombreArchivo": "Paper Mario (Europe) (En,Fr,De,Es).z64",
       "caratula": "ROMS/covers/papermario.png",
+      "cartucho": "ROMS/cartridges/cart_papermario.png",
       "genero": "RPG / Mario Aventura",
       "year": "2001 N64",
       "fix": true
@@ -38,6 +41,7 @@
       "archivo": "ROMS/nes/31In1Realgame-Multicart.nes",
       "nombreArchivo": "31In1Realgame-Multicart.nes",
       "caratula": "ROMS/covers/31in1.png",
+      "cartucho": "ROMS/cartridges/cart_31in1.png",
       "genero": "Compilatorio Arcade 8-Bit",
       "year": "NES Classic"
     },
@@ -46,6 +50,7 @@
       "archivo": "ROMS/nes/3In12Ppak.nes",
       "nombreArchivo": "3In12Ppak.nes",
       "caratula": "ROMS/covers/3in1.png",
+      "cartucho": "ROMS/cartridges/cart_3in1.png",
       "genero": "Multijuego 2 Jugadores",
       "year": "NES Classic"
     }

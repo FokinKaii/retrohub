@@ -461,19 +461,19 @@
 
         .grid-sistemas {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 16px;
             width: 100%;
             max-width: 980px;
         }
 
         .card-consola {
-            background: rgba(255, 255, 255, 0.03);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(18, 22, 38, 0.85) 100%);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
-            padding: 18px 14px;
+            padding: 18px 14px 16px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -481,73 +481,136 @@
             position: relative;
             overflow: hidden;
             text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         .card-consola::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at top, var(--glow-color, var(--primary-glow)), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background: radial-gradient(circle at 50% 30%, var(--glow-color, var(--primary-glow)), transparent 72%);
+            opacity: 0.15;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
         }
 
         .card-consola:hover {
-            transform: translateY(-4px);
+            transform: translateY(-7px) scale(1.02);
             border-color: var(--border-hover, var(--primary));
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 25px var(--glow-color, var(--primary-glow));
-            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 26px var(--glow-color, var(--primary-glow));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(24, 29, 52, 0.95) 100%);
         }
 
         .card-consola:hover::before {
-            opacity: 1;
+            opacity: 0.5;
         }
 
-        .consola-icono {
-            font-size: 32px;
+        .consola-visual-wrap {
             position: relative;
+            width: 100%;
+            height: 95px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 1;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+        }
+
+        .consola-glow-backdrop {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-color, var(--primary-glow)) 0%, transparent 70%);
+            opacity: 0.3;
+            filter: blur(10px);
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            pointer-events: none;
+        }
+
+        .card-consola:hover .consola-glow-backdrop {
+            transform: scale(1.4);
+            opacity: 0.8;
+        }
+
+        .consola-img-device {
+            max-width: 105px;
+            max-height: 80px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.65));
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+            z-index: 2;
+        }
+
+        .card-consola:hover .consola-img-device {
+            transform: scale(1.12) translateY(-3px);
+            filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 12px var(--glow-color));
+        }
+
+        .consola-detalles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            z-index: 1;
+            width: 100%;
         }
 
         .consola-nombre {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-main);
-            position: relative;
-            z-index: 1;
+            letter-spacing: 0.2px;
+        }
+
+        .consola-era-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            opacity: 0.88;
         }
 
         .consola-badge {
             font-size: 11px;
             color: var(--text-muted);
             background: rgba(255, 255, 255, 0.06);
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             z-index: 1;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .card-consola:hover .consola-badge {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
         }
 
         .consola-badge.con-juegos {
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.18);
             color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+            font-weight: 700;
         }
 
         /* Temas por consola */
-        .card-consola[data-sys="n64"] { --glow-color: rgba(239, 68, 68, 0.35); --border-hover: #ef4444; }
-        .card-consola[data-sys="gba"] { --glow-color: rgba(139, 92, 246, 0.35); --border-hover: #8b5cf6; }
-        .card-consola[data-sys="snes"] { --glow-color: rgba(168, 85, 247, 0.35); --border-hover: #a855f7; }
-        .card-consola[data-sys="nes"] { --glow-color: rgba(244, 63, 94, 0.35); --border-hover: #f43f5e; }
-        .card-consola[data-sys="psx"] { --glow-color: rgba(6, 182, 212, 0.35); --border-hover: #06b6d4; }
-        .card-consola[data-sys="psp"] { --glow-color: rgba(59, 130, 246, 0.35); --border-hover: #3b82f6; }
-        .card-consola[data-sys="nds"] { --glow-color: rgba(14, 165, 233, 0.35); --border-hover: #0ea5e9; }
-        .card-consola[data-sys="segaMD"] { --glow-color: rgba(234, 179, 8, 0.35); --border-hover: #eab308; }
-        .card-consola[data-sys="arcade"] { --glow-color: rgba(236, 72, 153, 0.35); --border-hover: #ec4899; }
-        .card-consola[data-sys="gb"] { --glow-color: rgba(16, 185, 129, 0.35); --border-hover: #10b981; }
-        .card-consola[data-sys="atari2600"] { --glow-color: rgba(245, 158, 11, 0.35); --border-hover: #f59e0b; }
+        .card-consola[data-sys="n64"] { --glow-color: rgba(239, 68, 68, 0.45); --border-hover: #ef4444; }
+        .card-consola[data-sys="gba"] { --glow-color: rgba(139, 92, 246, 0.45); --border-hover: #8b5cf6; }
+        .card-consola[data-sys="snes"] { --glow-color: rgba(168, 85, 247, 0.45); --border-hover: #a855f7; }
+        .card-consola[data-sys="nes"] { --glow-color: rgba(244, 63, 94, 0.45); --border-hover: #f43f5e; }
+        .card-consola[data-sys="psx"] { --glow-color: rgba(6, 182, 212, 0.45); --border-hover: #06b6d4; }
+        .card-consola[data-sys="psp"] { --glow-color: rgba(59, 130, 246, 0.45); --border-hover: #3b82f6; }
+        .card-consola[data-sys="nds"] { --glow-color: rgba(14, 165, 233, 0.45); --border-hover: #0ea5e9; }
+        .card-consola[data-sys="segaMD"] { --glow-color: rgba(234, 179, 8, 0.45); --border-hover: #eab308; }
+        .card-consola[data-sys="arcade"] { --glow-color: rgba(236, 72, 153, 0.45); --border-hover: #ec4899; }
+        .card-consola[data-sys="gb"] { --glow-color: rgba(16, 185, 129, 0.45); --border-hover: #10b981; }
+        .card-consola[data-sys="atari2600"] { --glow-color: rgba(245, 158, 11, 0.45); --border-hover: #f59e0b; }
 
         /* ZONA CARGA RÁPIDA / DRAG & DROP */
         .zona-drop {
@@ -739,112 +802,158 @@
             box-shadow: 0 2px 8px var(--primary-glow);
         }
 
-        /* --- GRID DE CARÁTULAS ESTILO STEAM / NETFLIX --- */
+        /* --- ESTILOS DE CARTUCHOS Y ANIMACIÓN DINÁMICA --- */
+        @keyframes balanceoCartucho {
+            0% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+            25% {
+                transform: translateY(-5px) rotate(-4.5deg) translateX(-7px);
+            }
+            50% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+            75% {
+                transform: translateY(-5px) rotate(4.5deg) translateX(7px);
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg) translateX(0px);
+            }
+        }
+
+        @keyframes sombraCartucho {
+            0%, 100% {
+                transform: scaleX(1) translateX(0);
+                opacity: 0.55;
+            }
+            25% {
+                transform: scaleX(0.86) translateX(7px);
+                opacity: 0.38;
+            }
+            50% {
+                transform: scaleX(1) translateX(0);
+                opacity: 0.55;
+            }
+            75% {
+                transform: scaleX(0.86) translateX(-7px);
+                opacity: 0.38;
+            }
+        }
+
         .grid-caratulas {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
             width: 100%;
             max-width: 980px;
             margin-bottom: 22px;
         }
 
         .card-juego-caratula {
-            background: rgba(255, 255, 255, 0.04);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(13, 16, 28, 0.88) 100%);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
+            border-radius: 20px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             position: relative;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
         }
 
         .card-juego-caratula:hover {
             transform: translateY(-8px) scale(1.02);
             border-color: var(--primary);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 25px var(--primary-glow);
-            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.6), 0 0 32px var(--primary-glow);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(18, 22, 40, 0.95) 100%);
         }
 
-        .contenedor-caratula {
+        /* Escenario 3D del Cartucho Físico */
+        .escenario-cartucho {
             position: relative;
             width: 100%;
-            aspect-ratio: 3 / 4;
-            overflow: hidden;
-            background: #090a14;
+            height: 220px;
+            background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.06) 0%, rgba(8, 10, 20, 0.92) 80%);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .caratula-poster {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: block;
-        }
-
-        .card-juego-caratula:hover .caratula-poster {
-            transform: scale(1.06);
-        }
-
-        .contenedor-caratula::after {
+        .escenario-cartucho::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .overlay-hover-play {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.42);
-            backdrop-filter: blur(2px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            z-index: 2;
-        }
-
-        .card-juego-caratula:hover .overlay-hover-play {
-            opacity: 1;
-        }
-
-        .icono-play-circle {
-            width: 52px;
-            height: 52px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            padding-left: 3px;
-            box-shadow: 0 4px 20px var(--primary-glow);
-            transform: scale(0.85);
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            opacity: 0.3;
+            filter: blur(20px);
+            pointer-events: none;
+            transition: transform 0.35s ease, opacity 0.35s ease;
         }
 
-        .card-juego-caratula:hover .icono-play-circle {
-            transform: scale(1);
+        .card-juego-caratula:hover .escenario-cartucho::before {
+            opacity: 0.75;
+            transform: scale(1.35);
+        }
+
+        .cartucho-contenedor {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            padding: 10px 0;
+        }
+
+        .cartucho-img {
+            width: auto;
+            max-width: 82%;
+            max-height: 145px;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.72));
+            animation: balanceoCartucho 4.8s ease-in-out infinite;
+            transform-origin: 50% 65%;
+            transition: filter 0.3s ease;
+            will-change: transform;
+        }
+
+        .card-juego-caratula:hover .cartucho-img {
+            animation-duration: 2.3s;
+            filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.88)) drop-shadow(0 0 16px var(--primary-glow));
+        }
+
+        /* Sombra dinámica sincronizada */
+        .cartucho-sombra {
+            width: 120px;
+            height: 15px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, transparent 75%);
+            margin-top: 6px;
+            animation: sombraCartucho 4.8s ease-in-out infinite;
+            transform-origin: center center;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        .card-juego-caratula:hover .cartucho-sombra {
+            animation-duration: 2.3s;
+            opacity: 0.9;
         }
 
         .tag-consola-caratula {
             position: absolute;
             top: 10px;
             left: 10px;
-            z-index: 3;
+            z-index: 5;
             background: rgba(15, 17, 28, 0.88);
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
             color: #fff;
             font-size: 10px;
             font-weight: 700;
@@ -859,26 +968,41 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 3;
+            z-index: 5;
             background: rgba(16, 185, 129, 0.92);
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
             color: #fff;
             font-size: 9px;
             font-weight: 800;
-            padding: 3px 7px;
+            padding: 3px 8px;
             border-radius: 6px;
             box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
             letter-spacing: 0.3px;
         }
 
+        .badge-tipo-soporte {
+            position: absolute;
+            bottom: 8px;
+            right: 10px;
+            z-index: 5;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            color: var(--secondary);
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 2px 8px;
+        }
+
         .info-caratula {
-            padding: 13px 14px 15px;
+            padding: 14px 16px 16px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             justify-content: space-between;
-            gap: 8px;
-            background: rgba(14, 16, 28, 0.65);
+            gap: 10px;
+            background: rgba(14, 16, 28, 0.7);
         }
 
         .titulo-caratula {
@@ -905,8 +1029,8 @@
         .btn-jugar-caratula {
             width: 100%;
             border: none;
-            padding: 8px 12px;
-            border-radius: 9px;
+            padding: 9px 12px;
+            border-radius: 10px;
             background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
             color: #fff;
             font-size: 12px;
@@ -917,7 +1041,7 @@
             justify-content: center;
             gap: 6px;
             transition: all 0.2s ease;
-            box-shadow: 0 3px 12px var(--primary-glow);
+            box-shadow: 0 4px 14px var(--primary-glow);
         }
 
         .btn-jugar-caratula:hover {
@@ -927,7 +1051,7 @@
 
         .btn-jugar-caratula.btn-fix {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
         }
 
         /* --- ESTILOS DE ESTADÍSTICAS --- */
@@ -1575,69 +1699,145 @@
             <!-- CABECERA DEL CATÁLOGO CON BUSCADOR EN VIVO -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; flex-wrap: wrap;">
                 <div class="seccion-titulo" style="margin-bottom: 0;">
-                    <span>🕹️ Elige una Consola</span>
-                    <span style="font-size: 11px; text-transform: none; opacity: 0.8;">Haz clic en una consola para ver sus juegos o cargar uno</span>
+                    <span>🎮 Selección de Consola</span>
+                    <span style="font-size: 11px; text-transform: none; opacity: 0.8;">Elige tu sistema para cargar cartuchos y partidas</span>
                 </div>
                 <div style="position: relative; max-width: 250px; width: 100%;">
                     <input type="text" id="filtro-consolas" placeholder="🔍 Filtrar consola (N64, GBA...)" oninput="filtrarConsolas(this.value)" style="width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--card-border); border-radius: 999px; padding: 7px 14px; font-size: 12px; color: #fff; outline: none; transition: border-color 0.2s;">
                 </div>
             </div>
 
-            <!-- Grid de Sistemas -->
+            <!-- Grid de Sistemas con Renders Reales de Consolas -->
             <div class="grid-sistemas">
                 <div class="card-consola" data-sys="n64" onclick="sonidoClick('select'); seleccionarEmulador('n64');">
-                    <span class="consola-icono">🕹️</span>
-                    <span class="consola-nombre">Nintendo 64</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/n64.png" alt="Nintendo 64" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Nintendo 64</span>
+                        <span class="consola-era-tag">64-Bit 3D</span>
+                    </div>
                     <span class="consola-badge con-juegos" id="badge-n64">1 ROM</span>
                 </div>
+
                 <div class="card-consola" data-sys="gba" onclick="sonidoClick('select'); seleccionarEmulador('gba');">
-                    <span class="consola-icono">🟣</span>
-                    <span class="consola-nombre">Game Boy Advance</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/gba.png" alt="Game Boy Advance" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Game Boy Advance</span>
+                        <span class="consola-era-tag">32-Bit Portátil</span>
+                    </div>
                     <span class="consola-badge con-juegos" id="badge-gba">2 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="nes" onclick="sonidoClick('select'); seleccionarEmulador('nes');">
-                    <span class="consola-icono">👾</span>
-                    <span class="consola-nombre">NES / Famicom</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/nes.png" alt="NES / Famicom" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">NES / Famicom</span>
+                        <span class="consola-era-tag">8-Bit Clásico</span>
+                    </div>
                     <span class="consola-badge con-juegos" id="badge-nes">2 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="snes" onclick="sonidoClick('select'); seleccionarEmulador('snes');">
-                    <span class="consola-icono">🎮</span>
-                    <span class="consola-nombre">Super Nintendo</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/snes.png" alt="Super Nintendo" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Super Nintendo</span>
+                        <span class="consola-era-tag">16-Bit Super</span>
+                    </div>
                     <span class="consola-badge" id="badge-snes">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="nds" onclick="sonidoClick('select'); seleccionarEmulador('nds');">
-                    <span class="consola-icono">📱</span>
-                    <span class="consola-nombre">Nintendo DS</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/nds.png" alt="Nintendo DS" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Nintendo DS</span>
+                        <span class="consola-era-tag">Doble Pantalla</span>
+                    </div>
                     <span class="consola-badge" id="badge-nds">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="gb" onclick="sonidoClick('select'); seleccionarEmulador('gb');">
-                    <span class="consola-icono">🟢</span>
-                    <span class="consola-nombre">Game Boy / Color</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/gb.png" alt="Game Boy" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Game Boy / Color</span>
+                        <span class="consola-era-tag">Portátil Clásica</span>
+                    </div>
                     <span class="consola-badge" id="badge-gb">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="psx" onclick="sonidoClick('select'); seleccionarEmulador('psx');">
-                    <span class="consola-icono">💿</span>
-                    <span class="consola-nombre">PlayStation 1</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/psx.png" alt="PlayStation 1" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">PlayStation 1</span>
+                        <span class="consola-era-tag">32-Bit CD-ROM</span>
+                    </div>
                     <span class="consola-badge" id="badge-psx">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="psp" onclick="sonidoClick('select'); seleccionarEmulador('psp');">
-                    <span class="consola-icono">✨</span>
-                    <span class="consola-nombre">PSP</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/psp.png" alt="PSP" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">PSP</span>
+                        <span class="consola-era-tag">Portátil UMD Sony</span>
+                    </div>
                     <span class="consola-badge" id="badge-psp">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="segaMD" onclick="sonidoClick('select'); seleccionarEmulador('segaMD');">
-                    <span class="consola-icono">⚡</span>
-                    <span class="consola-nombre">Mega Drive</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/segaMD.png" alt="Mega Drive" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Mega Drive</span>
+                        <span class="consola-era-tag">16-Bit Blast Proc.</span>
+                    </div>
                     <span class="consola-badge" id="badge-segaMD">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="arcade" onclick="sonidoClick('select'); seleccionarEmulador('arcade');">
-                    <span class="consola-icono">🪙</span>
-                    <span class="consola-nombre">Arcade (MAME)</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/arcade.png" alt="Arcade" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Arcade (MAME)</span>
+                        <span class="consola-era-tag">Recreativa Coin-Op</span>
+                    </div>
                     <span class="consola-badge" id="badge-arcade">0 ROMs</span>
                 </div>
+
                 <div class="card-consola" data-sys="atari2600" onclick="sonidoClick('select'); seleccionarEmulador('atari2600');">
-                    <span class="consola-icono">🕹️</span>
-                    <span class="consola-nombre">Atari 2600</span>
+                    <div class="consola-visual-wrap">
+                        <div class="consola-glow-backdrop"></div>
+                        <img src="ROMS/consoles/atari2600.png" alt="Atari 2600" class="consola-img-device" loading="lazy">
+                    </div>
+                    <div class="consola-detalles">
+                        <span class="consola-nombre">Atari 2600</span>
+                        <span class="consola-era-tag">2ª Gen Cartridge</span>
+                    </div>
                     <span class="consola-badge" id="badge-atari2600">0 ROMs</span>
                 </div>
             </div>
@@ -2854,7 +3054,7 @@
             sec.style.display = 'block';
             cont.innerHTML = recientes.map(r => `
                 <div class="pill-reciente" onclick="lanzarJuegoReciente('${encodeURIComponent(r.nombre)}', '${r.core}', '${encodeURIComponent(r.ruta || '')}')" title="Reanudar partida en ${r.core.toUpperCase()}">
-                    <span>🕹️</span>
+                    <img src="ROMS/consoles/${r.core || 'n64'}.png" alt="" style="width: 16px; height: 16px; object-fit: contain; vertical-align: middle;">
                     <strong>${r.nombre}</strong>
                     <span style="opacity: 0.6; font-size: 10px;">(${r.core.toUpperCase()})</span>
                 </div>
@@ -3503,7 +3703,7 @@
             }
         }
 
-        // --- CATÁLOGO DE CONSOLAS Y ROMS CON CARÁTULAS ---
+        // --- CATÁLOGO DE CONSOLAS Y ROMS CON CARTUCHOS Y CARÁTULAS ---
         const catalogo = {
             'n64': {
                 nombre: 'Nintendo 64',
@@ -3515,6 +3715,7 @@
                         titulo: 'Paper Mario (Europe) (En,Fr,De,Es)', 
                         archivo: 'ROMS/n64/Paper Mario (Europe) (En,Fr,De,Es).z64',
                         caratula: 'ROMS/covers/papermario.png',
+                        cartucho: 'ROMS/cartridges/cart_papermario.png',
                         genero: 'RPG / Mario Aventura',
                         year: '2001 N64',
                         fix: true
@@ -3531,6 +3732,7 @@
                         titulo: '3 Weeks in Paradise', 
                         archivo: 'ROMS/gba/3Weeksinparadise.gba',
                         caratula: 'ROMS/covers/3weeksinparadise.jpg',
+                        cartucho: 'ROMS/cartridges/cart_3weeksinparadise.png',
                         genero: 'Aventura Clásica',
                         year: '1986 / GBA'
                     },
@@ -3539,6 +3741,7 @@
                         titulo: 'Anguna: Warriors of Demrav', 
                         archivo: 'ROMS/gba/Anguna.gba',
                         caratula: 'ROMS/covers/anguna_box.png',
+                        cartucho: 'ROMS/cartridges/cart_anguna.png',
                         genero: 'Acción / RPG Aventura',
                         year: '2008 GBA'
                     }
@@ -3560,6 +3763,7 @@
                         titulo: '31 In 1 Realgame Multicart', 
                         archivo: 'ROMS/nes/31In1Realgame-Multicart.nes',
                         caratula: 'ROMS/covers/31in1.png',
+                        cartucho: 'ROMS/cartridges/cart_31in1.png',
                         genero: 'Compilatorio Arcade 8-Bit',
                         year: 'NES Classic'
                     },
@@ -3568,6 +3772,7 @@
                         titulo: '3 In 1 2P Pak', 
                         archivo: 'ROMS/nes/3In12Ppak.nes',
                         caratula: 'ROMS/covers/3in1.png',
+                        cartucho: 'ROMS/cartridges/cart_3in1.png',
                         genero: 'Multijuego 2 Jugadores',
                         year: 'NES Classic'
                     }
@@ -3684,7 +3889,7 @@
             const data = catalogo[id];
             if (!data) return;
 
-            document.getElementById('titulo-sistema').innerHTML = `<span style="font-size: 26px;">🎮</span> Juegos de ${data.nombre}`;
+            document.getElementById('titulo-sistema').innerHTML = `<img src="ROMS/consoles/${id}.png" alt="${data.nombre}" style="width: 34px; height: 34px; object-fit: contain; vertical-align: middle; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));"> Cartuchos de ${data.nombre}`;
             document.getElementById('input-filtro').value = '';
             
             const panelN64 = document.getElementById('panel-motor-n64');
@@ -3698,25 +3903,29 @@
             cambiarVista('vista-roms');
         }
 
-        function fallbackCaratula(imgElement, sistema) {
+        function fallbackCartucho(imgElement, sistema) {
             imgElement.onerror = null;
-            // SVG elegante de cartucho retro con color temático
-            const colores = {
-                n64: '#ef4444',
-                gba: '#8b5cf6',
-                snes: '#a855f7',
-                nes: '#f43f5e',
-                psx: '#06b6d4',
-                psp: '#3b82f6',
-                nds: '#0ea5e9',
-                segaMD: '#eab308',
-                arcade: '#ec4899',
-                gb: '#10b981',
-                atari2600: '#f59e0b'
+            const cleanCart = `ROMS/cartridges/${sistema}_clean.png`;
+            imgElement.onerror = () => {
+                imgElement.onerror = null;
+                const colores = {
+                    n64: '#ef4444',
+                    gba: '#8b5cf6',
+                    snes: '#a855f7',
+                    nes: '#f43f5e',
+                    psx: '#06b6d4',
+                    psp: '#3b82f6',
+                    nds: '#0ea5e9',
+                    segaMD: '#eab308',
+                    arcade: '#ec4899',
+                    gb: '#10b981',
+                    atari2600: '#f59e0b'
+                };
+                const col = colores[sistema] || '#8b5cf6';
+                const sysTxt = (sistema || 'RETRO').toUpperCase();
+                imgElement.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="380" height="260" viewBox="0 0 380 260"><defs><linearGradient id="c" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="%23373b50"/><stop offset="100%" stop-color="%23171822"/></linearGradient></defs><rect x="40" y="20" width="300" height="220" rx="14" fill="url(%23c)" stroke="${encodeURIComponent(col)}" stroke-width="3"/><rect x="65" y="45" width="250" height="135" rx="8" fill="%230c0e18" stroke="%23444" stroke-width="1"/><rect x="75" y="55" width="230" height="115" rx="6" fill="${encodeURIComponent(col)}" opacity="0.2"/><text x="190" y="115" fill="%23ffffff" font-size="24" font-family="sans-serif" font-weight="bold" text-anchor="middle">💾 ${sysTxt}</text><text x="190" y="145" fill="%23cbd5e1" font-size="11" font-family="sans-serif" text-anchor="middle">CARTRIDGE PAK</text></svg>`;
             };
-            const col = colores[sistema] || '#8b5cf6';
-            const svgCartucho = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="%23111322"/><rect x="25" y="30" width="250" height="340" rx="14" fill="%231a1d33" stroke="${encodeURIComponent(col)}" stroke-width="3"/><rect x="45" y="60" width="210" height="180" rx="8" fill="%230d0f1a"/><circle cx="150" cy="140" r="42" fill="${encodeURIComponent(col)}" opacity="0.25"/><text x="150" y="152" fill="%23ffffff" font-size="34" font-family="sans-serif" text-anchor="middle">🎮</text><text x="150" y="280" fill="%23ffffff" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle">${sistema.toUpperCase()}</text><text x="150" y="310" fill="%2394a3b8" font-size="12" font-family="sans-serif" text-anchor="middle">CARTRIDGE EDITION</text></svg>`;
-            imgElement.src = svgCartucho;
+            imgElement.src = cleanCart;
         }
 
         function renderizarListaJuegos(juegos, core, idSistema) {
@@ -3733,8 +3942,8 @@
                 sinJuegos.style.border = '1px dashed var(--card-border)';
                 sinJuegos.style.color = 'var(--text-muted)';
                 sinJuegos.innerHTML = `
-                    <div style="font-size: 38px; margin-bottom: 8px;">📂</div>
-                    <p style="font-size: 15px; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">No hay ROMs instaladas para ${catalogo[idSistema].nombre}</p>
+                    <div style="font-size: 38px; margin-bottom: 8px;">💾</div>
+                    <p style="font-size: 15px; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">No hay cartuchos ni ROMs instaladas para ${catalogo[idSistema].nombre}</p>
                     <p style="font-size: 13px; margin-bottom: 16px;">Descárgate cualquier juego de esta consola en la biblioteca externa:</p>
                     <div style="margin-bottom: 16px;">
                         <a href="${ENLACE_ROMS_EXTERNO}" target="_blank" class="btn-accion btn-fix" onclick="sonidoClick('coin')" style="font-size: 13px; display: inline-flex;">
@@ -3751,18 +3960,31 @@
 
                     const nombreLimpio = juego.titulo || juego.nombreArchivo || 'Juego';
                     const esPaperMario = nombreLimpio.toLowerCase().includes('paper mario');
-                    const caratulaSrc = juego.caratula || (esPaperMario ? 'ROMS/covers/papermario.png' : '');
+                    
+                    // Prioridad de imagen de cartucho
+                    let cartuchoSrc = juego.cartucho;
+                    if (!cartuchoSrc) {
+                        if (esPaperMario) cartuchoSrc = 'ROMS/cartridges/cart_papermario.png';
+                        else if (nombreLimpio.toLowerCase().includes('anguna')) cartuchoSrc = 'ROMS/cartridges/cart_anguna.png';
+                        else if (nombreLimpio.toLowerCase().includes('paradise')) cartuchoSrc = 'ROMS/cartridges/cart_3weeksinparadise.png';
+                        else if (nombreLimpio.toLowerCase().includes('31 in 1')) cartuchoSrc = 'ROMS/cartridges/cart_31in1.png';
+                        else if (nombreLimpio.toLowerCase().includes('3 in 1')) cartuchoSrc = 'ROMS/cartridges/cart_3in1.png';
+                        else cartuchoSrc = `ROMS/cartridges/${idSistema}_clean.png`;
+                    }
+
                     const generoTxt = juego.genero || 'Aventura Retro';
                     const yearTxt = juego.year || idSistema.toUpperCase();
 
                     card.innerHTML = `
-                        <div class="contenedor-caratula">
-                            <img src="${caratulaSrc}" alt="${nombreLimpio}" class="caratula-poster" loading="lazy" onerror="fallbackCaratula(this, '${idSistema}')">
-                            <div class="overlay-hover-play">
-                                <div class="icono-play-circle">▶</div>
-                            </div>
+                        <div class="escenario-cartucho">
                             <span class="tag-consola-caratula">${idSistema.toUpperCase()}</span>
                             ${(esPaperMario || juego.fix) ? '<span class="tag-fix-caratula">✨ FIX ACTIVO</span>' : ''}
+                            <span class="badge-tipo-soporte">💾 CARTUCHO FÍSICO</span>
+
+                            <div class="cartucho-contenedor">
+                                <img src="${cartuchoSrc}" alt="Cartucho ${nombreLimpio}" class="cartucho-img" loading="lazy" onerror="fallbackCartucho(this, '${idSistema}')">
+                                <div class="cartucho-sombra"></div>
+                            </div>
                         </div>
                         <div class="info-caratula">
                             <h4 class="titulo-caratula" title="${nombreLimpio}">${nombreLimpio}</h4>
@@ -3771,7 +3993,7 @@
                                 <span>${yearTxt}</span>
                             </div>
                             <button type="button" class="btn-jugar-caratula ${(esPaperMario || juego.fix) ? 'btn-fix' : ''}">
-                                ▶ Jugar Ahora
+                                ▶ Insertar & Jugar
                             </button>
                         </div>
                     `;

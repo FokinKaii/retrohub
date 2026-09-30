@@ -33,23 +33,36 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             
-            roms_dir = os.path.join(DIRECTORY, 'ROMS')
+            cat_file = os.path.join(DIRECTORY, 'ROMS', 'catalogo.json')
             resultado = {}
+            if os.path.exists(cat_file):
+                try:
+                    with open(cat_file, 'r', encoding='utf-8') as f:
+                        resultado = json.load(f)
+                except Exception:
+                    resultado = {}
+
+            roms_dir = os.path.join(DIRECTORY, 'ROMS')
             if os.path.isdir(roms_dir):
                 for sistema in os.listdir(roms_dir):
+                    if sistema in ['consoles', 'cartridges', 'covers']:
+                        continue
                     sis_path = os.path.join(roms_dir, sistema)
                     if os.path.isdir(sis_path):
-                        resultado[sistema] = []
+                        if sistema not in resultado:
+                            resultado[sistema] = []
+                        archivos_existentes = {j.get('archivo', '').replace('\\', '/') for j in resultado[sistema]}
                         for root, _, files in os.walk(sis_path):
                             for f in files:
                                 if not f.startswith('.'):
                                     rel_path = os.path.relpath(os.path.join(root, f), DIRECTORY).replace('\\', '/')
-                                    nombre = os.path.splitext(f)[0]
-                                    resultado[sistema].append({
-                                        'titulo': nombre,
-                                        'archivo': rel_path,
-                                        'nombreArchivo': f
-                                    })
+                                    if rel_path not in archivos_existentes:
+                                        nombre = os.path.splitext(f)[0]
+                                        resultado[sistema].append({
+                                            'titulo': nombre,
+                                            'archivo': rel_path,
+                                            'nombreArchivo': f
+                                        })
             self.wfile.write(json.dumps(resultado, ensure_ascii=False).encode('utf-8'))
             return
 
