@@ -2830,7 +2830,7 @@
         let lastGamepadNavTime = 0;
 
         // INICIALIZACIÓN
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             renderHorizontalTrack();
             updateFocusedConsole(0, false);
             updateClock();
@@ -2839,7 +2839,57 @@
             setupInteractive3DTilt();
             requestAnimationFrame(pollGamepadInput);
             loadUserProfileFromApi();
+            await syncRomsFromApi();
         });
+
+        async function syncRomsFromApi() {
+            try {
+                const resp = await fetch('http://localhost:8080/api/roms');
+                const data = await resp.json();
+                if (data.success && data.roms) {
+                    allRomBoxes = data.roms;
+                    // Poblar LOCAL_GAMES para cada consola
+                    allRomBoxes.forEach(r => {
+                        if (!LOCAL_GAMES[r.system_id]) {
+                            LOCAL_GAMES[r.system_id] = [];
+                        }
+                        const exists = LOCAL_GAMES[r.system_id].some(g => g.file === r.rom_path || g.title === r.title);
+                        if (!exists) {
+                            LOCAL_GAMES[r.system_id].push({
+                                title: r.title,
+                                file: r.rom_path,
+                                cover: r.box_art || `assets/consoles/${r.system_id}.png`,
+                                cartridge: r.cartridge_art || DEFAULT_MEDIA[r.system_id] || '',
+                                genre: r.genre || 'Aventura',
+                                year: r.year || '',
+                                core: r.system_id === 'genesis' ? 'segaMD' : (r.system_id === 'ps1' ? 'psx' : (r.system_id === 'sms' ? 'segaMS' : r.system_id))
+                            });
+                        }
+                    });
+
+                    // Actualizar contadores visuales en la interfaz
+                    const total = allRomBoxes.length;
+                    const libBadge = document.getElementById('libBadgeTotal');
+                    if (libBadge) libBadge.textContent = `${total} Empaques Físicos`;
+                    const libCount = document.getElementById('libraryBoxCount');
+                    if (libCount) libCount.textContent = total;
+                    const passCount = document.getElementById('passportBoxCount');
+                    if (passCount) passCount.textContent = `${total} Cajas`;
+
+                    // Refrescar contador de la consola activa actual
+                    const c = CONSOLES[activeConsoleIndex];
+                    const games = LOCAL_GAMES[c.id] || [];
+                    const specEl = document.getElementById('specGamesCount');
+                    if (specEl) {
+                        specEl.textContent = games.length > 0 
+                            ? `📚 ${games.length} Juego${games.length > 1 ? 's' : ''} Instalado${games.length > 1 ? 's' : ''}` 
+                            : '📂 Listo para ROMs externas';
+                    }
+                }
+            } catch(e) {
+                console.warn('[Sync] No se pudieron sincronizar ROMs desde el servidor:', e);
+            }
+        }
 
         // ========================================================
         // CARRUSEL CONTINUO DE FONDOS ("CAMBIANDO TODO EL RATO")
