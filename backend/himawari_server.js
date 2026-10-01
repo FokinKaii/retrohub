@@ -84,6 +84,33 @@ db.exec(`
   );
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS social_users (
+    user_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    avatar TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS social_friends (
+    user_id TEXT NOT NULL,
+    friend_id TEXT NOT NULL,
+    friend_name TEXT NOT NULL,
+    friend_avatar TEXT NOT NULL,
+    status TEXT DEFAULT 'accepted',
+    added_at INTEGER NOT NULL,
+    PRIMARY KEY (user_id, friend_id)
+  );
+  CREATE TABLE IF NOT EXISTS chat_messages (
+    id TEXT PRIMARY KEY,
+    from_id TEXT NOT NULL,
+    from_name TEXT NOT NULL,
+    to_id TEXT NOT NULL,
+    content TEXT NOT NULL,
+    sent_at INTEGER NOT NULL,
+    read_at INTEGER DEFAULT 0
+  );
+`);
+
 try { db.exec(`ALTER TABLE user_profile ADD COLUMN title_honor TEXT DEFAULT 'Maestro de los 64-Bits'`); } catch(e){}
 try { db.exec(`ALTER TABLE user_profile ADD COLUMN system_aura TEXT DEFAULT 'scarlet'`); } catch(e){}
 
@@ -382,39 +409,147 @@ app.get('/api/theme/:themeId', (req, res) => {
   res.status(404).json({ error: `Tema '${themeId}' no encontrado` });
 });
 
-// 3. WEBSOCKETS EN TIEMPO REAL (RICH PRESENCE STREAM)
+const onlineUsers = new Map(); // userId -> { socketId, name, avatar, status, playing, connectedAt }
+
+// Social REST endpoints
+app.get('/api/social/friends/:userId', (req, res) => {
+  const rows = db.prepare('SELECT * FROM social_friends WHERE user_id = ? AND status = ?').all(req.params.userId, 'accepted');
+  res.json({ success: true, friends: rows });
+});
+
+app.get('/api/social/pending/:userId', (req, res) => {
+  const incoming = db.prepare('SELECT * FROM social_friends WHERE friend_id = ? AND status = ?').all(req.params.userId, 'pending_received');
+  const outgoing = db.prepare('SELECT * FROM social_friends WHERE user_id = ? AND status = ?').all(req.params.userId, 'pending_sent');
+  res.json({ success: true, incoming, outgoing });
+});
+
+app.get('/api/social/messages/:userId/:friendId', (req, res) => {
+  const { userId, friendId } = req.params;
+  const msgs = db.prepare(`SELECT * FROM chat_messages WHERE (from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?) ORDER BY sent_at ASC LIMIT 100`).all(userId, friendId, friendId, userId);
+  res.json({ success: true, messages: msgs });
+});
+
+app.post('/api/social/user-info', (req, res) => {
+  const { userId } = req.body;
+  const user = db.prepare('SELECT * FROM social_users WHERE user_id = ?').get(userId);
+  if (user) {
+    res.json({ success: true, user: { ...user, online: onlineUsers.has(userId) } });
+  } else {
+    res.json({ success: false, error: 'Usuario no encontrado' });
+  }
+});
+
+app.delete('/api/social/friends/:userId/:friendId', (req, res) => {
+  const { userId, friendId } = req.params;
+  db.prepare('DELETE FROM social_friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)').run(userId, friendId, friendId, userId);
+  res.json({ success: true });
+});
+
+// 3. REAL-TIME SOCIAL SYSTEM
 io.on('connection', (socket) => {
-  console.log(`[Himawari WS]: Cliente HUD conectado (${socket.id})`);
+  let currentUserId = null;
+  console.log(`[Social]: Nueva conexión WS (${socket.id})`);
 
-  // Enviar lista inicial de presencia
-  const friends = db.prepare('SELECT * FROM friends').all();
-  socket.emit('presence_initial', friends);
+  socket.on('user_register', (data) => {
+    const { userId, name, avatar } = data;
+    currentUserId = userId;
+    db.prepare('INSERT OR REPLACE INTO social_users (user_id, name, avatar, created_at) VALUES (?, ?, ?, COALESCE((SELECT created_at FROM social_users WHERE user_id = ?), ?))').run(userId, name, avatar, userId, Date.now());
+    onlineUsers.set(userId, { socketId: socket.id, name, avatar, status: 'online', playing: null, connectedAt: Date.now() });
 
-  // Simulación periódica de cambio de juego para disparar la animación "Pop" en el HUD
-  const interval = setInterval(() => {
-    const gamesCatalog = [
-      { systemId: 'genesis', systemName: 'Genesis', title: 'Sonic The Hedgehog 2', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2224.png' },
-      { systemId: 'n64', systemName: 'N64', title: 'Super Mario 64', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png' },
-      { systemId: 'ps1', systemName: 'PS1', title: 'Crash Bandicoot 3', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vci.png' }
-    ];
-    const picked = gamesCatalog[Math.floor(Math.random() * gamesCatalog.length)];
+    const dbFriends = db.prepare('SELECT * FROM social_friends WHERE user_id = ? AND status = ?').all(userId, 'accepted');
+    const friends = dbFriends.map(row => {
+      const isOnline = onlineUsers.has(row.friend_id);
+      const onlineData = onlineUsers.get(row.friend_id);
+      return { userId: row.friend_id, name: row.friend_name, avatar: row.friend_avatar, online: isOnline, status: isOnline ? (onlineData.status || 'online') : 'offline', playing: isOnline ? onlineData.playing : null };
+    });
 
-    const payload = {
-      friendId: 'f_abel',
-      name: 'Abel_Fox',
-      status: 'playing',
-      systemId: picked.systemId,
-      systemName: picked.systemName,
-      gameTitle: picked.title,
-      gameBoxArt: picked.cover,
-      timestamp: Date.now()
-    };
+    const pendingIn = db.prepare('SELECT * FROM social_friends WHERE friend_id = ? AND status = ?').all(userId, 'pending_received');
+    const pendingRequests = pendingIn.map(row => ({ fromId: row.user_id, fromName: row.friend_name, fromAvatar: row.friend_avatar }));
+    const pendingOut = db.prepare('SELECT * FROM social_friends WHERE user_id = ? AND status = ?').all(userId, 'pending_sent');
 
-    socket.emit('presence_update', payload);
-  }, 12000);
+    socket.emit('user_registered', { userId, friends, pendingRequests, pendingOut });
+
+    friends.filter(f => f.online).forEach(f => {
+      const friendSocket = onlineUsers.get(f.userId);
+      if (friendSocket) io.to(friendSocket.socketId).emit('friend_online', { userId, name, avatar, status: 'online', playing: null });
+    });
+
+    console.log(`[Social]: ${name} (${userId}) registrado online. ${friends.length} amigos.`);
+  });
+
+  socket.on('user_update_presence', (data) => {
+    if (!currentUserId) return;
+    const user = onlineUsers.get(currentUserId);
+    if (!user) return;
+    user.status = data.status;
+    user.playing = data.playing;
+    onlineUsers.set(currentUserId, user);
+    const dbFriends = db.prepare('SELECT friend_id FROM social_friends WHERE user_id = ? AND status = ?').all(currentUserId, 'accepted');
+    dbFriends.forEach(row => {
+      const friendOnline = onlineUsers.get(row.friend_id);
+      if (friendOnline) io.to(friendOnline.socketId).emit('presence_update', { userId: currentUserId, status: data.status, playing: data.playing });
+    });
+  });
+
+  socket.on('friend_request_send', (data) => {
+    if (!currentUserId) return;
+    const { toUserId, fromName, fromAvatar } = data;
+    const user = onlineUsers.get(currentUserId);
+    const name = (user ? user.name : fromName) || fromName;
+    const avatar = (user ? user.avatar : fromAvatar) || fromAvatar;
+    const existing = db.prepare('SELECT 1 FROM social_friends WHERE user_id = ? AND friend_id = ?').get(currentUserId, toUserId);
+    if (existing) return;
+    db.prepare('INSERT OR IGNORE INTO social_friends (user_id, friend_id, friend_name, friend_avatar, status, added_at) VALUES (?, ?, ?, ?, ?, ?)').run(currentUserId, toUserId, name, avatar, 'pending_sent', Date.now());
+    db.prepare('INSERT OR IGNORE INTO social_friends (user_id, friend_id, friend_name, friend_avatar, status, added_at) VALUES (?, ?, ?, ?, ?, ?)').run(toUserId, currentUserId, name, avatar, 'pending_received', Date.now());
+    const recipientOnline = onlineUsers.get(toUserId);
+    if (recipientOnline) io.to(recipientOnline.socketId).emit('friend_request_received', { fromId: currentUserId, fromName: name, fromAvatar: avatar });
+    console.log(`[Social]: ${name} envio solicitud a ${toUserId}`);
+  });
+
+  socket.on('friend_request_accept', (data) => {
+    if (!currentUserId) return;
+    const { fromUserId } = data;
+    const user = onlineUsers.get(currentUserId);
+    const myName = user ? user.name : 'Unknown';
+    const myAvatar = user ? user.avatar : '';
+    db.prepare('UPDATE social_friends SET status = ? WHERE user_id = ? AND friend_id = ?').run('accepted', fromUserId, currentUserId);
+    db.prepare('UPDATE social_friends SET status = ?, friend_name = ?, friend_avatar = ? WHERE user_id = ? AND friend_id = ?').run('accepted', myName, myAvatar, currentUserId, fromUserId);
+    const requesterOnline = onlineUsers.get(fromUserId);
+    if (requesterOnline) io.to(requesterOnline.socketId).emit('friend_request_accepted', { byId: currentUserId, byName: myName, byAvatar: myAvatar });
+    console.log(`[Social]: ${myName} acepto solicitud de ${fromUserId}`);
+  });
+
+  socket.on('friend_request_reject', (data) => {
+    if (!currentUserId) return;
+    const { fromUserId } = data;
+    db.prepare('DELETE FROM social_friends WHERE user_id = ? AND friend_id = ?').run(fromUserId, currentUserId);
+    db.prepare('DELETE FROM social_friends WHERE user_id = ? AND friend_id = ?').run(currentUserId, fromUserId);
+  });
+
+  socket.on('chat_message', (data) => {
+    if (!currentUserId) return;
+    const { toUserId, content } = data;
+    const user = onlineUsers.get(currentUserId);
+    const fromName = user ? user.name : 'Unknown';
+    const fromAvatar = user ? user.avatar : '';
+    const msgId = 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+    db.prepare('INSERT INTO chat_messages (id, from_id, from_name, to_id, content, sent_at) VALUES (?, ?, ?, ?, ?, ?)').run(msgId, currentUserId, fromName, toUserId, content, Date.now());
+    const recipientOnline = onlineUsers.get(toUserId);
+    if (recipientOnline) io.to(recipientOnline.socketId).emit('chat_message_received', { fromId: currentUserId, fromName, fromAvatar, content, sentAt: Date.now() });
+  });
 
   socket.on('disconnect', () => {
-    clearInterval(interval);
+    if (!currentUserId) return;
+    const user = onlineUsers.get(currentUserId);
+    onlineUsers.delete(currentUserId);
+    if (user) {
+      const dbFriends = db.prepare('SELECT friend_id FROM social_friends WHERE user_id = ? AND status = ?').all(currentUserId, 'accepted');
+      dbFriends.forEach(row => {
+        const friendOnline = onlineUsers.get(row.friend_id);
+        if (friendOnline) io.to(friendOnline.socketId).emit('friend_offline', { userId: currentUserId });
+      });
+      console.log(`[Social]: ${user.name} (${currentUserId}) desconectado`);
+    }
   });
 });
 
