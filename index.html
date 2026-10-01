@@ -1948,7 +1948,476 @@
             color: white;
         }
         .player-iframe { width: 100%; height: calc(100vh - 50px); border: none; }
+
+        /* ====================================================
+           VISUAL POLISH V2 — iiSU DESIGN SYSTEM UPGRADE
+           ==================================================== */
+
+        /* Ambient background orbs like iiSU */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: -1;
+            animation: orbFloat 18s infinite alternate ease-in-out;
+        }
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: var(--system-accent);
+            top: -130px; left: -130px;
+            opacity: 0.08;
+            animation-duration: 20s;
+            transition: background 1s ease;
+        }
+        .orb-2 {
+            width: 560px; height: 560px;
+            background: var(--system-secondary);
+            bottom: -150px; right: -150px;
+            opacity: 0.065;
+            animation-duration: 24s;
+            animation-delay: -8s;
+            transition: background 1s ease;
+        }
+        .orb-3 {
+            width: 380px; height: 380px;
+            background: rgba(139, 92, 246, 0.55);
+            top: 38%; right: 18%;
+            opacity: 0.05;
+            animation-duration: 15s;
+            animation-delay: -3s;
+        }
+        @keyframes orbFloat {
+            0%   { transform: translate(0,0) scale(1); }
+            33%  { transform: translate(38px,-48px) scale(1.07); }
+            66%  { transform: translate(-22px,28px) scale(0.95); }
+            100% { transform: translate(16px,-18px) scale(1.03); }
+        }
+
+        /* Subtle noise texture for depth */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 9990;
+            mix-blend-mode: overlay;
+        }
+
+        /* Topbar gradient accent line */
+        .top-zone {
+            position: relative;
+            background: rgba(8, 12, 24, 0.84) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .top-zone::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent 0%, var(--system-accent) 50%, transparent 100%);
+            opacity: 0.5;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Brand logo gradient text */
+        .brand-logo {
+            background: linear-gradient(135deg, #ffffff 20%, var(--system-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: background 0.5s ease;
+        }
+
+        /* Badge breathing animation */
+        .brand-badge {
+            animation: badgeBreathe 3.5s ease-in-out infinite;
+        }
+        @keyframes badgeBreathe {
+            0%, 100% { box-shadow: 0 4px 12px var(--system-glow); }
+            50%       { box-shadow: 0 4px 22px var(--system-glow), 0 0 0 3px rgba(255,255,255,0.08); }
+        }
+
+        /* Music pill continuous glow */
+        .music-now-playing-pill {
+            animation: musicGlow 3s ease-in-out infinite;
+        }
+        @keyframes musicGlow {
+            0%, 100% { box-shadow: 0 4px 16px var(--system-glow); }
+            50%       { box-shadow: 0 4px 28px var(--system-glow), 0 0 0 3px rgba(255,255,255,0.05); }
+        }
+
+        /* Era pill sweep animation */
+        .console-era-pill { position: relative; overflow: hidden; }
+        .console-era-pill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+            animation: pillSweep 3.2s ease-in-out infinite;
+        }
+        @keyframes pillSweep {
+            0%   { left: -100%; }
+            55%  { left: 160%; }
+            100% { left: 160%; }
+        }
+
+        /* Console synopsis accent border */
+        .console-synopsis {
+            border-left: 2.5px solid var(--system-accent) !important;
+            padding-left: 12px !important;
+            transition: border-color 0.5s ease;
+        }
+
+        /* Info card slide-in */
+        .focused-console-info {
+            animation: infoSlideIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .focused-console-info::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%);
+            pointer-events: none;
+        }
+        @keyframes infoSlideIn {
+            from { opacity: 0; transform: translateX(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        /* Active tile pulse */
+        .console-mini-tile.active {
+            animation: tilePulse 2.5s ease-in-out infinite !important;
+        }
+        @keyframes tilePulse {
+            0%, 100% { box-shadow: 0 16px 36px var(--tile-glow), 0 0 0 1.5px var(--tile-color); }
+            50%       { box-shadow: 0 22px 48px var(--tile-glow), 0 0 0 3px var(--tile-color); }
+        }
+
+        /* Tile inner shine */
+        .console-mini-tile::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .console-mini-tile:hover::after,
+        .console-mini-tile.active::after { opacity: 1; }
+
+        /* Horizontal track edge fades */
+        .horizontal-carousel-track-wrapper { position: relative; }
+        .horizontal-carousel-track-wrapper::before,
+        .horizontal-carousel-track-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 70px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .horizontal-carousel-track-wrapper::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(8,12,24,0.9), transparent);
+        }
+        .horizontal-carousel-track-wrapper::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(8,12,24,0.9), transparent);
+        }
+
+        /* Enter button shine */
+        .btn-enter-console {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-enter-console::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.16) 0%, transparent 55%);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        /* Game card hover sweep */
+        .game-item-card { position: relative; overflow: hidden; }
+        .game-item-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -120%;
+            width: 55%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+            transition: left 0.55s ease;
+            pointer-events: none; z-index: 10;
+        }
+        .game-item-card:hover::after { left: 160%; }
+
+        /* Box 3D items stagger pop-in */
+        .box-3d-item {
+            animation: boxPopIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        @keyframes boxPopIn {
+            from { opacity: 0; transform: translateY(22px) scale(0.88); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Improved scrollbars */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--system-accent);
+            border-radius: 9999px;
+            opacity: 0.5;
+        }
+        ::-webkit-scrollbar-thumb:hover { opacity: 0.9; }
+
+        /* Controller prompts colored badges */
+        .prompt-badge-arrows { color: rgba(255,255,255,0.7) !important; }
+        .prompt-badge-a {
+            background: rgba(29,209,161,0.2) !important;
+            border-color: rgba(29,209,161,0.45) !important;
+            color: #1dd1a1 !important;
+        }
+        .prompt-badge-b {
+            background: rgba(255,71,87,0.2) !important;
+            border-color: rgba(255,71,87,0.4) !important;
+            color: #ff6b7a !important;
+        }
+        .prompt-badge-m {
+            background: rgba(245,158,11,0.18) !important;
+            border-color: rgba(245,158,11,0.4) !important;
+            color: #f59e0b !important;
+        }
+        .prompt-badge-p {
+            background: rgba(139,92,246,0.2) !important;
+            border-color: rgba(139,92,246,0.45) !important;
+            color: #a78bfa !important;
+        }
+        .prompt-badge-f {
+            background: rgba(0,210,211,0.18) !important;
+            border-color: rgba(0,210,211,0.4) !important;
+            color: #00d2d3 !important;
+        }
+
+        /* Controller bar bottom upgrade */
+        .bottom-controller-prompts {
+            background: rgba(8,12,24,0.72) !important;
+            border: 1px solid rgba(255,255,255,0.07) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+
+        /* Friends carousel strip (new iiSU row) */
+        .friends-carousel-strip {
+            width: 100%;
+            padding: 8px 28px 0;
+            display: none;
+        }
+        .friends-carousel-strip.visible { display: block; }
+        .friends-strip-inner {
+            display: flex;
+            gap: 18px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 6px 2px 12px;
+        }
+        .friends-strip-inner::-webkit-scrollbar { display: none; }
+
+        .friend-status-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .friend-status-card:hover { transform: translateY(-5px); }
+        .friend-speech-bubble {
+            background: rgba(255,255,255,0.09);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: var(--text-main);
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 4px 11px;
+            border-radius: 13px;
+            position: relative;
+            white-space: nowrap;
+            max-width: 165px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .friend-speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(255,255,255,0.18);
+        }
+        .friend-avatar-platform { position: relative; width: 56px; height: 56px; }
+        .friend-avatar-img {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .friend-status-card:hover .friend-avatar-img {
+            border-color: var(--system-accent);
+            transform: scale(1.07);
+        }
+        .friend-notif-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            background: #ff4757;
+            color: white;
+            font-size: 9px;
+            font-weight: 900;
+            min-width: 17px; height: 17px;
+            border-radius: 9999px;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(8,12,24,0.9);
+            box-shadow: 0 2px 8px rgba(255,71,87,0.55);
+        }
+        .friend-platform-tag {
+            position: absolute;
+            bottom: -4px; left: 50%;
+            transform: translateX(-50%);
+            padding: 1px 5px;
+            border-radius: 9999px;
+            font-size: 8px;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            border: 1.5px solid rgba(8,12,24,0.6);
+        }
+        .friend-name-label {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        /* Community feed strip */
+        .community-feed-strip {
+            padding: 0 28px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .feed-strip-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--text-muted);
+            padding-bottom: 2px;
+        }
+        .feed-post-row {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 12px;
+            padding: 9px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .feed-post-row:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.18);
+            transform: translateX(3px);
+        }
+        .feed-author-area {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex: 1;
+            min-width: 0;
+        }
+        .feed-mini-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .feed-headline-text {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .feed-sub-text {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .vote-pill {
+            background: linear-gradient(135deg, var(--system-accent), var(--system-secondary));
+            border-radius: 9999px;
+            padding: 4px 11px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px var(--system-glow);
+        }
+        .vote-mini-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            font-size: 9px;
+            transition: transform 0.15s ease;
+        }
+        .vote-mini-btn:hover { transform: scale(1.35); color: white; }
+
+        /* Page load fade in */
+        @keyframes pageLoadIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .top-zone { animation: pageLoadIn 0.5s cubic-bezier(0.16,1,0.3,1) both 0s; }
+        .friends-carousel-strip { animation: pageLoadIn 0.5s cubic-bezier(0.16,1,0.3,1) both 0.1s; }
+        .carousel-view-container { animation: pageLoadIn 0.5s cubic-bezier(0.16,1,0.3,1) both 0.12s; }
+        .community-feed-strip { animation: pageLoadIn 0.5s cubic-bezier(0.16,1,0.3,1) both 0.2s; }
+
+        /* Wallpaper HUD float */
+        .wallpaper-carousel-hud {
+            animation: hudFloat 4s ease-in-out infinite;
+        }
+        @keyframes hudFloat {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-4px); }
+        }
+
+        /* Input field improvements */
+        .add-rom-input, .add-rom-select, textarea.add-rom-input {
+            background: rgba(255,255,255,0.055) !important;
+            border: 1px solid rgba(255,255,255,0.13) !important;
+        }
+        .add-rom-input:focus, .add-rom-select:focus, textarea.add-rom-input:focus {
+            background: rgba(255,255,255,0.09) !important;
+            border-color: var(--system-accent) !important;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05), 0 0 14px var(--system-glow) !important;
+        }
     </style>
+
 </head>
 <body>
 
@@ -1958,6 +2427,11 @@
         <div class="bg-layer" id="bgLayerB"></div>
     </div>
     <div class="bg-vignette-overlay"></div>
+
+    <!-- AMBIENT iiSU ORBS (follow system accent color) -->
+    <div class="ambient-orb orb-1" id="orbOne"></div>
+    <div class="ambient-orb orb-2" id="orbTwo"></div>
+    <div class="ambient-orb orb-3"></div>
 
     <!-- HUD FLOTANTE DEL CARRUSEL DE FONDOS EN VIVO -->
     <div class="wallpaper-carousel-hud" id="wallpaperHud" title="Haga clic para pasar a la siguiente captura del juego" onclick="advanceWallpaperManual()">
@@ -1969,7 +2443,7 @@
         <div class="wallpaper-dots" id="wallpaperDots"></div>
     </div>
 
-    <!-- BARRA SUPERIOR II SU: LOGO, MÚSICA EN VIVO, AMIGOS & PERFIL -->
+    <!-- BARRA SUPERIOR iiSU: LOGO, MÚSICA EN VIVO, AMIGOS & PERFIL -->
     <header class="top-zone">
         <div class="brand-logo-wrap" onclick="resetToHome()">
             <div class="brand-logo">
@@ -1977,7 +2451,7 @@
             </div>
         </div>
 
-        <!-- WIDGET DE MÚSICA EN VIVO QUE SUENA AL PASAR DE CONSOLA -->
+        <!-- WIDGET DE MÚSICA EN VIVO -->
         <div class="music-now-playing-pill" id="musicWidgetPill" onclick="toggleMuteMusic()">
             <div class="equalizer-anim" id="equalizerBars">
                 <div class="eq-bar"></div>
@@ -1991,30 +2465,76 @@
 
         <!-- ACCIONES DERECHA -->
         <div class="top-actions-right">
-            <!-- Botón Biblioteca de Cajas 3D -->
             <button class="btn-library-pill" onclick="openRomLibraryModal()" id="btnTopRomLibrary" title="Colección de Cajas 3D y ROMs (B)">
                 <span>📦</span>
-                <span>Biblioteca de Cajas 3D (<span id="libraryBoxCount">13</span>)</span>
+                <span>Biblioteca <span id="libraryBoxCount">13</span></span>
             </button>
 
-            <!-- Botón Amigos P2P -->
             <button class="btn-friends-pill" onclick="toggleFriendsDrawer()">
                 <span class="online-dot"></span>
                 <span>🤝 Amigos (3)</span>
             </button>
 
-            <!-- Perfil de Usuario -->
             <div class="user-profile-badge" onclick="openProfileModal()">
                 <img id="headerAvatarImg" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraHimawari" class="avatar-img-circle-sm" alt="Avatar">
                 <span id="headerUsername" class="username-sm">Sara</span>
             </div>
 
-            <!-- Reloj en Vivo -->
             <div class="sys-clock-pill">
-                <span>🕒</span> <span id="headerClock">13:06</span>
+                <span>🕒</span> <span id="headerClock">00:00</span>
             </div>
         </div>
     </header>
+
+    <!-- iiSU FRIENDS CAROUSEL STRIP (row below topbar) -->
+    <div class="friends-carousel-strip visible" id="friendsCarouselStrip">
+        <div class="friends-strip-inner" id="friendsStripInner">
+            <!-- Friend cards injected by JS -->
+            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
+                <div class="friend-speech-bubble">¡Jugando Paper Mario N64!</div>
+                <div class="friend-avatar-platform">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Abel" class="friend-avatar-img" alt="Abel_Fox">
+                    <div class="friend-notif-badge">3</div>
+                    <div class="friend-platform-tag" style="background:#ff4757;">N64</div>
+                </div>
+                <span class="friend-name-label">Abel_Fox</span>
+            </div>
+            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
+                <div class="friend-speech-bubble">En Sonic 2 — World 3 💎</div>
+                <div class="friend-avatar-platform">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Queen" class="friend-avatar-img" alt="PixelQueen">
+                    <div class="friend-notif-badge">1</div>
+                    <div class="friend-platform-tag" style="background:#1dd1a1;">GEN</div>
+                </div>
+                <span class="friend-name-label">PixelQueen</span>
+            </div>
+            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
+                <div class="friend-speech-bubble">En el menú de Anguna GBA</div>
+                <div class="friend-avatar-platform">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos" class="friend-avatar-img" alt="RetroCarlos">
+                    <div class="friend-platform-tag" style="background:#5352ed;">GBA</div>
+                </div>
+                <span class="friend-name-label">RetroCarlos</span>
+            </div>
+            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
+                <div class="friend-speech-bubble">Capturando Mewtwo 🎯</div>
+                <div class="friend-avatar-platform">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=CyberKidd" class="friend-avatar-img" alt="CyberKidd">
+                    <div class="friend-notif-badge">2</div>
+                    <div class="friend-platform-tag" style="background:#8b5cf6;">GBA</div>
+                </div>
+                <span class="friend-name-label">CyberKidd</span>
+            </div>
+            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
+                <div class="friend-speech-bubble">Nuevo PB Mario 64 ⚡ 16★</div>
+                <div class="friend-avatar-platform">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SpeedAlex" class="friend-avatar-img" alt="Alex_Speed">
+                    <div class="friend-platform-tag" style="background:#f59e0b;">N64</div>
+                </div>
+                <span class="friend-name-label">Alex_Speed</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ESCENARIO CENTRAL: EL GRAN SELECTOR DE CONSOLAS PASANDO A LA DERECHA -->
     <main class="carousel-view-container">
@@ -2080,41 +2600,78 @@
             </div>
         </div>
 
-        <!-- Prompts de Control en Barra Inferior -->
+        <!-- Prompts de Control en Barra Inferior — iiSU style colored badges -->
         <div class="bottom-controller-prompts">
-            <div style="display: flex; gap: 18px;">
+            <div style="display: flex; gap: 16px; align-items: center;">
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">◄</span>
-                    <span class="prompt-btn-badge">►</span>
-                    <span>Pasar Consola a la Derecha / Izquierda</span>
+                    <span class="prompt-btn-badge prompt-badge-arrows">◄</span>
+                    <span class="prompt-btn-badge prompt-badge-arrows">►</span>
+                    <span style="color: var(--text-muted); font-size: 12px;">Cambiar Consola</span>
                 </div>
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">A</span>
-                    <span>Entrar a Juegos (ENTER)</span>
+                    <span class="prompt-btn-badge prompt-badge-a">A</span>
+                    <span style="font-size: 12px;">Entrar</span>
                 </div>
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">B</span>
-                    <span>Biblioteca Cajas 3D</span>
+                    <span class="prompt-btn-badge prompt-badge-b">B</span>
+                    <span style="font-size: 12px;">Biblioteca 3D</span>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 18px;">
+            <div style="display: flex; gap: 16px; align-items: center;">
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">M</span>
-                    <span>Silenciar Música</span>
+                    <span class="prompt-btn-badge prompt-badge-m">M</span>
+                    <span style="font-size: 12px;">Música</span>
                 </div>
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">P</span>
-                    <span>Perfil de Usuario</span>
+                    <span class="prompt-btn-badge prompt-badge-p">P</span>
+                    <span style="font-size: 12px;">Perfil VIP</span>
                 </div>
                 <div class="prompt-item">
-                    <span class="prompt-btn-badge">F</span>
-                    <span>Amigos en Vivo</span>
+                    <span class="prompt-btn-badge prompt-badge-f">F</span>
+                    <span style="font-size: 12px;">Amigos</span>
                 </div>
             </div>
         </div>
 
     </main>
+
+    <!-- iiSU COMMUNITY FEED STRIP (below main carousel) -->
+    <div class="community-feed-strip" id="communityFeedStrip">
+        <div class="feed-strip-label">💬 Community Feed — Actividad Reciente</div>
+        <div class="feed-post-row" onclick="void(0)">
+            <div class="feed-author-area">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kamek" class="feed-mini-avatar" alt="Kamek">
+                <div>
+                    <div class="feed-headline-text">¿Fox vs Pikachu en Final Destination? 🎮 El debate del siglo</div>
+                    <div class="feed-sub-text">@Kamek_Fan09 · hace 2h · Torneos</div>
+                </div>
+            </div>
+            <div class="vote-pill" id="votePill1">
+                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill1',1)">▲</button>
+                <span id="voteCount1">84</span>
+                <span style="opacity:0.4">|</span>
+                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill1',-1)">▼</button>
+                <span id="voteDown1">41</span>
+            </div>
+        </div>
+        <div class="feed-post-row" onclick="void(0)">
+            <div class="feed-author-area">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Speedy" class="feed-mini-avatar" alt="Speedy">
+                <div>
+                    <div class="feed-headline-text">Nuevo WR en Rainbow Road 64 — ¡Sin atajos! ⚡ 1:32.4</div>
+                    <div class="feed-sub-text">@SpeedyGonzales · hace 4h · Speedrunning</div>
+                </div>
+            </div>
+            <div class="vote-pill" id="votePill2">
+                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill2',1)">▲</button>
+                <span id="voteCount2">126</span>
+                <span style="opacity:0.4">|</span>
+                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill2',-1)">▼</button>
+                <span id="voteDown2">12</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ========================================================
          MODAL 1: BIBLIOTECA DE CAJAS ORIGINALES 3D (EMPAQUE AUTÉNTICO)
@@ -3056,6 +3613,9 @@
             document.documentElement.style.setProperty('--system-glow', c.glow);
             document.documentElement.style.setProperty('--system-secondary', c.secondary);
 
+            // 2b. Actualizar orbes de fondo para reflejar el color de la consola
+            updateAmbientOrbs(c.color, c.secondary);
+
             // 3. Arrancar carrusel continuo de fotos reales de juegos ("cambiando todo el rato")
             startConsoleBgCarousel(c.id);
 
@@ -3826,6 +4386,33 @@
                 }
             }
         }
+
+        // ========================================================
+        // COMMUNITY FEED VOTE SYSTEM
+        // ========================================================
+        const feedVotes = { votePill1: {up:84, down:41}, votePill2: {up:126, down:12} };
+        function votePost(pillId, delta) {
+            if (!feedVotes[pillId]) return;
+            if (delta > 0) feedVotes[pillId].up++;
+            else feedVotes[pillId].down++;
+            const idx = pillId.replace('votePill','');
+            const upEl = document.getElementById('voteCount'+idx);
+            const downEl = document.getElementById('voteDown'+idx);
+            if (upEl) upEl.textContent = feedVotes[pillId].up;
+            if (downEl) downEl.textContent = feedVotes[pillId].down;
+            if (window.n3dsAudio) window.n3dsAudio.play('move');
+        }
+
+        // ========================================================
+        // UPDATE AMBIENT ORBS COLOR WHEN CONSOLE CHANGES
+        // ========================================================
+        function updateAmbientOrbs(accentColor, secondaryColor) {
+            const orb1 = document.getElementById('orbOne');
+            const orb2 = document.getElementById('orbTwo');
+            if (orb1) orb1.style.background = accentColor;
+            if (orb2) orb2.style.background = secondaryColor;
+        }
     </script>
+
 </body>
 </html>
