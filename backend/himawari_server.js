@@ -307,35 +307,6 @@ if (userCount.count === 0) {
     184,
     'Nintendo 64 / Sega Mega Drive'
   );
-
-  const insertFriend = db.prepare(`
-    INSERT INTO friends (id, name, avatar, status, system_id, system_name, game_title, game_box_art, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  insertFriend.run(
-    'f_abel',
-    'Abel_Fox',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Abel',
-    'playing',
-    'n64',
-    'N64',
-    'Super Mario 64',
-    'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png',
-    Date.now()
-  );
-
-  insertFriend.run(
-    'f_pixel',
-    'PixelQueen',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen',
-    'playing',
-    'genesis',
-    'Genesis',
-    'Sonic The Hedgehog 2',
-    'https://images.igdb.com/igdb/image/upload/t_cover_big/co2224.png',
-    Date.now()
-  );
 }
 
 // 2. ENDPOINTS REST

@@ -6,6 +6,8 @@
     <title>RetroHub • iiSU Windows Experience</title>
     <script src="coi-serviceworker.js"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="nintendo3ds_audio.js"></script>
     <script src="nintendo3ds_controls.js"></script>
     <script src="iisu_cursor.js"></script>
@@ -1900,6 +1902,8 @@
             flex-direction: column;
             gap: 20px;
             transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         .friends-drawer.open { right: 0; }
 
@@ -2472,7 +2476,7 @@
 
             <button class="btn-friends-pill" onclick="toggleFriendsDrawer()">
                 <span class="online-dot"></span>
-                <span>🤝 Amigos (3)</span>
+                <span>🤝 Amigos (<span id="friendsCountNumber">0</span>)</span>
             </button>
 
             <div class="user-profile-badge" onclick="openProfileModal()">
@@ -2487,52 +2491,9 @@
     </header>
 
     <!-- iiSU FRIENDS CAROUSEL STRIP (row below topbar) -->
-    <div class="friends-carousel-strip visible" id="friendsCarouselStrip">
+    <div class="friends-carousel-strip" id="friendsCarouselStrip" style="display:none;">
         <div class="friends-strip-inner" id="friendsStripInner">
-            <!-- Friend cards injected by JS -->
-            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
-                <div class="friend-speech-bubble">¡Jugando Paper Mario N64!</div>
-                <div class="friend-avatar-platform">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Abel" class="friend-avatar-img" alt="Abel_Fox">
-                    <div class="friend-notif-badge">3</div>
-                    <div class="friend-platform-tag" style="background:#ff4757;">N64</div>
-                </div>
-                <span class="friend-name-label">Abel_Fox</span>
-            </div>
-            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
-                <div class="friend-speech-bubble">En Sonic 2 — World 3 💎</div>
-                <div class="friend-avatar-platform">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Queen" class="friend-avatar-img" alt="PixelQueen">
-                    <div class="friend-notif-badge">1</div>
-                    <div class="friend-platform-tag" style="background:#1dd1a1;">GEN</div>
-                </div>
-                <span class="friend-name-label">PixelQueen</span>
-            </div>
-            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
-                <div class="friend-speech-bubble">En el menú de Anguna GBA</div>
-                <div class="friend-avatar-platform">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos" class="friend-avatar-img" alt="RetroCarlos">
-                    <div class="friend-platform-tag" style="background:#5352ed;">GBA</div>
-                </div>
-                <span class="friend-name-label">RetroCarlos</span>
-            </div>
-            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
-                <div class="friend-speech-bubble">Capturando Mewtwo 🎯</div>
-                <div class="friend-avatar-platform">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=CyberKidd" class="friend-avatar-img" alt="CyberKidd">
-                    <div class="friend-notif-badge">2</div>
-                    <div class="friend-platform-tag" style="background:#8b5cf6;">GBA</div>
-                </div>
-                <span class="friend-name-label">CyberKidd</span>
-            </div>
-            <div class="friend-status-card" onclick="toggleFriendsDrawer()">
-                <div class="friend-speech-bubble">Nuevo PB Mario 64 ⚡ 16★</div>
-                <div class="friend-avatar-platform">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SpeedAlex" class="friend-avatar-img" alt="Alex_Speed">
-                    <div class="friend-platform-tag" style="background:#f59e0b;">N64</div>
-                </div>
-                <span class="friend-name-label">Alex_Speed</span>
-            </div>
+            <!-- Populated dynamically by renderFriendsCarouselStrip() -->
         </div>
     </div>
 
@@ -2637,41 +2598,6 @@
     </main>
 
     <!-- iiSU COMMUNITY FEED STRIP (below main carousel) -->
-    <div class="community-feed-strip" id="communityFeedStrip">
-        <div class="feed-strip-label">💬 Community Feed — Actividad Reciente</div>
-        <div class="feed-post-row" onclick="void(0)">
-            <div class="feed-author-area">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kamek" class="feed-mini-avatar" alt="Kamek">
-                <div>
-                    <div class="feed-headline-text">¿Fox vs Pikachu en Final Destination? 🎮 El debate del siglo</div>
-                    <div class="feed-sub-text">@Kamek_Fan09 · hace 2h · Torneos</div>
-                </div>
-            </div>
-            <div class="vote-pill" id="votePill1">
-                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill1',1)">▲</button>
-                <span id="voteCount1">84</span>
-                <span style="opacity:0.4">|</span>
-                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill1',-1)">▼</button>
-                <span id="voteDown1">41</span>
-            </div>
-        </div>
-        <div class="feed-post-row" onclick="void(0)">
-            <div class="feed-author-area">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Speedy" class="feed-mini-avatar" alt="Speedy">
-                <div>
-                    <div class="feed-headline-text">Nuevo WR en Rainbow Road 64 — ¡Sin atajos! ⚡ 1:32.4</div>
-                    <div class="feed-sub-text">@SpeedyGonzales · hace 4h · Speedrunning</div>
-                </div>
-            </div>
-            <div class="vote-pill" id="votePill2">
-                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill2',1)">▲</button>
-                <span id="voteCount2">126</span>
-                <span style="opacity:0.4">|</span>
-                <button class="vote-mini-btn" onclick="event.stopPropagation(); votePost('votePill2',-1)">▼</button>
-                <span id="voteDown2">12</span>
-            </div>
-        </div>
-    </div>
 
     <!-- ========================================================
          MODAL 1: BIBLIOTECA DE CAJAS ORIGINALES 3D (EMPAQUE AUTÉNTICO)
@@ -3877,14 +3803,11 @@
         // ========================================================
         function toggleFriendsDrawer() {
             if (window.n3dsAudio) window.n3dsAudio.play('move');
-            document.getElementById('friendsDrawer').classList.toggle('open');
-        }
-
-        function promptConnectFriend() {
-            const id = prompt("Introduce el ID P2P de tu amigo (ejemplo: RHUB-Carlos):");
-            if (id) {
-                alert(`Conectando con ${id}... ¡Petición P2P enviada con éxito!`);
-                if (window.n3dsAudio) window.n3dsAudio.play('launch');
+            const drawer = document.getElementById('friendsDrawer');
+            if (!drawer) return;
+            const isOpen = drawer.classList.toggle('open');
+            if (isOpen) {
+                renderFriendsDrawer();
             }
         }
 
@@ -4345,22 +4268,6 @@
         }
 
         // ========================================================
-        // COMMUNITY FEED VOTE SYSTEM
-        // ========================================================
-        const feedVotes = { votePill1: {up:84, down:41}, votePill2: {up:126, down:12} };
-        function votePost(pillId, delta) {
-            if (!feedVotes[pillId]) return;
-            if (delta > 0) feedVotes[pillId].up++;
-            else feedVotes[pillId].down++;
-            const idx = pillId.replace('votePill','');
-            const upEl = document.getElementById('voteCount'+idx);
-            const downEl = document.getElementById('voteDown'+idx);
-            if (upEl) upEl.textContent = feedVotes[pillId].up;
-            if (downEl) downEl.textContent = feedVotes[pillId].down;
-            if (window.n3dsAudio) window.n3dsAudio.play('move');
-        }
-
-        // ========================================================
         // UPDATE AMBIENT ORBS COLOR WHEN CONSOLE CHANGES
         // ========================================================
         function updateAmbientOrbs(accentColor, secondaryColor) {
@@ -4369,6 +4276,7 @@
             if (orb1) orb1.style.background = accentColor;
             if (orb2) orb2.style.background = secondaryColor;
         }
+
         // ================================================================
         // RETROHUB SOCIAL SYSTEM — Real Friend Network with Socket.io
         // ================================================================
@@ -4384,6 +4292,13 @@
           unread: {},
         };
 
+        function updateFriendsBadge() {
+          const badge = document.getElementById('friendsCountNumber');
+          if (badge) {
+            badge.textContent = SOCIAL.friends.length;
+          }
+        }
+
         function socialInit() {
           let uid = localStorage.getItem('retrohub_user_id');
           if (!uid) {
@@ -4391,13 +4306,19 @@
             localStorage.setItem('retrohub_user_id', uid);
           }
           SOCIAL.myUserId = uid;
-          SOCIAL.myName = localStorage.getItem('retrohub_user_name') || 'RetroGamer';
-          SOCIAL.myAvatar = localStorage.getItem('retrohub_user_avatar') || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + uid;
-          const myIdEl = document.getElementById('myP2PId');
-          if (myIdEl) myIdEl.textContent = uid;
+          SOCIAL.myName = localStorage.getItem('retrohub_user_name') || 'Sara';
+          SOCIAL.myAvatar = localStorage.getItem('retrohub_user_avatar') || ('https://api.dicebear.com/7.x/bottts/svg?seed=' + uid);
+
+          renderFriendsDrawer();
+          updateFriendsBadge();
+
           if (typeof io !== 'undefined') {
-            SOCIAL.socket = io('http://localhost:8080', { transports: ['websocket','polling'] });
-            setupSocialSocket();
+            try {
+              SOCIAL.socket = io({ transports: ['websocket', 'polling'], reconnection: true });
+              setupSocialSocket();
+            } catch (err) {
+              console.warn('[Social]: Socket.io init error:', err);
+            }
           }
         }
 
@@ -4411,6 +4332,7 @@
             SOCIAL.friends = data.friends || [];
             SOCIAL.pendingIn = data.pendingRequests || [];
             SOCIAL.pendingOut = data.pendingOut || [];
+            updateFriendsBadge();
             renderFriendsDrawer();
             renderFriendsCarouselStrip();
             if (SOCIAL.pendingIn.length > 0) showSocialNotif(`🤝 ${SOCIAL.pendingIn.length} solicitud(es) de amistad pendiente(s)`, 'request', openFriendsDrawerFn);
@@ -4419,7 +4341,7 @@
             const f = SOCIAL.friends.find(f => f.userId === data.userId);
             if (f) { f.online = true; f.playing = data.playing; f.status = data.status; }
             renderFriendsDrawer(); renderFriendsCarouselStrip();
-            showSocialNotif(`🟢 ${data.name} se conecto`, 'success');
+            showSocialNotif(`🟢 ${data.name} se conectó`, 'success');
           });
           s.on('friend_offline', (data) => {
             const f = SOCIAL.friends.find(f => f.userId === data.userId);
@@ -4436,8 +4358,9 @@
             if (!SOCIAL.friends.find(f => f.userId === data.byId)) {
               SOCIAL.friends.push({ userId: data.byId, name: data.byName, avatar: data.byAvatar, online: true, playing: null, status: 'online' });
             }
+            updateFriendsBadge();
             renderFriendsDrawer(); renderFriendsCarouselStrip();
-            showSocialNotif(`✅ ${data.byName} acepto tu solicitud`, 'success');
+            showSocialNotif(`✅ ${data.byName} aceptó tu solicitud`, 'success');
           });
           s.on('presence_update', (data) => {
             const f = SOCIAL.friends.find(f => f.userId === data.userId);
@@ -4466,22 +4389,27 @@
         }
 
         function sendFriendReqSocial(toUserId) {
-          if (!SOCIAL.socket) { showSocialNotif('Sin conexion al servidor', 'error'); return; }
-          if (!toUserId) { showSocialNotif('Introduce un ID valido', 'error'); return; }
-          if (toUserId === SOCIAL.myUserId) { showSocialNotif('No puedes anadirte a ti mismo', 'error'); return; }
+          if (!toUserId) { showSocialNotif('Introduce un ID válido', 'error'); return; }
+          if (toUserId === SOCIAL.myUserId) { showSocialNotif('No puedes añadirte a ti mismo', 'error'); return; }
           if (SOCIAL.friends.find(f => f.userId === toUserId)) { showSocialNotif('Ya sois amigos', 'info'); return; }
-          SOCIAL.socket.emit('friend_request_send', { toUserId, fromName: SOCIAL.myName, fromAvatar: SOCIAL.myAvatar });
+          if (SOCIAL.socket) {
+            SOCIAL.socket.emit('friend_request_send', { toUserId, fromName: SOCIAL.myName, fromAvatar: SOCIAL.myAvatar });
+          }
           showSocialNotif('📨 Solicitud enviada a ' + toUserId, 'success');
+          const input = document.getElementById('addFriendIdInput');
+          if (input) input.value = '';
         }
         function acceptFriendReqSocial(fromUserId) {
-          if (!SOCIAL.socket) return;
-          SOCIAL.socket.emit('friend_request_accept', { fromUserId });
+          if (SOCIAL.socket) {
+            SOCIAL.socket.emit('friend_request_accept', { fromUserId });
+          }
           SOCIAL.pendingIn = SOCIAL.pendingIn.filter(p => p.fromId !== fromUserId);
           renderFriendsDrawer();
         }
         function rejectFriendReqSocial(fromUserId) {
-          if (!SOCIAL.socket) return;
-          SOCIAL.socket.emit('friend_request_reject', { fromUserId });
+          if (SOCIAL.socket) {
+            SOCIAL.socket.emit('friend_request_reject', { fromUserId });
+          }
           SOCIAL.pendingIn = SOCIAL.pendingIn.filter(p => p.fromId !== fromUserId);
           renderFriendsDrawer();
         }
@@ -4492,7 +4420,7 @@
           const drawer = document.getElementById('friendsDrawer');
           if (drawer && !drawer.classList.contains('open')) drawer.classList.add('open');
           renderChatPanel(userId);
-          fetch(`http://localhost:8080/api/social/messages/${SOCIAL.myUserId}/${userId}`)
+          fetch(`/api/social/messages/${encodeURIComponent(SOCIAL.myUserId)}/${encodeURIComponent(userId)}`)
             .then(r => r.json())
             .then(d => {
               if (d.messages && d.messages.length > 0) {
@@ -4509,9 +4437,12 @@
           renderFriendsDrawer();
         }
         function sendMsgSocial(userId, content) {
-          if (!SOCIAL.socket || !content || !content.trim()) return;
-          SOCIAL.socket.emit('chat_message', { toUserId: userId, content: content.trim() });
-          appendChatMsg(SOCIAL.myUserId, { fromId: SOCIAL.myUserId, fromName: 'Tu', content: content.trim(), sentAt: Date.now() });
+          if (!content || !content.trim()) return;
+          const trimmed = content.trim();
+          if (SOCIAL.socket) {
+            SOCIAL.socket.emit('chat_message', { toUserId: userId, content: trimmed });
+          }
+          appendChatMsg(SOCIAL.myUserId, { fromId: SOCIAL.myUserId, fromName: 'Tú', content: trimmed, sentAt: Date.now() });
         }
         function appendChatMsg(fromId, msg) {
           const chatEl = document.getElementById('chatMsgsArea');
@@ -4530,40 +4461,49 @@
           if (!f) return;
           const drawer = document.getElementById('friendsDrawer');
           if (!drawer) return;
-          const statusText = f.online ? (f.playing ? '🎮 ' + f.playing.gameTitle : '🟢 En linea') : '⚫ Desconectado';
+          const statusText = f.online ? (f.playing ? '🎮 ' + f.playing.gameTitle : '🟢 En línea') : '⚫ Desconectado';
           drawer.innerHTML = `
             <div class="drawer-header">
               <div style="display:flex;align-items:center;gap:10px;">
-                <button onclick="closeChatPanel()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">\u2190</button>
+                <button onclick="closeChatPanel()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">←</button>
                 <img src="${f.avatar}" style="width:36px;height:36px;border-radius:50%;border:2px solid ${f.online?'#1dd1a1':'rgba(255,255,255,0.2)'}" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${userId}'">
                 <div>
                   <div style="font-family:'Space Grotesk';font-size:14px;font-weight:800;">${f.name}</div>
                   <div style="font-size:10px;color:${f.online?'#1dd1a1':'var(--text-muted)'}">${statusText}</div>
                 </div>
               </div>
-              <button class="btn-close-games-modal" style="padding:4px 10px;" onclick="toggleFriendsDrawer()">\u2715</button>
+              <button class="btn-close-games-modal" style="padding:4px 10px;" onclick="toggleFriendsDrawer()">✕</button>
             </div>
             <div id="chatMsgsArea" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:4px 0;min-height:0;"></div>
             <div style="display:flex;gap:7px;padding-top:10px;border-top:1px solid var(--card-border);">
               <input id="chatInputField" type="text" class="add-rom-input" placeholder="Escribe un mensaje..." style="flex:1;font-size:12px;" onkeydown="if(event.key==='Enter'&&this.value.trim()){sendMsgSocial('${userId}',this.value);this.value='';}">
-              <button class="btn-box-play" onclick="const i=document.getElementById('chatInputField');if(i.value.trim()){sendMsgSocial('${userId}',i.value);i.value='';}" style="padding:7px 13px;font-size:13px;">\u25B6</button>
+              <button class="btn-box-play" onclick="const i=document.getElementById('chatInputField');if(i.value.trim()){sendMsgSocial('${userId}',i.value);i.value='';}" style="padding:7px 13px;font-size:13px;">▶</button>
             </div>
           `;
-          setTimeout(() => document.getElementById('chatInputField') && document.getElementById('chatInputField').focus(), 100);
+          setTimeout(() => {
+            const input = document.getElementById('chatInputField');
+            if (input) input.focus();
+          }, 100);
         }
 
         function renderFriendsDrawer() {
+          if (!SOCIAL.myUserId) {
+            socialInit();
+            return;
+          }
           if (SOCIAL.activeChat) return;
           const drawer = document.getElementById('friendsDrawer');
           if (!drawer) return;
+          updateFriendsBadge();
+
           const onlineFriends = SOCIAL.friends.filter(f => f.online);
           const offlineFriends = SOCIAL.friends.filter(f => !f.online);
           const pendingReqsHtml = SOCIAL.pendingIn.length > 0 ? `
             <div>
-              <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;margin-bottom:6px;">🔔 Solicitudes (${SOCIAL.pendingIn.length})</div>
+              <div style="font-size:10px;font-weight:800;color:#f59e0b;text-transform:uppercase;margin-bottom:6px;">🔔 Solicitudes Pendientes (${SOCIAL.pendingIn.length})</div>
               ${SOCIAL.pendingIn.map(req => `
                 <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:9px;margin-bottom:6px;">
-                  <img src="${req.fromAvatar||'https://api.dicebear.com/7.x/bottts/svg?seed='+req.fromId}" style="width:34px;height:34px;border-radius:50%;" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${req.fromId}'">
+                  <img src="${req.fromAvatar||('https://api.dicebear.com/7.x/bottts/svg?seed='+req.fromId)}" style="width:34px;height:34px;border-radius:50%;" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${req.fromId}'">
                   <span style="flex:1;font-size:12px;font-weight:700;">${req.fromName}</span>
                   <button onclick="acceptFriendReqSocial('${req.fromId}')" style="background:#1dd1a1;border:none;color:white;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;">✓</button>
                   <button onclick="rejectFriendReqSocial('${req.fromId}')" style="background:#ff4757;border:none;color:white;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;">✕</button>
@@ -4589,56 +4529,78 @@
 
           drawer.innerHTML = `
             <div class="drawer-header">
-              <div class="drawer-title">🤝 Red Social RetroHub</div>
+              <div class="drawer-title">🤝 Amigos & Chat</div>
               <button class="btn-close-games-modal" style="padding:4px 10px;" onclick="toggleFriendsDrawer()">✕</button>
             </div>
-            <div style="background:rgba(0,210,211,0.08);border:1px solid rgba(0,210,211,0.25);border-radius:12px;padding:10px 13px;">
-              <div style="font-size:10px;font-weight:800;color:var(--secondary);text-transform:uppercase;margin-bottom:3px;">Tu ID de Amigos</div>
-              <div style="font-family:monospace;font-size:11.5px;font-weight:700;color:var(--text-main);word-break:break-all;user-select:all;" id="myP2PId">${SOCIAL.myUserId || '...'}</div>
-              <button onclick="navigator.clipboard.writeText(SOCIAL.myUserId).then(()=>showSocialNotif('\uD83D\uDCCB ID copiado','success'))" style="margin-top:6px;background:rgba(0,210,211,0.15);border:1px solid rgba(0,210,211,0.35);color:var(--secondary);padding:3px 10px;border-radius:7px;font-size:10.5px;font-weight:700;cursor:pointer;width:100%;">📋 Copiar ID</button>
-            </div>
-            <div>
-              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px;">\u2795 Añadir Amigo por ID</div>
-              <div style="display:flex;gap:6px;">
-                <input id="addFriendIdInput" type="text" class="add-rom-input" placeholder="Pega el ID de tu amigo..." style="flex:1;font-size:11.5px;" onkeydown="if(event.key==='Enter'){sendFriendReqSocial(this.value.trim());this.value='';}">
-                <button class="btn-box-play" onclick="const v=document.getElementById('addFriendIdInput');sendFriendReqSocial(v.value.trim());v.value='';" style="padding:7px 12px;">➕</button>
+
+            <!-- Tarjeta de Tu ID -->
+            <div style="background:rgba(0,210,211,0.08);border:1px solid rgba(0,210,211,0.25);border-radius:12px;padding:12px 14px;">
+              <div style="font-size:10px;font-weight:800;color:var(--secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Tu Código de Amigo</div>
+              <div style="font-family:monospace;font-size:12px;font-weight:700;color:var(--text-main);word-break:break-all;user-select:all;background:rgba(0,0,0,0.2);padding:6px 10px;border-radius:6px;" id="myP2PId">${SOCIAL.myUserId || '...'}</div>
+              <div style="display:flex;gap:6px;margin-top:8px;">
+                <button onclick="navigator.clipboard.writeText('${SOCIAL.myUserId}').then(()=>showSocialNotif('📋 Código copiado al portapapeles','success'))" style="flex:1;background:rgba(0,210,211,0.15);border:1px solid rgba(0,210,211,0.35);color:var(--secondary);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">📋 Copiar Código</button>
+                <button onclick="shareRetroHubInvite()" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:var(--text-main);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🔗 Invitar</button>
               </div>
             </div>
+
+            <!-- Formulario Añadir Amigo -->
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">➕ Añadir Amigo por Código</div>
+              <div style="display:flex;gap:6px;">
+                <input id="addFriendIdInput" type="text" class="add-rom-input" placeholder="Pega el código de tu amigo..." style="flex:1;font-size:11.5px;" onkeydown="if(event.key==='Enter'){sendFriendReqSocial(this.value.trim());}">
+                <button class="btn-box-play" onclick="const v=document.getElementById('addFriendIdInput');if(v){sendFriendReqSocial(v.value.trim());}" style="padding:7px 14px;">Añadir</button>
+              </div>
+            </div>
+
             ${pendingReqsHtml}
+
             ${onlineFriends.length > 0 ? `<div>
-              <div style="font-size:10px;font-weight:800;color:#1dd1a1;text-transform:uppercase;margin-bottom:6px;">🟢 En L\u00EDnea (${onlineFriends.length})</div>
+              <div style="font-size:10px;font-weight:800;color:#1dd1a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🟢 En Línea (${onlineFriends.length})</div>
               <div style="display:flex;flex-direction:column;gap:7px;">${onlineFriends.map(makeFriendRow).join('')}</div>
             </div>` : ''}
+
             ${offlineFriends.length > 0 ? `<div>
-              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">⚫ Desconectados (${offlineFriends.length})</div>
+              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">⚫ Desconectados (${offlineFriends.length})</div>
               <div style="display:flex;flex-direction:column;gap:7px;">${offlineFriends.map(makeFriendRow).join('')}</div>
             </div>` : ''}
-            ${SOCIAL.friends.length === 0 && SOCIAL.pendingIn.length === 0 ? `<div style="text-align:center;padding:24px 16px;color:var(--text-muted);"><div style="font-size:32px;margin-bottom:10px;">👾</div><div style="font-size:13px;font-weight:700;">Sin amigos todav\u00EDa</div><div style="font-size:11px;margin-top:5px;">Comparte tu ID para empezar</div></div>` : ''}
-            <div style="margin-top:auto;display:flex;flex-direction:column;gap:7px;">
-              <button class="btn-enter-console" style="padding:9px;font-size:12px;justify-content:center;width:100%;" onclick="shareRetroHubInvite()">🔗 Invitar Amigo</button>
-            </div>
+
+            ${SOCIAL.friends.length === 0 && SOCIAL.pendingIn.length === 0 ? `
+              <div style="text-align:center;padding:32px 16px;color:var(--text-muted);background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.12);border-radius:14px;">
+                <div style="font-size:36px;margin-bottom:10px;">👥</div>
+                <div style="font-size:14px;font-weight:800;color:var(--text-main);">Sin amigos agregados</div>
+                <div style="font-size:11.5px;margin-top:6px;line-height:1.5;">Comparte tu código de amigo con alguien para conectar, chatear y jugar juntos en tiempo real.</div>
+              </div>` : ''}
           `;
         }
 
         function openFriendsDrawerFn() {
           const d = document.getElementById('friendsDrawer');
-          if (d) d.classList.add('open');
+          if (d) {
+            d.classList.add('open');
+            renderFriendsDrawer();
+          }
         }
 
         function shareRetroHubInvite() {
-          const text = `Juega conmigo en RetroHub! Mi codigo de amigo: ${SOCIAL.myUserId}\nAbre RetroHub y en la sección Amigos pega mi ID.`;
+          const text = `¡Juega conmigo en RetroHub! Mi código de amigo es: ${SOCIAL.myUserId}\nÁbrelo en RetroHub y en la sección Amigos pega mi código.`;
           if (navigator.share) {
-            navigator.share({ title: 'RetroHub — Juega Conmigo', text });
+            navigator.share({ title: 'RetroHub — Juega Conmigo', text }).catch(() => {});
           } else {
-            navigator.clipboard.writeText(text).then(() => showSocialNotif('\u2705 Invitacion copiada al portapapeles', 'success'));
+            navigator.clipboard.writeText(text).then(() => showSocialNotif('✅ Invitación copiada al portapapeles', 'success'));
           }
         }
 
         function renderFriendsCarouselStrip() {
           const strip = document.getElementById('friendsStripInner');
+          const stripContainer = document.getElementById('friendsCarouselStrip');
           if (!strip) return;
           const onlineFriends = SOCIAL.friends.filter(f => f.online);
-          if (onlineFriends.length === 0) return;
+          if (onlineFriends.length === 0) {
+            if (stripContainer) stripContainer.style.display = 'none';
+            strip.innerHTML = '';
+            return;
+          }
+          if (stripContainer) stripContainer.style.display = 'block';
           strip.innerHTML = onlineFriends.map(f => `
             <div class="friend-status-card" onclick="openFriendsDrawerFn();openChatWith('${f.userId}')">
               <div class="friend-speech-bubble">${f.playing ? '🎮 '+f.playing.gameTitle : '🌐 Explorando'}</div>
@@ -4654,7 +4616,7 @@
         function showFriendRequestToast(data) {
           const toast = document.createElement('div');
           toast.style.cssText = `position:fixed;top:80px;right:24px;z-index:99999;background:rgba(15,23,42,0.96);border:1.5px solid #f59e0b;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:11px;box-shadow:0 16px 40px rgba(0,0,0,0.55);min-width:280px;`;
-          toast.innerHTML = `<img src="${data.fromAvatar||'https://api.dicebear.com/7.x/bottts/svg?seed='+data.fromId}" style="width:42px;height:42px;border-radius:50%;border:2px solid #f59e0b;"><div style="flex:1;"><div style="font-size:12px;font-weight:800;color:#f59e0b;">Solicitud de Amistad</div><div style="font-size:12px;font-weight:700;color:white;">${data.fromName} quiere ser tu amigo/a</div></div><div style="display:flex;flex-direction:column;gap:4px;"><button onclick="acceptFriendReqSocial('${data.fromId}');this.closest('div[style]').remove();" style="background:#1dd1a1;border:none;color:white;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;">✓ Aceptar</button><button onclick="rejectFriendReqSocial('${data.fromId}');this.closest('div[style]').remove();" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 10px;border-radius:7px;font-size:11px;cursor:pointer;">✕ Rechazar</button></div>`;
+          toast.innerHTML = `<img src="${data.fromAvatar||('https://api.dicebear.com/7.x/bottts/svg?seed='+data.fromId)}" style="width:42px;height:42px;border-radius:50%;border:2px solid #f59e0b;" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${data.fromId}'"><div style="flex:1;"><div style="font-size:12px;font-weight:800;color:#f59e0b;">Solicitud de Amistad</div><div style="font-size:12px;font-weight:700;color:white;">${data.fromName} quiere ser tu amigo/a</div></div><div style="display:flex;flex-direction:column;gap:4px;"><button onclick="acceptFriendReqSocial('${data.fromId}');this.closest('div[style]').remove();" style="background:#1dd1a1;border:none;color:white;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;">✓ Aceptar</button><button onclick="rejectFriendReqSocial('${data.fromId}');this.closest('div[style]').remove();" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 10px;border-radius:7px;font-size:11px;cursor:pointer;">✕ Rechazar</button></div>`;
           document.body.appendChild(toast);
           setTimeout(() => { if (toast.parentNode) toast.remove(); }, 13000);
         }
