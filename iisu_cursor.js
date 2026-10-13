@@ -13,6 +13,13 @@ class IisuCursorEngine {
     }
 
     init() {
+        if (!document.body) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.init(), { once: true });
+            }
+            return;
+        }
+
         if (document.getElementById('iisu-cursor-container')) return;
 
         const container = document.createElement('div');
@@ -28,76 +35,23 @@ class IisuCursorEngine {
         this.dot = document.getElementById('iisu-cursor-dot');
         this.ripple = document.getElementById('iisu-cursor-ripple');
 
-        // Apply cursor: none to body and interactive elements
+        // Ensure standard system cursor is always visible and functional across the entire app
         const style = document.createElement('style');
         style.innerHTML = `
-            body, button, a, input, select, textarea, .n3ds-tile, .n3ds-touch-btn {
-                cursor: none !important;
+            html, body {
+                cursor: default !important;
+            }
+            button, a, select, input[type="button"], input[type="submit"], [role="button"],
+            .nintendo-tab-btn, .nintendo-avatar-thumb, .nintendo-emu-chip,
+            .nintendo-btn-primary, .nintendo-btn-secondary, .nintendo-btn-text,
+            .n3ds-tile, .n3ds-touch-btn, .user-profile-badge, .nav-btn, .clickable {
+                cursor: pointer !important;
+            }
+            input[type="text"], input[type="email"], input[type="password"], textarea {
+                cursor: text !important;
             }
             #iisu-cursor-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                pointer-events: none;
-                z-index: 99999;
-                overflow: hidden;
-            }
-            #iisu-cursor-ring {
-                position: absolute;
-                width: 32px;
-                height: 32px;
-                border: 2px solid var(--primary, #ff4757);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: 0 0 15px var(--primary-glow, rgba(255, 71, 87, 0.4)), inset 0 0 10px rgba(255,255,255,0.5);
-                transition: width 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                            height 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                            border-color 0.2s, background-color 0.2s;
-                backdrop-filter: blur(2px);
-                background-color: rgba(255, 255, 255, 0.15);
-            }
-            #iisu-cursor-dot {
-                position: absolute;
-                width: 7px;
-                height: 7px;
-                background-color: var(--primary, #ff4757);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: 0 0 8px #fff;
-                transition: transform 0.15s, background-color 0.2s;
-            }
-            #iisu-cursor-ripple {
-                position: absolute;
-                width: 48px;
-                height: 48px;
-                border: 2px solid var(--secondary, #00d2d3);
-                border-radius: 50%;
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-                pointer-events: none;
-            }
-            .iisu-hovering #iisu-cursor-ring {
-                width: 52px;
-                height: 52px;
-                border-color: var(--secondary, #00d2d3);
-                background-color: rgba(0, 210, 211, 0.12);
-                box-shadow: 0 0 25px rgba(0, 210, 211, 0.5);
-            }
-            .iisu-hovering #iisu-cursor-dot {
-                background-color: var(--secondary, #00d2d3);
-                transform: translate(-50%, -50%) scale(1.4);
-            }
-            .iisu-active #iisu-cursor-ring {
-                transform: translate(-50%, -50%) scale(0.85);
-            }
-            @keyframes iisu-pulse-anim {
-                0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
-                100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
-            }
-            .iisu-pulsing {
-                animation: iisu-pulse-anim 0.45s ease-out forwards;
+                display: none !important;
             }
         `;
         document.head.appendChild(style);

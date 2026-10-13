@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="nintendo_clean">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iiSU • Identificación de Usuario</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="iisu_cursor.js"></script>
+    <style>
+        :root {
+            --canvas-base: #f6f8fb;
+            --wii-cyan: #00a2ed;
+            --wii-cyan-soft: rgba(0, 162, 237, 0.09);
+            --wii-cyan-glow: rgba(0, 162, 237, 0.25);
+            --nintendo-red: #e60012;
+            --nintendo-mint: #10b981;
+            --text-title: #1e293b;
+            --text-body: #64748b;
+            --text-muted: #94a3b8;
+            --gel-border: rgba(0, 0, 0, 0.06);
+            --gel-specular: inset 0 1.5px 2px rgba(255, 255, 255, 1), inset 0 -1.5px 3px rgba(0, 162, 237, 0.04);
+            --radius-bubble: 40px;
+            --radius-pill: 9999px;
+            --radius-md: 18px;
+            --ease-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', system-ui, sans-serif;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden !important;
+            margin: 0;
+            padding: 0;
+            background-color: var(--canvas-base);
+            background-image: 
+                radial-gradient(circle at 50% 15%, #ffffff 0%, transparent 75%),
+                radial-gradient(circle at 10% 40%, rgba(0, 162, 237, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-title);
+            cursor: default !important;
+            position: fixed;
+            width: 100vw;
+            box-sizing: border-box;
+        }
+
+        button, a, input {
+            cursor: pointer !important;
+        }
+
+        input {
+            cursor: text !important;
+            user-select: text !important;
+        }
+
+        /* Orbes fluidos de fondo */
+        .fluid-mesh {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .fluid-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+            animation: gelDrift 22s ease-in-out infinite alternate;
+        }
+
+        .orb-a {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, #00a2ed 0%, transparent 70%);
+            top: -120px;
+            left: -100px;
+        }
+
+        .orb-b {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #10b981 0%, transparent 70%);
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 26s;
+            animation-delay: -6s;
+        }
+
+        @keyframes gelDrift {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(40px, -35px, 0) scale(1.07); }
+            100% { transform: translate3d(-30px, 35px, 0) scale(0.95); }
+        }
+
+        /* Tarjeta Cápsula Flotante */
+        .auth-gel-card {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            border-radius: var(--radius-bubble);
+            padding: 44px 40px;
+            box-shadow: 0 24px 65px rgba(0, 162, 237, 0.12), var(--gel-specular);
+            position: relative;
+            z-index: 10;
+            animation: cardSoftEnter 0.45s var(--ease-squish) both;
+        }
+
+        @keyframes cardSoftEnter {
+            from { opacity: 0; transform: scale(0.96) translateY(14px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .brand-header-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .brand-icon-bubble {
+            width: 58px;
+            height: 58px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--wii-cyan-glow), inset 0 2px 2px rgba(255, 255, 255, 0.8);
+            margin-bottom: 14px;
+            transition: transform 0.25s var(--ease-squish);
+        }
+
+        .brand-icon-bubble:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .brand-title-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .brand-sub-text {
+            font-size: 14px;
+            color: var(--text-body);
+            margin-top: 4px;
+        }
+
+        /* Selector de pestañas en cápsula de goma */
+        .auth-tab-pill-box {
+            display: flex;
+            background: #edf2f7;
+            padding: 5px;
+            border-radius: var(--radius-pill);
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 9px 18px;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: transparent;
+            color: var(--text-body);
+            font-size: 13.5px;
+            font-weight: 800;
+            transition: all 0.25s var(--ease-squish);
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--wii-cyan);
+            box-shadow: 0 4px 14px rgba(0, 162, 237, 0.15), var(--gel-specular);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: 0.3px;
+        }
+
+        .input-control {
+            width: 100%;
+            background: #f8fafc;
+            border: 1.5px solid var(--gel-border);
+            color: var(--text-title);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14.5px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-control:focus {
+            border-color: var(--wii-cyan);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px var(--wii-cyan-soft);
+        }
+
+        .error-pill {
+            background: rgba(230, 0, 18, 0.08);
+            border: 1px solid rgba(230, 0, 18, 0.25);
+            color: var(--nintendo-red);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-user-status {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+            margin-top: 2px;
+        }
+
+        /* Barra Superior Fija Estilo Nintendo Switch */
+        .login-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 56px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+        .login-brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+        .login-badge {
+            background: #e60012;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            letter-spacing: 0.5px;
+        }
+        .login-top-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .login-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .btn-submit-gel {
+            width: 100%;
+            background: #ffffff;
+            color: #1e293b;
+            border: 2px solid #00a2ed;
+            padding: 13px;
+            border-radius: var(--radius-pill);
+            font-size: 14.5px;
+            font-weight: 800;
+            box-shadow: 0 6px 18px var(--wii-cyan-glow), inset 0 1px 2px rgba(255, 255, 255, 1);
+            transition: all 0.22s var(--ease-squish);
+            margin-top: 6px;
+            cursor: pointer !important;
+        }
+
+        .btn-submit-gel:hover {
+            background: #00a2ed;
+            color: #ffffff;
+            box-shadow: 0 10px 28px rgba(0, 162, 237, 0.4);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-submit-gel:active {
+            transform: scale(0.96);
+        }
+
+        .btn-submit-gel:disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+        }
+
+        .footer-skip-link {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer-skip-link a {
+            color: var(--wii-cyan);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s ease;
+        }
+
+        .footer-skip-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- BARRA SUPERIOR STICKY ESTILO SWITCH OS -->
+    <header class="login-top-bar">
+        <div class="login-brand-logo">
+            <span>🎮</span>
+            <span>iiSU</span>
+            <span class="login-badge">SWITCH OS</span>
+        </div>
+        <div class="login-top-right">
+            <div class="login-pill">
+                <span>📶</span>
+                <span>En línea</span>
+            </div>
+            <div class="login-pill" id="loginClock">
+                <span>🕒</span>
+                <span id="loginClockText">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="fluid-mesh" aria-hidden="true">
+        <div class="fluid-orb orb-a"></div>
+        <div class="fluid-orb orb-b"></div>
+    </div>
+
+    <div class="auth-gel-card">
+        <div class="brand-header-zone">
+            <div class="brand-icon-bubble">🎮</div>
+            <h1 class="brand-title-text">iiSU RetroHub</h1>
+            <p class="brand-sub-text">Inicia sesión o regístrate para entrar a tu Página de Inicio.</p>
+        </div>
+
+        <!-- SELECTOR DE PESTAÑAS -->
+        <div class="auth-tab-pill-box">
+            <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Iniciar Sesión</button>
+            <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Registrarse</button>
+        </div>
+
+        <div class="error-pill" id="errorBox">
+            <span>⚠️</span>
+            <span id="errorText">Error de autenticación</span>
+        </div>
+
+        <!-- FORMULARIO LOGIN -->
+        <form id="formLogin" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label class="input-label" for="loginUser">Usuario o Correo</label>
+                <input type="text" id="loginUser" class="input-control" placeholder="ej. usuario o correo@ejemplo.com" required autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="loginPass">Contraseña</label>
+                <input type="password" id="loginPass" class="input-control" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-submit-gel" id="btnLogin">Entrar a Página de Inicio ➔</button>
+        </form>
+
+        <!-- FORMULARIO REGISTRO -->
+        <form id="formRegister" style="display: none;" onsubmit="handleRegister(event)">
+            <div class="input-group">
+                <label class="input-label" for="regEmail">Correo Electrónico</label>
+                <input type="email" id="regEmail" class="input-control" placeholder="correo@ejemplo.com" required autocomplete="email">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="regUser">Nombre de Usuario Único</label>
+                <input type="text" id="regUser" class="input-control" placeholder="ej. MarioBros64" required minlength="3" maxlength="24" autocomplete="username">
+                <span class="live-user-status" id="regUserStatus"></span>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="regPass">Contraseña</label>
+                <input type="password" id="regPass" class="input-control" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="regPassConfirm">Confirmar Contraseña</label>
+                <input type="password" id="regPassConfirm" class="input-control" placeholder="Repite la contraseña" required minlength="6" autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn-submit-gel" id="btnRegister">Crear Cuenta e Ir a Inicio ➔</button>
+        </form>
+
+        <div class="footer-skip-link">
+            <a href="home.html">Continuar a la Página de Inicio como Invitado</a>
+        </div>
+    </div>
+
+    <script>
+        // Si ya hay token válido, enviar a home.html
+        if (localStorage.getItem('retrohub_jwt_token')) {
+            window.location.href = 'home.html';
+        }
+
+        function switchTab(tab) {
+            const tabL = document.getElementById('tabLogin');
+            const tabR = document.getElementById('tabRegister');
+            const formL = document.getElementById('formLogin');
+            const formR = document.getElementById('formRegister');
+            const err = document.getElementById('errorBox');
+            if (err) err.style.display = 'none';
+
+            if (tab === 'login') {
+                tabL.classList.add('active');
+                tabR.classList.remove('active');
+                formL.style.display = 'block';
+                formR.style.display = 'none';
+            } else {
+                tabL.classList.remove('active');
+                tabR.classList.add('active');
+                formL.style.display = 'none';
+                formR.style.display = 'block';
+            }
+        }
+
+        function showError(msg) {
+            const err = document.getElementById('errorBox');
+            const text = document.getElementById('errorText');
+            if (err && text) {
+                text.textContent = msg;
+                err.style.display = 'flex';
+            }
+        }
+
+        // Live check username
+        const userInput = document.getElementById('regUser');
+        const userStatus = document.getElementById('regUserStatus');
+        let checkTimer = null;
+        userInput.addEventListener('input', () => {
+            clearTimeout(checkTimer);
+            const val = userInput.value.trim();
+            if (!val) { userStatus.style.display = 'none'; return; }
+            if (val.length < 3) {
+                userStatus.style.display = 'block';
+                userStatus.style.color = '#e60012';
+                userStatus.textContent = 'Mínimo 3 caracteres';
+                return;
+            }
+            userStatus.style.display = 'block';
+            userStatus.style.color = '#94a3b8';
+            userStatus.textContent = 'Comprobando disponibilidad...';
+
+            checkTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`/api/users/check-username/${encodeURIComponent(val)}`);
+                    const data = await res.json();
+                    if (data.available) {
+                        userStatus.style.color = '#10b981';
+                        userStatus.textContent = '✓ Nombre disponible';
+                    } else {
+                        userStatus.style.color = '#e60012';
+                        userStatus.textContent = `✕ ${data.message || 'No disponible'}`;
+                    }
+                } catch(e) {
+                    userStatus.style.display = 'none';
+                }
+            }, 300);
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLogin');
+            btn.disabled = true;
+            btn.textContent = 'Iniciando sesión...';
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier: user, password: pass })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.token) throw new Error(data.message || 'Credenciales incorrectas');
+
+                localStorage.setItem('retrohub_jwt_token', data.token);
+                if (data.user) localStorage.setItem('retrohub_user_name', data.user.username);
+                if (data.profile) {
+                    localStorage.setItem('retrohub_display_name', data.profile.displayName || data.user.username);
+                    localStorage.setItem('retrohub_user_avatar', data.profile.avatarUrl || '');
+                }
+
+                // Navegación inmediata a la Página de Inicio
+                window.location.href = 'index.html';
+            } catch(err) {
+                showError(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Entrar a Página de Inicio ➔';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value.trim();
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const cpass = document.getElementById('regPassConfirm').value;
+            const btn = document.getElementById('btnRegister');
+
+            if (pass !== cpass) {
+                showError('Las contraseñas no coinciden.');
+                return;
+            }
+            if (pass.length < 6) {
+                showError('La contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creando cuenta...';
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username: user, password: pass, confirmPassword: cpass })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.token) throw new Error(data.message || 'Error al crear la cuenta');
+
+                localStorage.setItem('retrohub_jwt_token', data.token);
+                localStorage.setItem('retrohub_user_name', user);
+                if (data.profile) {
+                    localStorage.setItem('retrohub_display_name', data.profile.displayName || user);
+                }
+
+                // Navegación inmediata a la Página de Inicio
+                window.location.href = 'index.html';
+            } catch(err) {
+                showError(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Crear Cuenta e Ir a Inicio ➔';
+            }
+        }
+
+        function updateClock() {
+            const el = document.getElementById('loginClockText');
+            if (el) {
+                const now = new Date();
+                el.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

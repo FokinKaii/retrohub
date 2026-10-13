@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="nintendo_clean">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iiSU • Página de Inicio</title>
+    
+    <!-- Tipografía redondeada y amigable oficial de iiSU & Nintendo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        // Unificación con el Dashboard Switch OS de iiSU
+        if (window.location.pathname.endsWith('home.html') || window.location.pathname.endsWith('home')) {
+            window.location.replace('index.html');
+        }
+    </script>
+    <script src="iisu_cursor.js"></script>
+    <style>
+        /* ========================================================
+           1. SISTEMA DE DISEÑO iiSU & NINTENDO CLEAN (FLUID & GEL)
+           ======================================================== */
+        :root {
+            /* Lienzo cerámico blanco y perla luminosa */
+            --canvas-base: #f6f8fb;
+            --canvas-pearl: #ffffff;
+            --canvas-alt: #edf2f7;
+            
+            /* Superficies de gelatina / porcelana translúcida */
+            --gel-surface: rgba(255, 255, 255, 0.88);
+            --gel-surface-hover: rgba(255, 255, 255, 0.98);
+            --gel-card: #ffffff;
+            --gel-border: rgba(0, 0, 0, 0.06);
+            --gel-border-subtle: rgba(255, 255, 255, 0.9);
+            
+            /* Brillos especulares y sombras difusas (Surface Tension) */
+            --gel-specular: inset 0 1.5px 2px rgba(255, 255, 255, 1), inset 0 -1.5px 3px rgba(0, 162, 237, 0.04);
+            --shadow-diffused-sm: 0 6px 18px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-diffused-md: 0 14px 38px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+            --shadow-diffused-lg: 0 22px 60px rgba(0, 162, 237, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-diffused-hover: 0 28px 70px rgba(0, 162, 237, 0.14), 0 6px 16px rgba(0, 0, 0, 0.04);
+            
+            /* Textos limpios y descansados */
+            --text-title: #1e293b;
+            --text-body: #64748b;
+            --text-muted: #94a3b8;
+            
+            /* Acentos puros Nintendo & iiSU Water */
+            --wii-cyan: #00a2ed;
+            --wii-cyan-soft: rgba(0, 162, 237, 0.09);
+            --wii-cyan-glow: rgba(0, 162, 237, 0.25);
+            
+            --nintendo-red: #e60012;
+            --nintendo-red-soft: rgba(230, 0, 18, 0.08);
+            
+            --nintendo-mint: #10b981;
+            --nintendo-mint-soft: rgba(16, 185, 129, 0.1);
+            
+            --nintendo-gold: #f59e0b;
+            --nintendo-gold-soft: rgba(245, 158, 11, 0.1);
+            
+            /* Geometría orgánica y suave */
+            --radius-bubble: 44px;
+            --radius-card: 32px;
+            --radius-pill: 9999px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            
+            /* Easing natural y elástico (rebote de gelatina) */
+            --ease-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--canvas-base);
+            background-image: 
+                radial-gradient(circle at 50% 10%, #ffffff 0%, transparent 75%),
+                radial-gradient(circle at 10% 40%, rgba(0, 162, 237, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+            color: var(--text-title);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            cursor: default !important;
+        }
+
+        button, a, input, select {
+            cursor: pointer !important;
+        }
+
+        input {
+            cursor: text !important;
+            user-select: text !important;
+        }
+
+        /* ========================================================
+           2. FONDO ANIMADO DE FLUIDOS Y VISCOSIDAD ORGÁNICA (iiSU)
+           ======================================================== */
+        .fluid-ambient-mesh {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .fluid-drop-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.09;
+            will-change: transform;
+            animation: gelDrift 22s ease-in-out infinite alternate;
+        }
+
+        .fluid-drop-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #00a2ed 0%, rgba(0, 162, 237, 0) 70%);
+            top: -150px;
+            left: -100px;
+            animation-duration: 24s;
+        }
+
+        .fluid-drop-2 {
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, #10b981 0%, rgba(16, 185, 129, 0) 70%);
+            bottom: -180px;
+            right: -120px;
+            animation-duration: 28s;
+            animation-delay: -6s;
+        }
+
+        .fluid-drop-3 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, #818cf8 0%, rgba(129, 140, 248, 0) 70%);
+            top: 45%;
+            left: 55%;
+            animation-duration: 20s;
+            animation-delay: -12s;
+        }
+
+        @keyframes gelDrift {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+                border-radius: 50% 50% 50% 50%;
+            }
+            33% {
+                transform: translate3d(45px, -35px, 0) scale(1.08) rotate(4deg);
+                border-radius: 58% 42% 55% 45% / 48% 54% 46% 52%;
+            }
+            66% {
+                transform: translate3d(-35px, 45px, 0) scale(0.94) rotate(-3deg);
+                border-radius: 46% 54% 48% 52% / 56% 44% 56% 44%;
+            }
+            100% {
+                transform: translate3d(20px, -20px, 0) scale(1.03) rotate(2deg);
+                border-radius: 52% 48% 53% 47% / 50% 52% 48% 50%;
+            }
+        }
+
+        /* ========================================================
+           3. HEADER SUPERIOR ESTILO CÁPSULA FLOTANTE NINTENDO
+           ======================================================== */
+        .home-header-wrap {
+            width: 100%;
+            padding: 16px 36px 0 36px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-header {
+            max-width: 1320px;
+            margin: 0 auto;
+            height: 70px;
+            background: var(--gel-surface);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--gel-border);
+            box-shadow: var(--shadow-diffused-md), var(--gel-specular);
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            transition: all 0.3s ease;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.28s var(--ease-squish);
+        }
+
+        .header-brand:hover {
+            transform: scale(1.03);
+        }
+
+        .brand-bubble-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            box-shadow: 0 6px 18px var(--wii-cyan-glow), inset 0 2px 3px rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            color: #ffffff;
+            transition: transform 0.25s var(--ease-squish);
+        }
+
+        .header-brand:hover .brand-bubble-icon {
+            transform: rotate(-6deg) scale(1.06);
+        }
+
+        .brand-text-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: var(--wii-cyan);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* Menú de Cápsulas Central */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 5px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-pill-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: var(--radius-pill);
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-body);
+            text-decoration: none;
+            transition: all 0.25s var(--ease-squish);
+            position: relative;
+        }
+
+        .nav-pill-link:hover {
+            color: var(--text-title);
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1.5px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-pill-link.active {
+            background: #ffffff;
+            color: var(--wii-cyan);
+            box-shadow: 0 4px 16px rgba(0, 162, 237, 0.15), var(--gel-specular);
+            border: 1px solid rgba(0, 162, 237, 0.12);
+        }
+
+        /* Chip de Usuario en Cápsula Blanda */
+        .header-user-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            padding: 5px 16px 5px 6px;
+            border-radius: var(--radius-pill);
+            text-decoration: none;
+            box-shadow: var(--shadow-diffused-sm), var(--gel-specular);
+            transition: all 0.25s var(--ease-squish);
+        }
+
+        .user-status-pill:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 22px rgba(0, 162, 237, 0.15), var(--gel-specular);
+            border-color: rgba(0, 162, 237, 0.3);
+        }
+
+        .user-chip-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--wii-cyan);
+            object-fit: cover;
+            background: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 162, 237, 0.2);
+        }
+
+        .user-chip-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-chip-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .user-chip-meta {
+            font-size: 11px;
+            color: var(--nintendo-mint);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .online-pearl {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--nintendo-mint);
+            box-shadow: 0 0 6px var(--nintendo-mint);
+        }
+
+        .btn-pill-logout {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--gel-border);
+            color: var(--text-body);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 12.5px;
+            font-weight: 700;
+            transition: all 0.22s var(--ease-squish);
+        }
+
+        .btn-pill-logout:hover {
+            background: rgba(230, 0, 18, 0.08);
+            border-color: rgba(230, 0, 18, 0.25);
+            color: var(--nintendo-red);
+            transform: translateY(-1.5px) scale(1.03);
+        }
+
+        /* ========================================================
+           4. CONTENEDOR PRINCIPAL: ESPACIO Y FLUIDEZ NINTENDO
+           ======================================================== */
+        .home-main-container {
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 38px 30px 64px 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+            position: relative;
+            z-index: 10;
+            animation: pageSoftIn 0.45s var(--ease-fluid) both;
+        }
+
+        @keyframes pageSoftIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- HERO DE BIENVENIDA (AMABLE, ESPACIOSO Y LUMINOSO) --- */
+        .welcome-hero-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
+            border: 1px solid var(--gel-border);
+            border-radius: var(--radius-bubble);
+            padding: 36px 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-diffused-lg), var(--gel-specular);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .welcome-hero-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 162, 237, 0.4), transparent);
+        }
+
+        .hero-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 720px;
+        }
+
+        .hero-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--wii-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--wii-cyan-soft);
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 162, 237, 0.08);
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.6px;
+            line-height: 1.2;
+        }
+
+        .hero-desc {
+            font-size: 15.5px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        .hero-stats-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-body);
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-diffused-sm), var(--gel-specular);
+        }
+
+        .hero-stat-pill strong {
+            color: var(--text-title);
+        }
+
+        /* Avatar flotante estilo Nintendo Mii */
+        .hero-avatar-bubble {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            background: linear-gradient(135deg, rgba(0, 162, 237, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 162, 237, 0.22), var(--gel-specular);
+            transition: transform 0.35s var(--ease-squish);
+        }
+
+        .hero-avatar-bubble:hover {
+            transform: scale(1.08) rotate(3deg);
+        }
+
+        /* --- CUADRÍCULA DE NAVEGACIÓN VISCOSA (3 GRANDES OPCIONES) --- */
+        .section-headline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: -16px;
+        }
+
+        .section-headline-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.4px;
+        }
+
+        .section-headline-sub {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.9fr 0.9fr;
+            gap: 26px;
+        }
+
+        /* TARJETAS DE GELATINA / PORCELANA */
+        .gel-action-card {
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            border-radius: var(--radius-card);
+            padding: 34px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 26px;
+            box-shadow: var(--shadow-diffused-md), var(--gel-specular);
+            transition: all 0.32s var(--ease-squish);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .gel-action-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: var(--shadow-diffused-hover), var(--gel-specular);
+            border-color: rgba(0, 162, 237, 0.25);
+        }
+
+        /* Tarjeta Protagonista: Emuladores */
+        .gel-action-card.hero-emulator-card {
+            border: 1.5px solid rgba(0, 162, 237, 0.2);
+            background: linear-gradient(145deg, #ffffff 0%, #f4faff 100%);
+            box-shadow: 0 18px 50px rgba(0, 162, 237, 0.1), var(--gel-specular);
+        }
+
+        .gel-action-card.hero-emulator-card:hover {
+            border-color: var(--wii-cyan);
+            box-shadow: 0 24px 65px rgba(0, 162, 237, 0.18), var(--gel-specular);
+        }
+
+        .card-top {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-bubble-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: var(--shadow-diffused-sm), var(--gel-specular);
+            transition: transform 0.28s var(--ease-squish);
+        }
+
+        .gel-action-card:hover .card-bubble-icon {
+            transform: scale(1.1) rotate(4deg);
+        }
+
+        .bubble-emu {
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 22px rgba(0, 162, 237, 0.35);
+        }
+
+        .bubble-social {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 22px rgba(16, 185, 129, 0.3);
+        }
+
+        .bubble-profile {
+            background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 22px rgba(99, 102, 241, 0.3);
+        }
+
+        .card-pill-tag {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            width: fit-content;
+        }
+
+        .tag-emu {
+            background: var(--wii-cyan-soft);
+            color: var(--wii-cyan);
+            border: 1px solid rgba(0, 162, 237, 0.18);
+        }
+
+        .tag-social {
+            background: var(--nintendo-mint-soft);
+            color: var(--nintendo-mint);
+            border: 1px solid rgba(16, 185, 129, 0.18);
+        }
+
+        .tag-profile {
+            background: rgba(99, 102, 241, 0.08);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.18);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.4px;
+            line-height: 1.2;
+        }
+
+        .card-desc {
+            font-size: 14.5px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Consolas pills en tarjeta emuladores */
+        .console-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 4px;
+        }
+
+        .console-tag-pill {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-body);
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s var(--ease-squish);
+        }
+
+        .gel-action-card:hover .console-tag-pill {
+            border-color: rgba(0, 162, 237, 0.2);
+            background: rgba(0, 162, 237, 0.04);
+            color: var(--wii-cyan);
+        }
+
+        /* Botones elásticos viscosos */
+        .btn-gel-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 14px 22px;
+            border-radius: var(--radius-pill);
+            font-size: 14.5px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.25s var(--ease-squish);
+            border: none;
+        }
+
+        .btn-emu-gel {
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--wii-cyan-glow), inset 0 2px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-emu-gel:hover {
+            box-shadow: 0 12px 32px rgba(0, 162, 237, 0.45), inset 0 2px 2px rgba(255, 255, 255, 0.9);
+            transform: scale(1.02);
+        }
+
+        .btn-emu-gel:active {
+            transform: scale(0.96);
+        }
+
+        .btn-card-gel {
+            background: #f1f5f9;
+            border: 1px solid var(--gel-border);
+            color: var(--text-title);
+            box-shadow: var(--shadow-diffused-sm), var(--gel-specular);
+        }
+
+        .btn-card-gel:hover {
+            background: #ffffff;
+            color: var(--wii-cyan);
+            border-color: rgba(0, 162, 237, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 162, 237, 0.12), var(--gel-specular);
+            transform: scale(1.02);
+        }
+
+        .btn-card-gel:active {
+            transform: scale(0.96);
+        }
+
+        /* --- BANDA INFORMATIVA INFERIOR (CÁPSULAS SUAVES) --- */
+        .quick-systems-strip {
+            background: var(--gel-surface);
+            border: 1px solid var(--gel-border);
+            border-radius: var(--radius-pill);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: var(--shadow-diffused-sm), var(--gel-specular);
+        }
+
+        .strip-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .strip-icon-bubble {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .strip-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .strip-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+        }
+
+        .strip-value {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        /* ========================================================
+           5. CAJA DE AUTENTICACIÓN (LUMINOSA Y VISCOSA)
+           ======================================================== */
+        .auth-view-container {
+            display: none;
+            max-width: 500px;
+            width: 100%;
+            margin: 40px auto;
+            background: #ffffff;
+            border: 1px solid var(--gel-border);
+            border-radius: var(--radius-bubble);
+            padding: 40px 36px;
+            box-shadow: var(--shadow-diffused-lg), var(--gel-specular);
+            position: relative;
+            z-index: 10;
+            animation: pageSoftIn 0.35s var(--ease-squish) both;
+        }
+
+        .auth-header-box {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .auth-bubble-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--wii-cyan-glow), inset 0 2px 2px rgba(255, 255, 255, 0.8);
+            margin-bottom: 12px;
+            transition: transform 0.25s var(--ease-squish);
+        }
+
+        .auth-bubble-icon:hover {
+            transform: scale(1.08) rotate(4deg);
+        }
+
+        .auth-header-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-title);
+            margin-bottom: 4px;
+        }
+
+        .auth-header-sub {
+            font-size: 14px;
+            color: var(--text-body);
+        }
+
+        .auth-tabs-pill {
+            display: flex;
+            background: #edf2f7;
+            padding: 5px;
+            border-radius: var(--radius-pill);
+            gap: 4px;
+            margin-bottom: 22px;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 9px 18px;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: transparent;
+            color: var(--text-body);
+            font-size: 13.5px;
+            font-weight: 800;
+            transition: all 0.25s var(--ease-squish);
+        }
+
+        .auth-tab-btn.active {
+            background: #ffffff;
+            color: var(--wii-cyan);
+            box-shadow: 0 4px 14px rgba(0, 162, 237, 0.15), var(--gel-specular);
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .auth-label {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: 0.3px;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: #f8fafc;
+            border: 1.5px solid var(--gel-border);
+            color: var(--text-title);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14.5px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .auth-input:focus {
+            border-color: var(--wii-cyan);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px var(--wii-cyan-soft);
+        }
+
+        .auth-error-box {
+            background: var(--nintendo-red-soft);
+            border: 1px solid rgba(230, 0, 18, 0.25);
+            color: var(--nintendo-red);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-live-status {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+            margin-top: 2px;
+        }
+
+        .btn-submit-auth {
+            width: 100%;
+            background: linear-gradient(135deg, #00a2ed 0%, #38bdf8 100%);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius-pill);
+            font-size: 15px;
+            font-weight: 800;
+            box-shadow: 0 8px 24px var(--wii-cyan-glow), inset 0 2px 2px rgba(255, 255, 255, 0.7);
+            transition: all 0.25s var(--ease-squish);
+            margin-top: 6px;
+        }
+
+        .btn-submit-auth:hover {
+            box-shadow: 0 12px 32px rgba(0, 162, 237, 0.45);
+            transform: scale(1.02);
+        }
+
+        .btn-submit-auth:active {
+            transform: scale(0.96);
+        }
+
+        .btn-submit-auth:disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+        }
+
+        /* ========================================================
+           6. PIE DE PÁGINA PERLA
+           ======================================================== */
+        .home-footer {
+            width: 100%;
+            padding: 26px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-link {
+            color: var(--text-body);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--wii-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .navigation-grid {
+                grid-template-columns: 1fr;
+            }
+            .welcome-hero-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 24px;
+            }
+            .hero-avatar-bubble {
+                display: none;
+            }
+            .quick-systems-strip {
+                flex-direction: column;
+                align-items: flex-start;
+                border-radius: var(--radius-card);
+            }
+            .home-header-wrap {
+                padding: 12px 16px 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FONDO DE VISCOSIDAD Y FLUIDEZ AMBIENTAL iiSU -->
+    <div class="fluid-ambient-mesh" aria-hidden="true">
+        <div class="fluid-drop-orb fluid-drop-1"></div>
+        <div class="fluid-drop-orb fluid-drop-2"></div>
+        <div class="fluid-drop-orb fluid-drop-3"></div>
+    </div>
+
+    <!-- HEADER SUPERIOR EN CÁPSULA FLOTANTE DE PORCELANA -->
+    <div class="home-header-wrap">
+        <header class="home-header">
+            <a href="home.html" class="header-brand">
+                <div class="brand-bubble-icon">🎮</div>
+                <div class="brand-text-block">
+                    <span class="brand-title">iiSU RetroHub</span>
+                    <span class="brand-sub">Nintendo Clean Edition</span>
+                </div>
+            </a>
+
+            <!-- NAVEGACIÓN EN PÍLDORAS SUAVES -->
+            <nav class="header-nav" role="navigation">
+                <a href="home.html" class="nav-pill-link active">🏠 Inicio</a>
+                <a href="index.html" class="nav-pill-link" id="navLinkEmulators" title="Ir al centro de emuladores RetroHub">🕹️ Emuladores</a>
+                <a href="iisu_network.html" class="nav-pill-link" title="Ir a la red social y tablón comunitario">📌 Tablón</a>
+                <a href="profile.html" class="nav-pill-link" title="Ir al perfil de usuario">👤 Perfil</a>
+            </nav>
+
+            <!-- ZONA DE USUARIO / LOGIN -->
+            <div class="header-user-zone">
+                <!-- Chip de Usuario Logueado -->
+                <a href="profile.html" class="user-status-pill" id="headerUserChip" style="display: none;" title="Abrir Mi Perfil">
+                    <img id="headerUserAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="user-chip-avatar" alt="Avatar">
+                    <div class="user-chip-info">
+                        <span class="user-chip-name" id="headerUserName">Sara</span>
+                        <span class="user-chip-meta"><span class="online-pearl"></span> En línea</span>
+                    </div>
+                </a>
+
+                <!-- Botón Salir -->
+                <button class="btn-pill-logout" id="headerBtnLogout" style="display: none;" onclick="AppHome.logout()" title="Cerrar sesión">Salir 🚪</button>
+
+                <!-- Botón Entrar (cuando no está logueado) -->
+                <button class="nav-pill-link active" id="headerBtnLogin" style="display: none;" onclick="AppHome.showAuth(true)">Iniciar Sesión</button>
+            </div>
+        </header>
+    </div>
+
+    <!-- ========================================================
+         VISTA 1: CONTENIDO PRINCIPAL PARA USUARIO AUTENTICADO
+         ======================================================== -->
+    <main class="home-main-container" id="homeMainContent">
+        
+        <!-- HERO DE BIENVENIDA LIMPIO, AMISTOSO Y ESPACIOSO -->
+        <section class="welcome-hero-card">
+            <div class="hero-text-content">
+                <div class="hero-tag-pill">✨ Centro de Experiencias iiSU</div>
+                <h1 class="hero-title">¡Hola de nuevo, <span id="heroWelcomeName">Jugador</span>! 👋</h1>
+                <p class="hero-desc">
+                    Tu espacio central unificado para jugar a consolas retro, conectar en el tablón comunitario y personalizar tu pasaporte de jugador con máxima fluidez.
+                </p>
+                <div class="hero-stats-row">
+                    <div class="hero-stat-pill">🟢 Estado: <strong>Conectado</strong></div>
+                    <div class="hero-stat-pill">🕹️ Sistemas: <strong>12 Consolas</strong></div>
+                    <div class="hero-stat-pill">⚡ Motor: <strong>iiSU 60 FPS</strong></div>
+                </div>
+            </div>
+
+            <img id="heroDecorAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="hero-avatar-bubble" alt="Avatar">
+        </section>
+
+        <!-- ENCABEZADO DE SECCIÓN -->
+        <div class="section-headline">
+            <h2 class="section-headline-title">¿Qué deseas hacer hoy?</h2>
+            <span class="section-headline-sub">Elige un módulo para comenzar</span>
+        </div>
+
+        <!-- CUADRÍCULA DE LAS 3 GRANDES SECCIONES (PORCELANA BLANCA & GEL) -->
+        <section class="navigation-grid">
+            
+            <!-- TARJETA 1 (PROTAGONISTA): EMULADORES (RETROHUB) -->
+            <div class="gel-action-card hero-emulator-card">
+                <div class="card-top">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-bubble-icon bubble-emu">🕹️</div>
+                        <span class="card-pill-tag tag-emu">Módulo Principal</span>
+                    </div>
+                    <h3 class="card-title">Centro de Emuladores (RetroHub)</h3>
+                    <p class="card-desc">
+                        Accede a nuestro escaparate interactivo de consolas en 3D. Explora la biblioteca de cartuchos y carátulas, y juega a tus ROMs clásicas en el emulador de alta fidelidad.
+                    </p>
+                    <div class="console-tag-row">
+                        <span class="console-tag-pill">Nintendo 64</span>
+                        <span class="console-tag-pill">PlayStation 1</span>
+                        <span class="console-tag-pill">Game Boy Advance</span>
+                        <span class="console-tag-pill">SNES</span>
+                        <span class="console-tag-pill">Genesis</span>
+                        <span class="console-tag-pill">Arcade</span>
+                    </div>
+                </div>
+                <a href="index.html" class="btn-gel-action btn-emu-gel" id="btnEnterEmulators">
+                    <span>Entrar a RetroHub</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+            <!-- TARJETA 2: TABLÓN COMUNITARIO (iiSU NETWORK) -->
+            <div class="gel-action-card">
+                <div class="card-top">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-bubble-icon bubble-social">📌</div>
+                        <span class="card-pill-tag tag-social">Red Social</span>
+                    </div>
+                    <h3 class="card-title">Tablón Comunitario & Amigos</h3>
+                    <p class="card-desc">
+                        Lee y publica avisos en el tablón de notas, comenta en hilos comunitarios, gestiona solicitudes de amistad y chatea en tiempo real con otros jugadores.
+                    </p>
+                </div>
+                <a href="iisu_network.html" class="btn-gel-action btn-card-gel">
+                    <span>Abrir Tablón</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+            <!-- TARJETA 3: MI PERFIL (PASAPORTE GAMER) -->
+            <div class="gel-action-card">
+                <div class="card-top">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-bubble-icon bubble-profile">👤</div>
+                        <span class="card-pill-tag tag-profile">Personalización</span>
+                    </div>
+                    <h3 class="card-title">Mi Perfil & Pasaporte</h3>
+                    <p class="card-desc">
+                        Edita tu foto de perfil, sube o elige banners difuminados, configura tu biografía personal, consolas predilectas y enlaces a tus redes sociales.
+                    </p>
+                </div>
+                <a href="profile.html" class="btn-gel-action btn-card-gel">
+                    <span>Editar Mi Perfil</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+        </section>
+
+        <!-- BANDA INFORMATIVA EN PASTILLAS SUAVES -->
+        <section class="quick-systems-strip">
+            <div class="strip-item">
+                <div class="strip-icon-bubble">💾</div>
+                <div class="strip-text">
+                    <span class="strip-label">Guardados</span>
+                    <span class="strip-value">Sincronización Local & Cloud</span>
+                </div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-icon-bubble">🔊</div>
+                <div class="strip-text">
+                    <span class="strip-label">Audio Nintendo</span>
+                    <span class="strip-value">Efectos Sonoros 3DS Activos</span>
+                </div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-icon-bubble">⚡</div>
+                <div class="strip-text">
+                    <span class="strip-label">Atajo Rápido</span>
+                    <span class="strip-value">Pulsa 'E' para ir a Emuladores</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================================
+         VISTA 2: CAJA DE AUTENTICACIÓN (CUANDO NO HAY SESIÓN)
+         ======================================================== -->
+    <div class="auth-view-container" id="authViewContainer">
+        <div class="auth-header-box">
+            <div class="auth-bubble-icon">🎮</div>
+            <h2 class="auth-header-title">Bienvenido a iiSU</h2>
+            <p class="auth-header-sub">Identifícate para entrar a la Página de Inicio y a tus Emuladores.</p>
+        </div>
+
+        <!-- TABS DE LOGIN / REGISTRO EN PÍLDORA BLANDA -->
+        <div class="auth-tabs-pill">
+            <button class="auth-tab-btn active" id="tabBtnLogin" onclick="AppHome.switchAuthTab('login')">Iniciar Sesión</button>
+            <button class="auth-tab-btn" id="tabBtnRegister" onclick="AppHome.switchAuthTab('register')">Crear Cuenta</button>
+        </div>
+
+        <!-- ERROR BOX -->
+        <div class="auth-error-box" id="authErrorBox">
+            <span>⚠️</span>
+            <span id="authErrorText">Error de autenticación</span>
+        </div>
+
+        <!-- FORMULARIO 1: INICIAR SESIÓN -->
+        <form id="formLogin" onsubmit="AppHome.handleLogin(event)">
+            <div class="auth-input-group">
+                <label class="auth-label" for="loginIdentifier">Usuario o Correo</label>
+                <input type="text" id="loginIdentifier" class="auth-input" placeholder="ej. sariwiiwi o usuario@ejemplo.com" required autocomplete="username">
+            </div>
+            <div class="auth-input-group">
+                <label class="auth-label" for="loginPassword">Contraseña</label>
+                <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-submit-auth" id="btnLoginSubmit">Entrar a iiSU ➔</button>
+        </form>
+
+        <!-- FORMULARIO 2: REGISTRO -->
+        <form id="formRegister" style="display: none;" onsubmit="AppHome.handleRegister(event)">
+            <div class="auth-input-group">
+                <label class="auth-label" for="regEmail">Correo Electrónico</label>
+                <input type="email" id="regEmail" class="auth-input" placeholder="correo@ejemplo.com" required autocomplete="email">
+            </div>
+            <div class="auth-input-group">
+                <label class="auth-label" for="regUsername">Nombre de Usuario Único</label>
+                <input type="text" id="regUsername" class="auth-input" placeholder="ej. RetroGamer99" required autocomplete="username" minlength="3" maxlength="24">
+                <span class="auth-live-status" id="regUsernameStatus"></span>
+            </div>
+            <div class="auth-input-group">
+                <label class="auth-label" for="regPassword">Contraseña</label>
+                <input type="password" id="regPassword" class="auth-input" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6">
+            </div>
+            <div class="auth-input-group">
+                <label class="auth-label" for="regConfirmPassword">Confirmar Contraseña</label>
+                <input type="password" id="regConfirmPassword" class="auth-input" placeholder="Repite tu contraseña" required autocomplete="new-password" minlength="6">
+            </div>
+            <button type="submit" class="btn-submit-auth" id="btnRegisterSubmit">Crear Cuenta y Continuar ➔</button>
+        </form>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="home-footer">
+        <div>iiSU Ecosystem • Nintendo Clean Experience</div>
+        <div class="footer-links">
+            <a href="index.html" class="footer-link">Emuladores</a>
+            <a href="iisu_network.html" class="footer-link">Tablón</a>
+            <a href="profile.html" class="footer-link">Perfil</a>
+        </div>
+    </footer>
+
+    <!-- ========================================================
+         LÓGICA CLIENTE DE INICIO & FLUJO DE NAVEGACIÓN
+         ======================================================== -->
+    <script>
+        const AppHome = {
+            token: localStorage.getItem('retrohub_jwt_token') || null,
+            user: null,
+            profile: null,
+
+            async init() {
+                // Atajos de teclado intuitivos
+                window.addEventListener('keydown', (e) => {
+                    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+                    if (e.key === 'e' || e.key === 'E') {
+                        window.location.href = 'index.html';
+                    } else if (e.key === 't' || e.key === 'T') {
+                        window.location.href = 'iisu_network.html';
+                    } else if (e.key === 'p' || e.key === 'P') {
+                        window.location.href = 'profile.html';
+                    }
+                });
+
+                this.initUsernameLiveCheck();
+
+                if (this.token) {
+                    try {
+                        const res = await fetch('/api/auth/me', {
+                            headers: { 'Authorization': `Bearer ${this.token}` }
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success && data.user) {
+                            this.user = data.user;
+                            this.profile = data.profile;
+                            this.showAuthenticatedView();
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn('[Home]: Token no válido o error de conexión.', e);
+                    }
+                }
+
+                // Si no hay token o falló: verificar si hay datos guardados localmente
+                const localUser = localStorage.getItem('retrohub_user_name') || localStorage.getItem('retrohub_display_name');
+                if (localUser) {
+                    this.user = { username: localUser };
+                    this.profile = {
+                        displayName: localUser,
+                        avatarUrl: localStorage.getItem('retrohub_user_avatar') || `https://api.dicebear.com/7.x/bottts/svg?seed=${localUser}`
+                    };
+                    this.showAuthenticatedView();
+                } else {
+                    this.showAuth(true);
+                }
+            },
+
+            showAuthenticatedView() {
+                document.getElementById('authViewContainer').style.display = 'none';
+                document.getElementById('homeMainContent').style.display = 'flex';
+
+                const headerUserChip = document.getElementById('headerUserChip');
+                const headerBtnLogout = document.getElementById('headerBtnLogout');
+                const headerBtnLogin = document.getElementById('headerBtnLogin');
+
+                if (headerUserChip) headerUserChip.style.display = 'flex';
+                if (headerBtnLogout) headerBtnLogout.style.display = 'inline-block';
+                if (headerBtnLogin) headerBtnLogin.style.display = 'none';
+
+                const name = (this.profile && this.profile.displayName) || (this.user && this.user.username) || 'Jugador';
+                const avatar = (this.profile && this.profile.avatarUrl) || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+
+                const heroNameEl = document.getElementById('heroWelcomeName');
+                const heroAvatarEl = document.getElementById('heroDecorAvatar');
+                const headerNameEl = document.getElementById('headerUserName');
+                const headerAvatarEl = document.getElementById('headerUserAvatar');
+
+                if (heroNameEl) heroNameEl.textContent = name;
+                if (heroAvatarEl) heroAvatarEl.src = avatar;
+                if (headerNameEl) headerNameEl.textContent = name;
+                if (headerAvatarEl) headerAvatarEl.src = avatar;
+            },
+
+            showAuth(show) {
+                const mainEl = document.getElementById('homeMainContent');
+                const authEl = document.getElementById('authViewContainer');
+                const headerUserChip = document.getElementById('headerUserChip');
+                const headerBtnLogout = document.getElementById('headerBtnLogout');
+                const headerBtnLogin = document.getElementById('headerBtnLogin');
+
+                if (show) {
+                    if (mainEl) mainEl.style.display = 'none';
+                    if (authEl) authEl.style.display = 'block';
+                    if (headerUserChip) headerUserChip.style.display = 'none';
+                    if (headerBtnLogout) headerBtnLogout.style.display = 'none';
+                    if (headerBtnLogin) headerBtnLogin.style.display = 'inline-block';
+                } else {
+                    this.showAuthenticatedView();
+                }
+            },
+
+            switchAuthTab(tab) {
+                const tabLogin = document.getElementById('tabBtnLogin');
+                const tabReg = document.getElementById('tabBtnRegister');
+                const formLogin = document.getElementById('formLogin');
+                const formReg = document.getElementById('formRegister');
+                const errBox = document.getElementById('authErrorBox');
+
+                if (errBox) errBox.style.display = 'none';
+
+                if (tab === 'login') {
+                    if (tabLogin) tabLogin.classList.add('active');
+                    if (tabReg) tabReg.classList.remove('active');
+                    if (formLogin) formLogin.style.display = 'block';
+                    if (formReg) formReg.style.display = 'none';
+                } else {
+                    if (tabLogin) tabLogin.classList.remove('active');
+                    if (tabReg) tabReg.classList.add('active');
+                    if (formLogin) formLogin.style.display = 'none';
+                    if (formReg) formReg.style.display = 'block';
+                }
+            },
+
+            showAuthError(msg) {
+                const errBox = document.getElementById('authErrorBox');
+                const errText = document.getElementById('authErrorText');
+                if (errBox && errText) {
+                    errText.textContent = msg;
+                    errBox.style.display = 'flex';
+                }
+            },
+
+            initUsernameLiveCheck() {
+                const userEl = document.getElementById('regUsername');
+                const statusEl = document.getElementById('regUsernameStatus');
+                if (!userEl || !statusEl) return;
+
+                let timer = null;
+                userEl.addEventListener('input', () => {
+                    clearTimeout(timer);
+                    const val = userEl.value.trim();
+                    if (!val) {
+                        statusEl.style.display = 'none';
+                        return;
+                    }
+                    if (val.length < 3) {
+                        statusEl.style.display = 'block';
+                        statusEl.style.color = '#e60012';
+                        statusEl.textContent = 'Mínimo 3 caracteres';
+                        return;
+                    }
+                    statusEl.style.display = 'block';
+                    statusEl.style.color = '#94a3b8';
+                    statusEl.textContent = 'Comprobando disponibilidad...';
+
+                    timer = setTimeout(async () => {
+                        try {
+                            const res = await fetch(`/api/users/check-username/${encodeURIComponent(val)}`);
+                            const data = await res.json();
+                            if (data.available) {
+                                statusEl.style.color = '#10b981';
+                                statusEl.textContent = '✓ Nombre disponible';
+                            } else {
+                                statusEl.style.color = '#e60012';
+                                statusEl.textContent = `✕ ${data.message || 'No disponible'}`;
+                            }
+                        } catch (e) {
+                            statusEl.style.display = 'none';
+                        }
+                    }, 350);
+                });
+            },
+
+            async handleLogin(e) {
+                e.preventDefault();
+                const idEl = document.getElementById('loginIdentifier');
+                const passEl = document.getElementById('loginPassword');
+                const btn = document.getElementById('btnLoginSubmit');
+
+                if (!idEl || !passEl) return;
+                btn.disabled = true;
+                btn.textContent = 'Iniciando sesión...';
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ identifier: idEl.value.trim(), password: passEl.value })
+                    });
+                    const data = await res.json();
+                    if (!res.ok || !data.token) {
+                        throw new Error(data.message || 'Credenciales incorrectas');
+                    }
+
+                    this.token = data.token;
+                    this.user = data.user;
+                    this.profile = data.profile;
+                    localStorage.setItem('retrohub_jwt_token', data.token);
+                    if (data.user) {
+                        localStorage.setItem('retrohub_user_name', data.user.username);
+                    }
+                    if (data.profile) {
+                        localStorage.setItem('retrohub_display_name', data.profile.displayName || data.user.username);
+                        localStorage.setItem('retrohub_user_avatar', data.profile.avatarUrl || '');
+                    }
+
+                    this.showAuthenticatedView();
+                } catch (err) {
+                    this.showAuthError(err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar a iiSU ➔';
+                }
+            },
+
+            async handleRegister(e) {
+                e.preventDefault();
+                const emailEl = document.getElementById('regEmail');
+                const userEl = document.getElementById('regUsername');
+                const passEl = document.getElementById('regPassword');
+                const cpassEl = document.getElementById('regConfirmPassword');
+                const btn = document.getElementById('btnRegisterSubmit');
+
+                if (passEl.value !== cpassEl.value) {
+                    this.showAuthError('Las contraseñas no coinciden.');
+                    return;
+                }
+                if (passEl.value.length < 6) {
+                    this.showAuthError('La contraseña debe tener al menos 6 caracteres.');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = 'Creando cuenta...';
+
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: emailEl.value.trim(),
+                            username: userEl.value.trim(),
+                            password: passEl.value,
+                            confirmPassword: cpassEl.value
+                        })
+                    });
+                    const data = await res.json();
+                    if (!res.ok || !data.token) {
+                        throw new Error(data.message || 'Error al crear cuenta');
+                    }
+
+                    this.token = data.token;
+                    this.user = data.user;
+                    this.profile = data.profile || { displayName: userEl.value.trim() };
+                    localStorage.setItem('retrohub_jwt_token', data.token);
+                    localStorage.setItem('retrohub_user_name', userEl.value.trim());
+
+                    this.showAuthenticatedView();
+                } catch (err) {
+                    this.showAuthError(err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Crear Cuenta y Continuar ➔';
+                }
+            },
+
+            logout() {
+                localStorage.removeItem('retrohub_jwt_token');
+                localStorage.removeItem('retrohub_user_name');
+                localStorage.removeItem('retrohub_display_name');
+                localStorage.removeItem('retrohub_user_avatar');
+                this.token = null;
+                this.user = null;
+                this.profile = null;
+                this.showAuth(true);
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            AppHome.init();
+        });
+    </script>
+</body>
+</html>

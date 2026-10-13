@@ -167,13 +167,17 @@ export const IisuNetwork = () => {
             </div>
 
             <nav className="sidebar-nav">
-              <button 
-                className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-                onClick={() => setActiveTab('profile')}
+              <a 
+                href="/profile.html" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="nav-item"
+                style={{ textDecoration: 'none' }}
+                title="Abrir Perfil en nueva pestaña"
               >
                 <img src={IISU_MOCK_DATA.user.avatar} className="user-nav-avatar" alt="Avatar" />
                 <span>Mi Perfil</span>
-              </button>
+              </a>
 
               <button 
                 className={`nav-item ${activeTab === 'friends' ? 'active' : ''}`}
@@ -209,13 +213,20 @@ export const IisuNetwork = () => {
             </nav>
           </div>
 
-          <div className="sidebar-footer">
+          <a 
+            href="/profile.html" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="sidebar-footer"
+            style={{ textDecoration: 'none', cursor: 'pointer' }}
+            title="Abrir Perfil de Usuario en nueva pestaña"
+          >
             <img src={IISU_MOCK_DATA.user.avatar} className="user-chip-avatar" alt="Sara" />
             <div className="user-chip-info">
               <span className="user-chip-name">{IISU_MOCK_DATA.user.name}</span>
               <span className="user-chip-status">{IISU_MOCK_DATA.user.status}</span>
             </div>
-          </div>
+          </a>
         </aside>
 
         {/* CONTENEDOR DERECHO */}
