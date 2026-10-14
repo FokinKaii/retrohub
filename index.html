@@ -4422,7 +4422,7 @@
     <!-- 1. RIEL LATERAL IZQUIERDO JOY-CON ROJO (NINTENDO SWITCH OS) -->
     <aside class="switch-joycon-rail" id="switchJoyconRail">
         <!-- Foto de Perfil del Usuario en la parte superior (lleva a perfil sin icono de ajustes) -->
-        <div class="joycon-profile-wrap" onclick="window.open('profile.html', '_blank')" title="Mi Perfil de Usuario">
+        <div class="joycon-profile-wrap" onclick="openProfileModal()" title="Mi Perfil de Usuario">
             <img id="joyconUserAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="joycon-avatar-main" alt="Avatar">
             <span class="online-dot" style="position: absolute; bottom: 0; right: 0; border: 2.5px solid #ff3c28;"></span>
         </div>
@@ -4552,7 +4552,7 @@
                     <span class="switch-badge-key key-x">X</span>
                     <span>Cajas 3D</span>
                 </div>
-                <div class="switch-prompt-btn" onclick="window.open('profile.html', '_blank')">
+                <div class="switch-prompt-btn" onclick="openProfileModal()">
                     <span class="switch-badge-key key-plus">+</span>
                     <span>Opciones</span>
                 </div>
@@ -6674,7 +6674,7 @@
         // ========================================================
         function openProfileModal() {
             if (window.n3dsAudio) window.n3dsAudio.play('move');
-            window.open('profile.html', '_blank');
+            window.location.href = 'profile.html';
         }
 
         function closeProfileModal() {
