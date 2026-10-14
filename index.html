@@ -5937,6 +5937,41 @@
             document.getElementById('gamesViewModal').style.display = 'none';
         }
 
+        let activePlaySession = null;
+
+        function recordGamePlayActivity(game, consoleObj, minutes) {
+            try {
+                let acts = JSON.parse(localStorage.getItem('retrohub_play_activity') || '[]');
+                if (!Array.isArray(acts)) acts = [];
+                let existing = acts.find(a => (a.title && a.title.toLowerCase() === game.title.toLowerCase()) || (a.id && a.id === game.id));
+                if (existing) {
+                    existing.minutesPlayed = (existing.minutesPlayed || 0) + minutes;
+                    existing.lastPlayed = 'Jugado hoy';
+                    if (game.cover && !existing.cover) existing.cover = game.cover;
+                } else {
+                    acts.unshift({
+                        id: game.id || ('game_' + Date.now()),
+                        title: game.title,
+                        system: consoleObj.id,
+                        systemName: consoleObj.name,
+                        cover: game.cover || `assets/consoles/${consoleObj.img}`,
+                        minutesPlayed: minutes,
+                        lastPlayed: 'Jugado hoy',
+                        firstPlayed: 'Hoy'
+                    });
+                }
+                localStorage.setItem('retrohub_play_activity', JSON.stringify(acts));
+                if (window.profileSyncChannel) {
+                    window.profileSyncChannel.postMessage({
+                        type: 'PLAY_ACTIVITY_UPDATED',
+                        activity: acts
+                    });
+                }
+            } catch(e) {
+                console.warn('[PlayActivity] Error recording session:', e);
+            }
+        }
+
         function launchGameInPlayer(game, consoleObj) {
             if (window.n3dsAudio) window.n3dsAudio.play('launch');
             
@@ -5944,6 +5979,13 @@
             if (window.retroConsoleMusic) {
                 window.retroConsoleMusic.stopCurrentTheme();
             }
+
+            // Registrar inicio de sesión para Play Activity (Actividad de juego)
+            activePlaySession = {
+                game: game,
+                consoleObj: consoleObj,
+                startTime: Date.now()
+            };
 
             const overlay = document.getElementById('playerModalOverlay');
             const iframe = document.getElementById('playerIframe');
@@ -5963,6 +6005,14 @@
 
         function closeInAppPlayer() {
             if (window.n3dsAudio) window.n3dsAudio.play('cancel');
+
+            // Acumular y registrar tiempo de sesión jugado
+            if (activePlaySession) {
+                const elapsedMinutes = Math.max(1, Math.round((Date.now() - activePlaySession.startTime) / 60000));
+                recordGamePlayActivity(activePlaySession.game, activePlaySession.consoleObj, elapsedMinutes);
+                activePlaySession = null;
+            }
+
             const overlay = document.getElementById('playerModalOverlay');
             const iframe = document.getElementById('playerIframe');
             iframe.src = 'about:blank';
@@ -6571,6 +6621,50 @@
                     if (jAvEl) jAvEl.src = savedAvatar;
                 }
             }
+
+            // Sincronización bidireccional en tiempo real con profile.html
+            if (typeof BroadcastChannel !== 'undefined') {
+                window.profileSyncChannel = new BroadcastChannel('retrohub_profile_sync');
+                window.profileSyncChannel.onmessage = (event) => {
+                    if (!event.data) return;
+                    if (event.data.type === 'PROFILE_UPDATED') {
+                        const { displayName, avatarUrl, systemAuraColor, systemAuraGlow } = event.data;
+                        if (avatarUrl) {
+                            const jAv = document.getElementById('joyconUserAvatar');
+                            if (jAv) jAv.src = avatarUrl;
+                            document.querySelectorAll('.cp-avatar-circle').forEach(img => img.src = avatarUrl);
+                            const hAv = document.getElementById('headerAvatarImg');
+                            if (hAv) hAv.src = avatarUrl;
+                        }
+                        if (displayName) {
+                            const hU = document.getElementById('headerUsername');
+                            if (hU) hU.textContent = displayName;
+                            const pD = document.getElementById('profileDisplayName');
+                            if (pD) pD.textContent = displayName;
+                        }
+                        if (systemAuraColor && systemAuraGlow) {
+                            document.documentElement.style.setProperty('--system-accent', systemAuraColor);
+                            document.documentElement.style.setProperty('--system-glow', systemAuraGlow);
+                            updateAmbientOrbs(systemAuraColor, systemAuraColor);
+                        }
+                    }
+                };
+            }
+
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'retrohub_user_avatar' && e.newValue) {
+                    const jAv = document.getElementById('joyconUserAvatar');
+                    if (jAv) jAv.src = e.newValue;
+                    document.querySelectorAll('.cp-avatar-circle').forEach(img => img.src = e.newValue);
+                }
+                if (e.key === 'retrohub_display_name' && e.newValue) {
+                    const hU = document.getElementById('headerUsername');
+                    if (hU) hU.textContent = e.newValue;
+                }
+                if (e.key === 'retrohub_aura_color' && e.newValue) {
+                    document.documentElement.style.setProperty('--system-accent', e.newValue);
+                }
+            });
         }
 
         // ========================================================

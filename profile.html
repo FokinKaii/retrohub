@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iiSU Network • Perfil de Usuario</title>
+  <title>iiSU Network • Perfil de Usuario (Nintendo Switch OS)</title>
   
-  <!-- Tipografías Oficiales de iiSU -->
+  <!-- Tipografías Oficiales de iiSU & Switch -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Estilos del Sistema de Perfil iiSU -->
+  <!-- Estilos del Sistema de Perfil Switch OS + iiSU -->
   <link rel="stylesheet" href="IisuProfile.css">
   
   <!-- React 18 y Babel Standalone para renderizado directo en navegador -->
@@ -23,230 +23,334 @@
   <!-- Contenedor Raíz de React -->
   <div id="profileRoot"></div>
 
-  <!-- Componente React IisuProfile -->
+  <!-- Componente React IisuSwitchProfile -->
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
 
-    const DEFAULT_RETRO_GAMES_CATALOG = [
-      { id: 'sm64', title: 'Super Mario 64', platform: 'Nintendo 64', platformCode: 'n64', platformColor: '#ff4757', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png', year: '1996' },
-      { id: 'oot', title: 'The Legend of Zelda: Ocarina of Time', platform: 'Nintendo 64', platformCode: 'n64', platformColor: '#ff4757', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2579.png', year: '1998' },
-      { id: 'poke_emerald', title: 'Pokémon Esmeralda', platform: 'Game Boy Advance', platformCode: 'gba', platformColor: '#5352ed', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co20vo.png', year: '2004' },
-      { id: 'smw', title: 'Super Mario World', platform: 'Super Nintendo', platformCode: 'snes', platformColor: '#6c5ce7', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png', year: '1990' },
-      { id: 'chrono', title: 'Chrono Trigger', platform: 'Super Nintendo', platformCode: 'snes', platformColor: '#6c5ce7', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1v2n.png', year: '1995' },
-      { id: 'sonic2', title: 'Sonic The Hedgehog 2', platform: 'Sega Genesis', platformCode: 'genesis', platformColor: '#3742fa', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2044.png', year: '1992' },
-      { id: 'crash1', title: 'Crash Bandicoot', platform: 'PlayStation 1', platformCode: 'ps1', platformColor: '#0984e3', cover: 'ROMS/covers/box_crash1.png', year: '1996' },
-      { id: 'sotn', title: 'Castlevania: Symphony of the Night', platform: 'PlayStation 1', platformCode: 'ps1', platformColor: '#0984e3', cover: 'ROMS/covers/box_sotn.png', year: '1997' }
-    ];
-
-    const DEFAULT_PROFILE = {
-      id: 2,
-      username: 'Sariwiiwi',
-      displayName: 'Sara Gamer',
-      bio: 'Coleccionista de joyas en caja original, perseguidora de los 60 FPS y fanática de la era dorada de los 64-bits.',
-      avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro',
-      bannerUrl: 'assets/game_wallpapers/n64/sm64.png',
-      titleHonor: '🎮 Maestra de los 64-Bits',
-      systemAura: 'mint',
-      favoriteSystem: 'n64',
-      favoriteGames: [
-        { id: 'sm64', title: 'Super Mario 64', platform: 'Nintendo 64', platformColor: '#ff4757', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1vce.png', year: '1996' },
-        { id: 'oot', title: 'The Legend of Zelda: Ocarina of Time', platform: 'Nintendo 64', platformColor: '#ff4757', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2579.png', year: '1998' },
-        { id: 'poke_emerald', title: 'Pokémon Esmeralda', platform: 'Game Boy Advance', platformColor: '#5352ed', cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co20vo.png', year: '2004' }
-      ],
-      socialLinks: [
-        { id: 'l1', platform: 'discord', title: 'Discord', url: 'https://discord.gg/retrohub', icon: '💬' },
-        { id: 'l2', platform: 'steam', title: 'Steam', url: 'https://steamcommunity.com/id/sariwiiwi', icon: '🎮' },
-        { id: 'l3', platform: 'twitch', title: 'Twitch', url: 'https://twitch.tv/sariwiiwi', icon: '📺' },
-        { id: 'l4', platform: 'github', title: 'GitHub', url: 'https://github.com/sariwiiwi', icon: '🐙' }
-      ]
+    // AURAS BIOLUMINISCENTES iiSU
+    const AURA_PALETTES = {
+      mint: { id: 'mint', name: 'Mint Cyan', color: '#00d2be', glow: 'rgba(0, 210, 190, 0.45)' },
+      scarlet: { id: 'scarlet', name: 'Joy-Con Scarlet', color: '#ff3c28', glow: 'rgba(255, 60, 40, 0.45)' },
+      electric: { id: 'electric', name: 'Electric Blue', color: '#00a2ed', glow: 'rgba(0, 162, 237, 0.45)' },
+      neon: { id: 'neon', name: 'Neon Purple', color: '#818cf8', glow: 'rgba(129, 140, 248, 0.45)' },
+      gold: { id: 'gold', name: 'Retro Gold', color: '#f59e0b', glow: 'rgba(245, 158, 11, 0.45)' }
     };
 
-    function ProfileApp() {
-      const [profile, setProfile] = useState(DEFAULT_PROFILE);
-      const [originalUsername, setOriginalUsername] = useState(DEFAULT_PROFILE.username);
-      const [isEditing, setIsEditing] = useState(false);
-      const [isSaving, setIsSaving] = useState(false);
-      const [isOwner, setIsOwner] = useState(true);
+    // CATÁLOGO OFICIAL DE ACTIVIDAD DE JUEGO (Libretro Official Box Arts)
+    const DEFAULT_PLAY_ACTIVITY = [
+      { id: 'sm64', title: 'Super Mario 64', system: 'n64', systemName: 'Nintendo 64', cover: 'ROMS/covers/box_sm64.png', minutesPlayed: 1440, lastPlayed: 'Jugado hoy', firstPlayed: 'Hace 2 semanas' },
+      { id: 'oot', title: 'The Legend of Zelda: Ocarina of Time', system: 'n64', systemName: 'Nintendo 64', cover: 'ROMS/covers/box_oot.png', minutesPlayed: 2700, lastPlayed: 'Jugado ayer', firstPlayed: 'Hace 1 mes' },
+      { id: 'poke_emerald', title: 'Pokémon Esmeralda', system: 'gba', systemName: 'Game Boy Advance', cover: 'ROMS/covers/box_emerald.png', minutesPlayed: 1080, lastPlayed: 'Jugado hace 3 días', firstPlayed: 'Hace 3 semanas' },
+      { id: 'papermario', title: 'Paper Mario', system: 'n64', systemName: 'Nintendo 64', cover: 'ROMS/covers/papermario.png', minutesPlayed: 720, lastPlayed: 'Jugado hace 5 días', firstPlayed: 'Hace 1 mes' },
+      { id: 'chrono', title: 'Chrono Trigger', system: 'snes', systemName: 'Super Nintendo', cover: 'ROMS/covers/box_chrono.png', minutesPlayed: 480, lastPlayed: 'Jugado hace 1 semana', firstPlayed: 'Hace 2 meses' },
+      { id: 'sonic2', title: 'Sonic The Hedgehog 2', system: 'genesis', systemName: 'Sega Mega Drive', cover: 'ROMS/covers/box_sonic2.png', minutesPlayed: 320, lastPlayed: 'Jugado hace 2 semanas', firstPlayed: 'Hace 2 meses' },
+      { id: 'sotn', title: 'Castlevania: Symphony of the Night', system: 'ps1', systemName: 'PlayStation 1', cover: 'ROMS/covers/box_sotn.png', minutesPlayed: 900, lastPlayed: 'Jugado hace 3 semanas', firstPlayed: 'Hace 3 meses' }
+    ];
 
-      const [usernameInput, setUsernameInput] = useState(DEFAULT_PROFILE.username);
-      const [usernameValidation, setUsernameValidation] = useState({
-        status: 'available',
-        message: '✓ Nombre de usuario confirmado'
+    // AMIGOS POR DEFECTO
+    const DEFAULT_FRIENDS = [
+      { id: 'f_lucas', name: 'Lucas Speedrun', username: 'lucas_retro', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas', online: true, statusText: '🎮 Super Mario 64 (Estrella 112)', statusClass: 'status-online' },
+      { id: 'f_peach', name: 'Princess Peach', username: 'peach_kingdom', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen', online: true, statusText: '🎮 The Legend of Zelda: OOT', statusClass: 'status-peach' },
+      { id: 'f_cyber', name: 'RetroCyber', username: 'cyber_speed', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber', online: true, statusText: '🎮 Sonic The Hedgehog 2', statusClass: 'status-online' },
+      { id: 'f_alex', name: 'Alex Fox', username: 'alex_fox', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex', online: false, statusText: 'Desconectado • Hace 2 horas', statusClass: 'status-offline' }
+    ];
+
+    // LOGROS E INSIGNIAS RETRO
+    const RETRO_ACHIEVEMENTS = [
+      { id: 'ach_64', icon: '👑', title: 'Maestra de los 64-Bits', desc: 'Acumular más de 40 horas jugando en el emulador de Nintendo 64.', progress: '100%', unlocked: true },
+      { id: 'ach_save', icon: '💾', title: 'Guardián de la Batería', desc: 'Realizar más de 10 partidas guardadas en la nube SRAM sin corromper datos.', progress: '100%', unlocked: true },
+      { id: 'ach_speed', icon: '⏱️', title: 'Speedrunner en Cierres', desc: 'Superar un nivel en menos de 5 minutos en Super Mario 64.', progress: '100%', unlocked: true },
+      { id: 'ach_boxes', icon: '📦', title: 'Coleccionista de Cartuchos', desc: 'Inspeccionar y rotar más de 20 cajas físicas 3D en la biblioteca.', progress: '100%', unlocked: true },
+      { id: 'ach_net', icon: '🤝', title: 'Amistad Nintendo', desc: 'Vincular tu Clave de Amigo SW y conectar con amigos de la red.', progress: '100%', unlocked: true },
+      { id: 'ach_hyrule', icon: '🛡️', title: 'Héroe de Hyrule', desc: 'Obtener la Espada Maestra en Ocarina of Time sin usar trucos.', progress: '75%', unlocked: false }
+    ];
+
+    // STOCK AVATARES (OFICIALES Y PORTADAS)
+    const STOCK_AVATARS = [
+      { id: 'av_sm64', name: 'Super Mario 64', url: 'ROMS/covers/box_sm64.png', type: 'covers' },
+      { id: 'av_oot', name: 'Zelda OOT', url: 'ROMS/covers/box_oot.png', type: 'covers' },
+      { id: 'av_emerald', name: 'Pokémon Esmeralda', url: 'ROMS/covers/box_emerald.png', type: 'covers' },
+      { id: 'av_chrono', name: 'Chrono Trigger', url: 'ROMS/covers/box_chrono.png', type: 'covers' },
+      { id: 'av_paper', name: 'Paper Mario', url: 'ROMS/covers/papermario.png', type: 'covers' },
+      { id: 'av_metroid', name: 'Super Metroid', url: 'ROMS/covers/box_super_metroid.png', type: 'covers' },
+      { id: 'av_sonic', name: 'Sonic 2', url: 'ROMS/covers/box_sonic2.png', type: 'covers' },
+      { id: 'av_sotn', name: 'Castlevania SOTN', url: 'ROMS/covers/box_sotn.png', type: 'covers' },
+      { id: 'av_n64', name: 'Nintendo 64', url: 'assets/consoles_hires/n64.png', type: 'consoles' },
+      { id: 'av_snes', name: 'Super Nintendo', url: 'assets/consoles_hires/snes.png', type: 'consoles' },
+      { id: 'av_gba', name: 'Game Boy Advance', url: 'assets/consoles_hires/gba.png', type: 'consoles' },
+      { id: 'av_ps1', name: 'PlayStation 1', url: 'assets/consoles_hires/ps1.png', type: 'consoles' },
+      { id: 'av_sara', name: 'Sara Retro', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro', type: 'characters' },
+      { id: 'av_lucas', name: 'Lucas Fox', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas', type: 'characters' },
+      { id: 'av_queen', name: 'Pixel Queen', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen', type: 'characters' },
+      { id: 'av_cyber', name: 'Cyber Kidd', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber', type: 'characters' }
+    ];
+
+    const STOCK_BANNERS = [
+      { id: 'bn_sm64', name: 'Castillo de Peach (N64)', url: 'assets/game_wallpapers/n64/sm64.png' },
+      { id: 'bn_oot', name: 'Valle de Hyrule (N64)', url: 'assets/game_wallpapers/n64/oot.png' },
+      { id: 'bn_paper', name: 'Paper Mario Kingdom (N64)', url: 'assets/game_wallpapers/n64/papermario.png' },
+      { id: 'bn_chrono', name: 'Época Dorada (SNES)', url: 'assets/game_wallpapers/snes/chrono.png' },
+      { id: 'bn_ff7', name: 'Midgar Mako (PS1)', url: 'assets/game_wallpapers/ps1/ff7.png' }
+    ];
+
+    function ProfileApp() {
+      // Pestaña activa en el riel de navegación Switch
+      const [activeTab, setActiveTab] = useState('perfil'); // 'perfil', 'amigos', 'ajustes', 'logros'
+
+      // Datos de perfil
+      const [profile, setProfile] = useState({
+        id: 2,
+        username: localStorage.getItem('retrohub_user_name') || 'Sariwiiwi',
+        displayName: localStorage.getItem('retrohub_display_name') || 'Sara Gamer',
+        bio: localStorage.getItem('retrohub_user_bio') || 'Coleccionista de joyas en caja original, perseguidora de los 60 FPS y fanática de la era dorada de los 64-bits.',
+        avatarUrl: localStorage.getItem('retrohub_user_avatar') || 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro',
+        bannerUrl: localStorage.getItem('retrohub_user_banner') || 'assets/game_wallpapers/n64/sm64.png',
+        titleHonor: localStorage.getItem('retrohub_honor_title') || '🎮 Maestra de los 64-Bits',
+        systemAura: localStorage.getItem('retrohub_aura_id') || 'mint',
+        favoriteSystem: localStorage.getItem('retrohub_fav_system') || 'n64',
+        friendCode: localStorage.getItem('retrohub_friend_code') || 'SW-4829-1092-4821',
+        socialLinks: [
+          { id: 'l1', platform: 'discord', title: 'Discord', url: 'https://discord.gg/retrohub', icon: '💬' },
+          { id: 'l2', platform: 'twitch', title: 'Twitch', url: 'https://twitch.tv/sariwiiwi', icon: '📺' }
+        ]
       });
 
-      const [stockModalTarget, setStockModalTarget] = useState(null);
-      const [stockTab, setStockTab] = useState('dicebear');
-      const [stockData, setStockData] = useState({ avatars: [], banners: [] });
+      // Estados de actividad y amigos
+      const [playActivity, setPlayActivity] = useState(DEFAULT_PLAY_ACTIVITY);
+      const [friends, setFriends] = useState(DEFAULT_FRIENDS);
+      const [addFriendInput, setAddFriendInput] = useState('');
+      const [clockText, setClockText] = useState('15:45');
 
-      const [newLinkPlatform, setNewLinkPlatform] = useState('discord');
-      const [newLinkTitle, setNewLinkTitle] = useState('');
-      const [newLinkUrl, setNewLinkUrl] = useState('');
-      const [showAddLinkForm, setShowAddLinkForm] = useState(false);
-
+      // Modales y retroalimentación
+      const [showQrModal, setShowQrModal] = useState(false);
       const [toast, setToast] = useState(null);
-      const [shareCopied, setShareCopied] = useState(false);
+      const [avatarTabFilter, setAvatarTabFilter] = useState('covers');
+      const [isSaving, setIsSaving] = useState(false);
 
-      const fileInputRef = useRef(null);
+      // Validación de nombre de usuario en tiempo real
+      const [usernameInput, setUsernameInput] = useState(profile.username);
+      const [usernameValidation, setUsernameValidation] = useState({ status: 'available', message: '✓ Confirmado' });
       const debounceTimerRef = useRef(null);
+      const fileInputRef = useRef(null);
+      const broadcastRef = useRef(null);
 
-      // Cargar datos por URL o por defecto
+      // Inicialización y canales de sincronización
       useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        let targetUser = params.get('user') || params.get('username');
+        // 1. Reloj en tiempo real
+        const updateClock = () => {
+          const now = new Date();
+          const hh = String(now.getHours()).padStart(2, '0');
+          const mm = String(now.getMinutes()).padStart(2, '0');
+          setClockText(`${hh}:${mm}`);
+        };
+        updateClock();
+        const clockTimer = setInterval(updateClock, 1000);
 
-        if (!targetUser) {
-          const pathParts = window.location.pathname.split('/').filter(Boolean);
-          if (pathParts.length >= 2 && pathParts[0] === 'profile' && !pathParts[1].endsWith('.html')) {
-            targetUser = pathParts[1];
+        // 2. Cargar Play Activity de localStorage si existe
+        try {
+          const storedAct = localStorage.getItem('retrohub_play_activity');
+          if (storedAct) {
+            const parsed = JSON.parse(storedAct);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setPlayActivity(parsed);
+            }
           }
+        } catch (e) {}
+
+        // 3. Cargar Clave de Amigo permanente si no existe
+        let fc = localStorage.getItem('retrohub_friend_code');
+        if (!fc || !fc.startsWith('SW-')) {
+          const p1 = Math.floor(1000 + Math.random() * 9000);
+          const p2 = Math.floor(1000 + Math.random() * 9000);
+          const p3 = Math.floor(1000 + Math.random() * 9000);
+          fc = `SW-${p1}-${p2}-${p3}`;
+          localStorage.setItem('retrohub_friend_code', fc);
         }
+        setProfile(p => ({ ...p, friendCode: fc }));
 
-        const usernameToFetch = targetUser || DEFAULT_PROFILE.username;
-
-        fetch(`/api/users/profile/${encodeURIComponent(usernameToFetch)}`)
-          .then(res => res.json())
+        // 4. Cargar perfil desde la API si está disponible
+        fetch(`/api/users/profile/${encodeURIComponent(profile.username)}`)
+          .then(r => r.json())
           .then(data => {
             if (data.success && data.user) {
               const u = data.user;
-              const loaded = {
-                id: u.id,
-                username: u.username,
-                displayName: u.displayName || u.username,
-                bio: u.bio || '',
-                avatarUrl: u.avatarUrl || DEFAULT_PROFILE.avatarUrl,
-                bannerUrl: u.bannerUrl || DEFAULT_PROFILE.bannerUrl,
-                titleHonor: u.titleHonor || DEFAULT_PROFILE.titleHonor,
-                systemAura: u.systemAura || 'mint',
-                favoriteSystem: u.favoriteSystem || 'n64',
-                favoriteGames: (u.favoriteGames && u.favoriteGames.length > 0) ? u.favoriteGames : DEFAULT_PROFILE.favoriteGames,
-                socialLinks: (u.socialLinks && u.socialLinks.length > 0) ? u.socialLinks : DEFAULT_PROFILE.socialLinks
-              };
-              setProfile(loaded);
-              setUsernameInput(loaded.username);
-              setOriginalUsername(loaded.username);
-              setUsernameValidation({ status: 'available', message: '✓ Nombre confirmado en base de datos' });
-              setIsOwner(!targetUser || targetUser.toLowerCase() === DEFAULT_PROFILE.username.toLowerCase());
+              setProfile(p => ({
+                ...p,
+                displayName: u.displayName || p.displayName,
+                bio: u.bio || p.bio,
+                avatarUrl: u.avatarUrl || p.avatarUrl,
+                bannerUrl: u.bannerUrl || p.bannerUrl,
+                titleHonor: u.titleHonor || p.titleHonor,
+                systemAura: u.systemAura || p.systemAura,
+                favoriteSystem: u.favoriteSystem || p.favoriteSystem
+              }));
+              setUsernameInput(u.username || p.username);
             }
           })
           .catch(() => {});
 
-        fetch('/api/assets/stock-images')
-          .then(r => r.json())
-          .then(d => {
-            if (d.success) setStockData({ avatars: d.avatars || [], banners: d.banners || [] });
-          })
-          .catch(() => {});
+        // 5. Configurar canal de sincronización bidireccional (BroadcastChannel)
+        if (typeof BroadcastChannel !== 'undefined') {
+          broadcastRef.current = new BroadcastChannel('retrohub_profile_sync');
+          broadcastRef.current.onmessage = (event) => {
+            if (event.data && event.data.type === 'PLAY_ACTIVITY_UPDATED') {
+              setPlayActivity(event.data.activity);
+            }
+          };
+        }
+
+        // 6. Aplicar paleta de Aura activa
+        const aura = AURA_PALETTES[profile.systemAura] || AURA_PALETTES.mint;
+        document.documentElement.style.setProperty('--system-aura-color', aura.color);
+        document.documentElement.style.setProperty('--system-aura-glow', aura.glow);
+
+        return () => {
+          clearInterval(clockTimer);
+          if (broadcastRef.current) broadcastRef.current.close();
+        };
       }, []);
 
-      const validateUsernameRealtime = useCallback((name) => {
-        const trimmed = name.trim();
+      // Cambiar de Aura en vivo
+      const handleSelectAura = (auraKey) => {
+        const aura = AURA_PALETTES[auraKey];
+        if (!aura) return;
+        setProfile(p => ({ ...p, systemAura: auraKey }));
+        document.documentElement.style.setProperty('--system-aura-color', aura.color);
+        document.documentElement.style.setProperty('--system-aura-glow', aura.glow);
+        localStorage.setItem('retrohub_aura_id', auraKey);
+        localStorage.setItem('retrohub_aura_color', aura.color);
+        localStorage.setItem('retrohub_aura_glow', aura.glow);
 
-        if (!trimmed) {
-          setUsernameValidation({ status: 'invalid', message: '⚠ El nombre no puede estar vacío.' });
-          return;
+        // Notificar al launcher
+        if (broadcastRef.current) {
+          broadcastRef.current.postMessage({
+            type: 'PROFILE_UPDATED',
+            systemAura: auraKey,
+            systemAuraColor: aura.color,
+            systemAuraGlow: aura.glow
+          });
         }
-        if (trimmed.length < 3 || trimmed.length > 24) {
-          setUsernameValidation({ status: 'invalid', message: '⚠ Debe tener entre 3 y 24 caracteres.' });
-          return;
-        }
-        if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
-          setUsernameValidation({ status: 'invalid', message: '⚠ Solo se permiten letras, números, _ y -' });
-          return;
-        }
-
-        if (trimmed.toLowerCase() === originalUsername.toLowerCase()) {
-          setUsernameValidation({ status: 'available', message: '✓ Tu nombre actual' });
-          return;
-        }
-
-        setUsernameValidation({ status: 'checking', message: '⟳ Comprobando disponibilidad en base de datos...' });
-
-        if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = setTimeout(async () => {
-          try {
-            const res = await fetch(`/api/users/check-username/${encodeURIComponent(trimmed)}?excludeUserId=${profile.id}`);
-            const data = await res.json();
-            if (data.available) {
-              setUsernameValidation({ status: 'available', message: `✓ ¡@${trimmed} está disponible!` });
-            } else {
-              setUsernameValidation({ status: 'taken', message: `✗ ${data.message || 'Este nombre de usuario ya está en uso.'}` });
-            }
-          } catch {
-            setUsernameValidation({ status: 'available', message: '✓ Formato válido' });
-          }
-        }, 320);
-      }, [originalUsername, profile.id]);
-
-      const handleUsernameChange = (e) => {
-        const val = e.target.value;
-        setUsernameInput(val);
-        validateUsernameRealtime(val);
+        showToast('info', `Aura bioluminiscente cambiada a ${aura.name}.`);
       };
 
+      // Cambiar avatar desde stock
+      const handleSelectAvatar = (url) => {
+        setProfile(p => ({ ...p, avatarUrl: url }));
+        localStorage.setItem('retrohub_user_avatar', url);
+        if (broadcastRef.current) {
+          broadcastRef.current.postMessage({
+            type: 'PROFILE_UPDATED',
+            avatarUrl: url
+          });
+        }
+        showToast('success', 'Foto de perfil actualizada.');
+      };
+
+      // Cambiar banner
+      const handleSelectBanner = (url) => {
+        setProfile(p => ({ ...p, bannerUrl: url }));
+        localStorage.setItem('retrohub_user_banner', url);
+        showToast('success', 'Banner panorámico actualizado.');
+      };
+
+      // Subida de imagen personalizada
       const handleFileUpload = (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/')) {
-          showToast('error', 'El archivo debe ser una imagen válida (PNG, JPG, SVG, WebP).');
-          return;
-        }
-
         const reader = new FileReader();
         reader.onload = async () => {
-          const base64Data = reader.result;
-          const target = stockModalTarget || 'avatar';
-
-          try {
-            const res = await fetch('/api/users/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                image: base64Data,
-                type: target === 'banner' ? 'banner' : 'pfp',
-                filename: file.name
-              })
+          const base64 = reader.result;
+          setProfile(p => ({ ...p, avatarUrl: base64 }));
+          localStorage.setItem('retrohub_user_avatar', base64);
+          if (broadcastRef.current) {
+            broadcastRef.current.postMessage({
+              type: 'PROFILE_UPDATED',
+              avatarUrl: base64
             });
-            const data = await res.json();
-            const finalUrl = (data.success && data.url) ? data.url : base64Data;
-
-            if (target === 'banner') {
-              setProfile(p => ({ ...p, bannerUrl: finalUrl }));
-            } else {
-              setProfile(p => ({ ...p, avatarUrl: finalUrl }));
-            }
-            showToast('success', `Imagen ${target === 'banner' ? 'de banner' : 'de perfil'} actualizada.`);
-          } catch {
-            if (target === 'banner') {
-              setProfile(p => ({ ...p, bannerUrl: base64Data }));
-            } else {
-              setProfile(p => ({ ...p, avatarUrl: base64Data }));
-            }
-            showToast('success', 'Imagen cargada localmente.');
           }
-          setStockModalTarget(null);
+          showToast('success', 'Foto personalizada cargada.');
         };
         reader.readAsDataURL(file);
       };
 
-      const handleSaveProfile = async () => {
-        if (usernameValidation.status === 'taken' || usernameValidation.status === 'invalid') {
-          showToast('error', 'Corrige el nombre de usuario antes de guardar.');
+      // Copiar Clave de Amigo al Portapapeles
+      const handleCopyFriendCode = () => {
+        navigator.clipboard.writeText(profile.friendCode).then(() => {
+          showToast('success', `✓ ¡Clave ${profile.friendCode} copiada al portapapeles!`);
+        }).catch(() => {
+          showToast('info', `Tu clave: ${profile.friendCode}`);
+        });
+      };
+
+      // Validación de usuario en tiempo real
+      const handleUsernameChange = (e) => {
+        const val = e.target.value;
+        setUsernameInput(val);
+
+        if (!val.trim()) {
+          setUsernameValidation({ status: 'invalid', message: '⚠ El nombre no puede estar vacío.' });
+          return;
+        }
+        if (val.length < 3 || val.length > 24) {
+          setUsernameValidation({ status: 'invalid', message: '⚠ Entre 3 y 24 caracteres.' });
           return;
         }
 
+        setUsernameValidation({ status: 'checking', message: '⟳ Comprobando...' });
+        if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = setTimeout(async () => {
+          try {
+            const res = await fetch(`/api/users/check-username/${encodeURIComponent(val.trim())}?excludeUserId=${profile.id}`);
+            const data = await res.json();
+            if (data.available) {
+              setUsernameValidation({ status: 'available', message: `✓ ¡@${val} está disponible!` });
+            } else {
+              setUsernameValidation({ status: 'taken', message: `✗ Ya en uso.` });
+            }
+          } catch {
+            setUsernameValidation({ status: 'available', message: '✓ Formato válido.' });
+          }
+        }, 300);
+      };
+
+      // Añadir amigo por clave de amigo
+      const handleAddFriendByCode = (e) => {
+        e.preventDefault();
+        const code = addFriendInput.trim().toUpperCase();
+        if (!code || !code.startsWith('SW-') || code.length < 14) {
+          showToast('error', 'Introduce una clave de amigo Switch válida (ej: SW-1234-5678-9012).');
+          return;
+        }
+
+        const newFriend = {
+          id: `friend_${Date.now()}`,
+          name: `Jugador ${code.slice(-4)}`,
+          username: `sw_player_${code.slice(-4).toLowerCase()}`,
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${code}`,
+          online: true,
+          statusText: '🟢 En línea • Conectado por Clave SW',
+          statusClass: 'status-online'
+        };
+
+        setFriends(prev => [newFriend, ...prev]);
+        setAddFriendInput('');
+        showToast('success', `¡Solicitud de amistad enviada con éxito a ${code}!`);
+      };
+
+      // Guardar perfil completo en SQLite y LocalStorage
+      const handleSaveProfile = async () => {
         setIsSaving(true);
-        const updatedPayload = {
+        const payload = {
           userId: profile.id,
-          username: usernameInput.trim(),
-          displayName: profile.displayName.trim() || usernameInput.trim(),
+          username: usernameInput.trim() || profile.username,
+          displayName: profile.displayName.trim() || profile.username,
           bio: profile.bio,
           avatarUrl: profile.avatarUrl,
           bannerUrl: profile.bannerUrl,
           titleHonor: profile.titleHonor,
           systemAura: profile.systemAura,
           favoriteSystem: profile.favoriteSystem,
-          favoriteGames: profile.favoriteGames,
           socialLinks: profile.socialLinks
         };
 
@@ -254,116 +358,71 @@
           const res = await fetch('/api/users/profile', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedPayload)
+            body: JSON.stringify(payload)
           });
-
           const data = await res.json();
+          if (res.ok && data.success) {
+            setProfile(p => ({
+              ...p,
+              username: payload.username,
+              displayName: payload.displayName
+            }));
+            localStorage.setItem('retrohub_user_name', payload.username);
+            localStorage.setItem('retrohub_display_name', payload.displayName);
+            localStorage.setItem('retrohub_user_bio', payload.bio);
+            localStorage.setItem('retrohub_user_avatar', payload.avatarUrl);
+            localStorage.setItem('retrohub_user_banner', payload.bannerUrl);
+            localStorage.setItem('retrohub_honor_title', payload.titleHonor);
+            localStorage.setItem('retrohub_fav_system', payload.favoriteSystem);
 
-          if (!res.ok || !data.success) {
-            const errorMsg = data.error ? data.error.message : 'Error al guardar el perfil.';
-            showToast('error', errorMsg);
-            if (data.error && data.error.code === 'USERNAME_ALREADY_EXISTS') {
-              setUsernameValidation({ status: 'taken', message: '✗ Este nombre ya está en uso en la base de datos.' });
+            // Sincronizar con el launcher en vivo
+            if (broadcastRef.current) {
+              broadcastRef.current.postMessage({
+                type: 'PROFILE_UPDATED',
+                displayName: payload.displayName,
+                username: payload.username,
+                avatarUrl: payload.avatarUrl,
+                systemAura: payload.systemAura
+              });
             }
-            setIsSaving(false);
-            return;
+            showToast('success', '✓ Cambios guardados y sincronizados con RetroHub.');
+          } else {
+            showToast('error', data.error ? data.error.message : 'Error al guardar perfil.');
           }
-
-          setProfile(p => ({
-            ...p,
-            username: updatedPayload.username,
-            displayName: updatedPayload.displayName
-          }));
-          setOriginalUsername(updatedPayload.username);
-          setIsEditing(false);
-          showToast('success', '✓ Perfil actualizado y persistido en la base de datos.');
-
-          localStorage.setItem('retrohub_user_name', updatedPayload.username);
-          localStorage.setItem('retrohub_display_name', updatedPayload.displayName);
-          localStorage.setItem('retrohub_user_bio', updatedPayload.bio);
-          localStorage.setItem('retrohub_user_avatar', updatedPayload.avatarUrl);
-          localStorage.setItem('retrohub_user_banner', updatedPayload.bannerUrl);
         } catch {
-          setProfile(p => ({
-            ...p,
-            username: updatedPayload.username,
-            displayName: updatedPayload.displayName
-          }));
-          setOriginalUsername(updatedPayload.username);
-          setIsEditing(false);
-          showToast('success', 'Perfil guardado.');
+          // Fallback a localStorage
+          localStorage.setItem('retrohub_user_name', payload.username);
+          localStorage.setItem('retrohub_display_name', payload.displayName);
+          localStorage.setItem('retrohub_user_avatar', payload.avatarUrl);
+          showToast('success', 'Perfil guardado localmente.');
         } finally {
           setIsSaving(false);
         }
       };
 
-      const handleRemoveGame = (gameId) => {
-        setProfile(p => ({
-          ...p,
-          favoriteGames: p.favoriteGames.filter(g => g.id !== gameId)
-        }));
-        showToast('info', 'Juego eliminado de favoritos.');
+      // Formateador de tiempo al estilo Nintendo Switch OS
+      const formatSwitchPlayTime = (minutes) => {
+        if (!minutes || minutes < 60) return 'Jugado por primera vez';
+        const hours = Math.floor(minutes / 60);
+        return `Jugado durante ${hours} horas o más`;
       };
 
-      const handleAddGameFromCatalog = (game) => {
-        if (profile.favoriteGames.some(g => g.id === game.id)) {
-          showToast('info', 'Este juego ya está en tus favoritos.');
-          return;
-        }
-        setProfile(p => ({
-          ...p,
-          favoriteGames: [...p.favoriteGames, game]
-        }));
-        setStockModalTarget(null);
-        showToast('success', `¡${game.title} añadido a tus favoritos!`);
-      };
-
-      const handleAddLink = (e) => {
-        e.preventDefault();
-        if (!newLinkTitle.trim() || !newLinkUrl.trim()) {
-          showToast('error', 'Por favor ingresa un título y una URL válida.');
-          return;
-        }
-
-        const platformIcons = {
-          discord: '💬', steam: '🎮', twitch: '📺', github: '🐙',
-          youtube: '▶️', twitter: '🐦', retrohub: '🕹️', web: '🌐'
-        };
-
-        const newLink = {
-          id: `link_${Date.now()}`,
-          platform: newLinkPlatform,
-          title: newLinkTitle.trim(),
-          url: newLinkUrl.trim().startsWith('http') ? newLinkUrl.trim() : `https://${newLinkUrl.trim()}`,
-          icon: platformIcons[newLinkPlatform] || '🔗'
-        };
-
-        setProfile(p => ({ ...p, socialLinks: [...p.socialLinks, newLink] }));
-        setNewLinkTitle('');
-        setNewLinkUrl('');
-        setShowAddLinkForm(false);
-        showToast('success', 'Enlace añadido a tu perfil.');
-      };
-
-      const handleRemoveLink = (linkId) => {
-        setProfile(p => ({ ...p, socialLinks: p.socialLinks.filter(l => l.id !== linkId) }));
-      };
-
-      const handleShareProfile = () => {
-        const cleanUrl = `${window.location.origin}/profile.html?user=${encodeURIComponent(profile.username)}`;
-        navigator.clipboard.writeText(cleanUrl).then(() => {
-          setShareCopied(true);
-          showToast('success', '🔗 Enlace de perfil copiado al portapapeles.');
-          setTimeout(() => setShareCopied(false), 3000);
-        }).catch(() => {
-          showToast('info', `Enlace: ${cleanUrl}`);
-        });
-      };
-
+      // Toast feedback
       const showToast = (type, message) => {
         setToast({ type, message });
-        setTimeout(() => setToast(null), 4000);
+        setTimeout(() => setToast(null), 3800);
       };
+
+      // Navegar de regreso a la Repisa de Juegos
+      const handleReturnToShelf = () => {
+        if (window.opener && !window.opener.closed) {
+          window.close();
+        } else {
+          window.location.href = 'index.html';
+        }
+      };
+
+      const activeAuraData = AURA_PALETTES[profile.systemAura] || AURA_PALETTES.mint;
 
       return (
         <div className="profile-page-wrapper">
@@ -371,14 +430,16 @@
             type="file"
             ref={fileInputRef}
             style={{ display: 'none' }}
-            accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+            accept="image/*"
             onChange={handleFileUpload}
           />
 
-          <div className="profile-ambient-orb profile-orb-1" />
+          {/* Orbes bioluminiscentes ambientales iiSU */}
+          <div className="profile-ambient-orb profile-orb-1" style={{ background: activeAuraData.glow }} />
           <div className="profile-ambient-orb profile-orb-2" />
           <div className="profile-ambient-orb profile-orb-3" />
 
+          {/* Toast Flotante */}
           {toast && (
             <div className={`profile-toast toast-${toast.type}`}>
               <span>{toast.type === 'success' ? '✓' : toast.type === 'error' ? '✗' : 'ℹ'}</span>
@@ -386,556 +447,631 @@
             </div>
           )}
 
+          {/* BARRA SUPERIOR SWITCH OS (SIN BATERÍA) */}
           <header className="profile-topbar">
-            <a href="home.html" className="topbar-brand-link" title="Ir a la Página de Inicio">
-              <div className="topbar-brand-icon">🎮</div>
-              <div>
-                <span className="topbar-brand-title">iiSU RetroHub</span>
-                <span className="topbar-brand-sub">Perfil de Usuario</span>
-              </div>
-            </a>
-
-            <div className="topbar-actions">
-              <a href="home.html" className="btn-console-cue" title="Volver a la Página de Inicio">
-                <span className="cue-circle" style={{ background: '#38bdf8', color: '#0f172a' }}>🏠</span>
-                <span>Inicio</span>
-              </a>
-
-              <a href="index.html" className="btn-console-cue" title="Ir al centro de emuladores RetroHub">
-                <span className="cue-circle" style={{ background: '#e60012', color: '#ffffff' }}>🕹️</span>
-                <span>Emuladores</span>
-              </a>
-
-              <button className="btn-console-cue" onClick={handleShareProfile} title="Compartir enlace de este perfil">
-                <span className="cue-circle cue-y">Y</span>
-                <span>{shareCopied ? '¡Copiado!' : 'Compartir'}</span>
+            <div className="topbar-left-zone">
+              <button className="btn-switch-return" onClick={handleReturnToShelf} title="Volver a la Repisa de Emuladores">
+                <span className="cue-circle cue-b">B</span>
+                <span>Volver a la Repisa</span>
               </button>
 
-              <a href="iisu_network.html" className="btn-console-cue" title="Ir a la red social y tablón">
-                <span className="cue-circle cue-b">B</span>
-                <span>Tablón iiSU</span>
-              </a>
+              <div className="topbar-brand-link">
+                <div className="topbar-brand-icon">🎮</div>
+                <div>
+                  <span className="topbar-brand-title">iiSU RetroHub</span>
+                  <span className="topbar-brand-sub">Página de Usuario</span>
+                </div>
+              </div>
+            </div>
 
-              {isOwner && (
-                <button
-                  className={`btn-console-cue ${isEditing ? 'btn-primary-action' : ''}`}
-                  onClick={() => {
-                    if (isEditing) handleSaveProfile();
-                    else setIsEditing(true);
-                  }}
-                >
-                  <span className="cue-circle cue-a">A</span>
-                  <span>{isEditing ? (isSaving ? 'Guardando...' : 'Guardar Perfil') : 'Editar Perfil'}</span>
-                </button>
-              )}
+            <div className="topbar-status-right">
+              <button className="btn-topbar-action" onClick={handleCopyFriendCode} title="Copiar tu clave de amigo">
+                <span className="cue-circle cue-y">Y</span>
+                <span>Copiar Clave</span>
+              </button>
+              <button className="btn-topbar-action" onClick={() => setShowQrModal(true)} title="Mostrar código QR de tu perfil">
+                <span>📱 Código QR</span>
+              </button>
+              <span className="topbar-clock">{clockText}</span>
+              <span className="topbar-wifi" title="Conexión en línea activa">📶</span>
             </div>
           </header>
 
-          {/* BANNER CON DIFUMINADO PROGRESIVO SIN CORTE VISIBLE */}
-          <section className="profile-banner-stage">
-            <img
-              src={profile.bannerUrl}
-              className="profile-banner-img"
-              alt="Banner de perfil"
-              onError={(e) => { e.target.src = 'assets/game_wallpapers/n64/sm64.png'; }}
-            />
-            <div className="profile-banner-fade-overlay" />
-
-            {isEditing && (
-              <button
-                className="btn-banner-edit"
-                onClick={() => setStockModalTarget('banner')}
-                title="Cambiar banner"
-              >
-                <span>🖼️</span> Cambiar Banner
-              </button>
-            )}
-          </section>
-
-          <main className="profile-main-container">
-            {/* AVATAR CENTRAL (PFP) */}
-            <div className="profile-avatar-center-stage">
-              <div className="profile-avatar-wrapper">
-                <img
-                  src={profile.avatarUrl}
-                  className="profile-avatar-img"
-                  alt={profile.displayName}
-                  onError={(e) => { e.target.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro'; }}
-                />
-                <div className="profile-online-badge" title="En línea en iiSU" />
-
-                {isEditing && (
-                  <div
-                    className="avatar-edit-overlay"
-                    onClick={() => setStockModalTarget('avatar')}
-                    title="Cambiar foto de perfil"
-                  >
-                    <span style={{ fontSize: '26px' }}>📷</span>
-                    <span className="avatar-edit-text">Cambiar</span>
-                  </div>
-                )}
-              </div>
-
-              {isEditing && (
-                <div className="avatar-quick-actions">
-                  <button className="btn-avatar-quick" onClick={() => setStockModalTarget('avatar')}>
-                    ✨ Elegir de Stock
-                  </button>
-                  <button className="btn-avatar-quick" onClick={() => { setStockModalTarget('avatar'); fileInputRef.current?.click(); }}>
-                    📁 Subir Manualmente
-                  </button>
+          {/* ARQUITECTURA DE LA PÁGINA: RIEL LATERAL + VIEWPORT */}
+          <main className="switch-userpage-layout">
+            
+            {/* RIEL LATERAL DE NAVEGACIÓN SWITCH OS */}
+            <aside className="switch-userpage-rail">
+              {/* Tarjeta de Usuario Mini */}
+              <div className="rail-user-card" onClick={() => setActiveTab('perfil')} style={{ cursor: 'pointer' }}>
+                <div className="rail-avatar-box">
+                  <img src={profile.avatarUrl} className="rail-avatar-img" alt="Avatar" />
+                  <div className="rail-online-dot" />
                 </div>
-              )}
-
-              <div className="profile-identity-block">
-                <h1 className="profile-display-name">{profile.displayName}</h1>
-                <span className="profile-username-tag">
-                  <span>●</span> @{profile.username}
-                </span>
-
-                <div className="profile-badges-row">
-                  <span className="profile-honor-badge">{profile.titleHonor}</span>
-                  <span className="profile-system-badge">
-                    Consola Predilecta: {profile.favoriteSystem.toUpperCase()}
-                  </span>
+                <div className="rail-user-info">
+                  <div className="rail-user-name">{profile.displayName}</div>
+                  <div className="rail-user-tag">@{profile.username}</div>
+                  <div className="rail-user-status">🟢 En línea</div>
                 </div>
               </div>
-            </div>
 
-            {/* CONTENIDO DEL PERFIL */}
-            <div className="profile-content-grid">
-              {/* COLUMNA IZQUIERDA: BIO, FORMULARIO Y ENLACES */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <div className="profile-glass-card">
-                  <div className="card-header-row">
-                    <div className="card-title-wrap">
-                      <span className="card-icon">📝</span>
-                      <h3 className="card-title">Descripción Personal</h3>
-                    </div>
+              {/* Lista Vertical de Pestañas */}
+              <nav className="rail-tabs-list">
+                <button
+                  className={`rail-tab-btn ${activeTab === 'perfil' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('perfil')}
+                >
+                  <div className="rail-tab-left">
+                    <span className="rail-tab-icon">👤</span>
+                    <span>Perfil</span>
                   </div>
+                  <span className="rail-tab-badge">SW</span>
+                </button>
 
-                  {isEditing ? (
-                    <div>
-                      <textarea
-                        className="profile-bio-textarea"
-                        value={profile.bio}
-                        maxLength={350}
-                        placeholder="Escribe sobre tus gustos retro, consolas preferidas..."
-                        onChange={(e) => setProfile(p => ({ ...p, bio: e.target.value }))}
-                      />
-                      <div className="field-char-count">
-                        {profile.bio.length} / 350 caracteres
+                <button
+                  className={`rail-tab-btn ${activeTab === 'amigos' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('amigos')}
+                >
+                  <div className="rail-tab-left">
+                    <span className="rail-tab-icon">👥</span>
+                    <span>Lista de amigos</span>
+                  </div>
+                  <span className="rail-tab-badge">{friends.length}</span>
+                </button>
+
+                <button
+                  className={`rail-tab-btn ${activeTab === 'ajustes' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('ajustes')}
+                >
+                  <div className="rail-tab-left">
+                    <span className="rail-tab-icon">⚙️</span>
+                    <span>Ajustes de usuario</span>
+                  </div>
+                  <span className="rail-tab-badge">Studio</span>
+                </button>
+
+                <button
+                  className={`rail-tab-btn ${activeTab === 'logros' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('logros')}
+                >
+                  <div className="rail-tab-left">
+                    <span className="rail-tab-icon">🏆</span>
+                    <span>Logros e insignias</span>
+                  </div>
+                  <span className="rail-tab-badge">5/6</span>
+                </button>
+              </nav>
+
+              {/* Prompts al pie del Riel */}
+              <div className="rail-controller-prompts">
+                <div className="prompt-group">
+                  <span className="key-tiny k-a">A</span>
+                  <span>Seleccionar</span>
+                </div>
+                <div className="prompt-group">
+                  <span className="key-tiny k-b">B</span>
+                  <span>Atrás</span>
+                </div>
+              </div>
+            </aside>
+
+            {/* VIEWPORT DINÁMICO DE CONTENIDO */}
+            <section className="switch-userpage-viewport">
+
+              {/* ========================================================
+                  PESTAÑA 1: PERFIL & ACTITUD DE JUEGO
+                  ======================================================== */}
+              {activeTab === 'perfil' && (
+                <>
+                  {/* Hero Card Panorámico */}
+                  <div className="profile-hero-card">
+                    <div className="hero-banner-wrap">
+                      <img src={profile.bannerUrl} className="hero-banner-img" alt="Banner de Perfil" />
+                      <div className="hero-banner-overlay-top">
+                        <button className="btn-topbar-action" onClick={() => setActiveTab('ajustes')}>
+                          <span>🖼️ Cambiar Banner</span>
+                        </button>
                       </div>
                     </div>
-                  ) : (
-                    <p className="profile-bio-text">
+
+                    <div className="hero-body-content">
+                      <div className="hero-avatar-identity">
+                        <div className="hero-avatar-box" onClick={() => setActiveTab('ajustes')} title="Cambiar avatar en ajustes">
+                          <img src={profile.avatarUrl} className="hero-avatar-img" alt="Avatar" />
+                          <div className="hero-avatar-online-badge" />
+                        </div>
+
+                        <div className="hero-details-wrap">
+                          <h1 className="hero-display-name">
+                            {profile.displayName}
+                          </h1>
+                          <div className="hero-username-pill">
+                            <span>●</span> @{profile.username}
+                          </div>
+
+                          <div className="hero-badges-row">
+                            <span className="hero-honor-pill">{profile.titleHonor}</span>
+                            <span className="hero-system-pill">
+                              Consola Favorita: {profile.favoriteSystem.toUpperCase()}
+                            </span>
+                            <span className="hero-status-pill">
+                              <span>🎮</span> Jugando a Super Mario 64
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Clave de Amigo Oficial Switch */}
+                      <div className="switch-friend-code-card">
+                        <div className="friend-code-icon-box">🎮</div>
+                        <div className="friend-code-meta">
+                          <span className="friend-code-label">Clave de amigo</span>
+                          <span className="friend-code-digits">{profile.friendCode}</span>
+                        </div>
+                        <div className="friend-code-actions">
+                          <button className="btn-fc-action" onClick={handleCopyFriendCode} title="Copiar clave">
+                            📋 Copiar
+                          </button>
+                          <button className="btn-fc-action" onClick={() => setShowQrModal(true)} title="Ver código QR">
+                            📱 QR
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sección: Actividad de Juego (Play Activity) */}
+                  <div className="switch-section-box">
+                    <div className="section-header-row">
+                      <div className="section-title-wrap">
+                        <span className="section-icon-badge">🎮</span>
+                        <div>
+                          <h2 className="section-title">Actividad de juego (Play Activity)</h2>
+                          <p className="section-subtitle">Títulos retro jugados recientemente en esta consola con tiempos registrados</p>
+                        </div>
+                      </div>
+
+                      <a href="index.html" className="btn-topbar-action" style={{ textDecoration: 'none' }}>
+                        <span>▶ Abrir Launcher</span>
+                      </a>
+                    </div>
+
+                    <div className="play-activity-track">
+                      {playActivity.map(game => (
+                        <div
+                          key={game.id}
+                          className="activity-game-card"
+                          onClick={() => window.location.href = `index.html?launch=${game.id}`}
+                          title={`Jugar a ${game.title} en RetroHub`}
+                        >
+                          <div className="activity-cover-box">
+                            <div className="activity-cover-ambient" style={{ backgroundImage: `url(${game.cover})` }} />
+                            <img src={game.cover} className="activity-cover-art" alt={game.title} onError={(e) => { e.target.src = 'ROMS/covers/box_sm64.png'; }} />
+                            <span className="activity-system-badge">{game.system.toUpperCase()}</span>
+                          </div>
+
+                          <div className="activity-info-box">
+                            <div className="activity-game-title">{game.title}</div>
+                            <div className="activity-play-time">{formatSwitchPlayTime(game.minutesPlayed)}</div>
+                            <div className="activity-last-played">{game.lastPlayed}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Descripción Personal y Enlaces */}
+                  <div className="switch-section-box">
+                    <div className="section-header-row">
+                      <div className="section-title-wrap">
+                        <span className="section-icon-badge">📝</span>
+                        <div>
+                          <h3 className="section-title">Descripción Personal & Enlaces</h3>
+                          <p className="section-subtitle">Presentación del jugador en la comunidad RetroHub</p>
+                        </div>
+                      </div>
+                      <button className="btn-topbar-action" onClick={() => setActiveTab('ajustes')}>
+                        <span>✏️ Editar</span>
+                      </button>
+                    </div>
+
+                    <p style={{ color: '#cbd5e1', fontSize: '14.5px', lineHeight: 1.6, marginBottom: '20px' }}>
                       {profile.bio || 'Sin descripción personal todavía.'}
                     </p>
-                  )}
-                </div>
 
-                {isEditing && (
-                  <div className="profile-glass-card">
-                    <div className="card-header-row">
-                      <div className="card-title-wrap">
-                        <span className="card-icon">⚙️</span>
-                        <h3 className="card-title">Ajustes de Cuenta</h3>
-                      </div>
-                    </div>
-
-                    <div className="form-field-group">
-                      <label className="form-label" htmlFor="inputUsername">
-                        Nombre de Usuario Único
-                      </label>
-                      <span className="form-hint">
-                        3-24 letras, números, _ o -. Verificado contra la base de datos.
-                      </span>
-
-                      <div className="username-input-wrap">
-                        <span className="username-at-prefix">@</span>
-                        <input
-                          id="inputUsername"
-                          type="text"
-                          className={`form-text-input input-${usernameValidation.status}`}
-                          value={usernameInput}
-                          maxLength={24}
-                          onChange={handleUsernameChange}
-                          placeholder="usuario"
-                        />
-                      </div>
-
-                      <div className={`validation-message-badge status-${usernameValidation.status}`}>
-                        {usernameValidation.message}
-                      </div>
-                    </div>
-
-                    <div className="form-field-group">
-                      <label className="form-label" htmlFor="inputDisplayName">
-                        Nombre Público Visible
-                      </label>
-                      <input
-                        id="inputDisplayName"
-                        type="text"
-                        className="form-text-input no-prefix"
-                        value={profile.displayName}
-                        maxLength={32}
-                        onChange={(e) => setProfile(p => ({ ...p, displayName: e.target.value }))}
-                        placeholder="Tu alias o nombre gamer"
-                      />
-                    </div>
-
-                    <div className="form-field-group">
-                      <label className="form-label" htmlFor="inputTitleHonor">
-                        Título Honorífico
-                      </label>
-                      <input
-                        id="inputTitleHonor"
-                        type="text"
-                        className="form-text-input no-prefix"
-                        value={profile.titleHonor}
-                        maxLength={40}
-                        onChange={(e) => setProfile(p => ({ ...p, titleHonor: e.target.value }))}
-                        placeholder="Ej: 🎮 Maestro de los 64-Bits"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* ENLACES Y REDES */}
-                <div className="profile-glass-card">
-                  <div className="card-header-row">
-                    <div className="card-title-wrap">
-                      <span className="card-icon">🌐</span>
-                      <h3 className="card-title">Enlaces & Redes</h3>
-                    </div>
-                    {isEditing && (
-                      <button
-                        className="btn-avatar-quick"
-                        style={{ color: 'var(--mint-light)' }}
-                        onClick={() => setShowAddLinkForm(!showAddLinkForm)}
-                      >
-                        + Añadir
-                      </button>
-                    )}
-                  </div>
-
-                  {isEditing && showAddLinkForm && (
-                    <form onSubmit={handleAddLink} style={{ marginBottom: '18px', padding: '14px', background: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px' }}>
-                      <div style={{ marginBottom: '10px' }}>
-                        <label className="form-label">Plataforma</label>
-                        <select
-                          className="form-text-input no-prefix"
-                          value={newLinkPlatform}
-                          onChange={(e) => setNewLinkPlatform(e.target.value)}
-                          style={{ padding: '8px 12px' }}
-                        >
-                          <option value="discord">Discord</option>
-                          <option value="steam">Steam</option>
-                          <option value="twitch">Twitch</option>
-                          <option value="github">GitHub</option>
-                          <option value="youtube">YouTube</option>
-                          <option value="twitter">X / Twitter</option>
-                          <option value="retrohub">RetroHub</option>
-                          <option value="web">Sitio Web Personal</option>
-                        </select>
-                      </div>
-
-                      <div style={{ marginBottom: '10px' }}>
-                        <label className="form-label">Título</label>
-                        <input
-                          type="text"
-                          className="form-text-input no-prefix"
-                          placeholder="Ej: Mi canal o servidor"
-                          value={newLinkTitle}
-                          onChange={(e) => setNewLinkTitle(e.target.value)}
-                          style={{ padding: '8px 12px' }}
-                        />
-                      </div>
-
-                      <div style={{ marginBottom: '12px' }}>
-                        <label className="form-label">URL del Sitio</label>
-                        <input
-                          type="text"
-                          className="form-text-input no-prefix"
-                          placeholder="https://..."
-                          value={newLinkUrl}
-                          onChange={(e) => setNewLinkUrl(e.target.value)}
-                          style={{ padding: '8px 12px' }}
-                        />
-                      </div>
-
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                        <button type="button" className="btn-avatar-quick" onClick={() => setShowAddLinkForm(false)}>
-                          Cancelar
-                        </button>
-                        <button type="submit" className="btn-console-cue btn-primary-action" style={{ padding: '6px 14px', fontSize: '12px' }}>
-                          Guardar Enlace
-                        </button>
-                      </div>
-                    </form>
-                  )}
-
-                  <div className="profile-links-list">
-                    {profile.socialLinks && profile.socialLinks.length > 0 ? (
-                      profile.socialLinks.map(link => (
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      {profile.socialLinks && profile.socialLinks.map(link => (
                         <a
                           key={link.id}
                           href={link.url}
                           target="_blank"
-                          rel="noopener noreferrer"
-                          className="profile-link-item"
+                          rel="noreferrer"
+                          className="btn-fc-action"
+                          style={{ textDecoration: 'none' }}
                         >
-                          <div className="link-platform-info">
-                            <div className="link-icon-box">{link.icon || '🔗'}</div>
-                            <div>
-                              <div className="link-text-title">{link.title}</div>
-                              <div className="link-url-sub">{link.url.replace(/^https?:\/\//, '')}</div>
-                            </div>
-                          </div>
-
-                          <div className="link-actions">
-                            <span style={{ fontSize: '12px', color: 'var(--mint-light)' }}>↗</span>
-                            {isEditing && (
-                              <button
-                                type="button"
-                                className="btn-link-del"
-                                title="Eliminar enlace"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  handleRemoveLink(link.id);
-                                }}
-                              >
-                                ✕
-                              </button>
-                            )}
-                          </div>
+                          <span>{link.icon || '🔗'}</span>
+                          <span>{link.title}</span>
+                          <span style={{ color: 'var(--system-aura-color)', fontSize: '11px' }}>↗</span>
                         </a>
-                      ))
-                    ) : (
-                      <div style={{ color: 'var(--text-dim)', fontSize: '13px', textAlign: 'center', padding: '16px' }}>
-                        No hay enlaces configurados.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* COLUMNA DERECHA: JUEGOS FAVORITOS */}
-              <div>
-                <div className="profile-glass-card">
-                  <div className="card-header-row">
-                    <div className="card-title-wrap">
-                      <span className="card-icon">⭐</span>
-                      <h3 className="card-title">Juegos Favoritos</h3>
+                      ))}
                     </div>
-                    {isEditing && (
-                      <button
-                        className="btn-avatar-quick"
-                        style={{ color: 'var(--mint-light)' }}
-                        onClick={() => setStockModalTarget('game')}
-                      >
-                        + Añadir Juego
-                      </button>
-                    )}
+                  </div>
+                </>
+              )}
+
+              {/* ========================================================
+                  PESTAÑA 2: AMIGOS & CHAT P2P & AÑADIR AMIGO
+                  ======================================================== */}
+              {activeTab === 'amigos' && (
+                <div className="switch-section-box">
+                  <div className="section-header-row">
+                    <div className="section-title-wrap">
+                      <span className="section-icon-badge">👥</span>
+                      <div>
+                        <h2 className="section-title">Lista de Amigos Conectados</h2>
+                        <p className="section-subtitle">Mira a qué están jugando tus amigos o desafíalos a una partida P2P</p>
+                      </div>
+                    </div>
+                    <span className="hero-status-pill">
+                      <span>●</span> {friends.filter(f => f.online).length} en línea
+                    </span>
                   </div>
 
-                  <div className="games-favorite-grid">
-                    {profile.favoriteGames.map(game => (
-                      <div key={game.id} className="game-fav-card">
-                        <div className="game-platform-ribbon" style={{ background: game.platformColor || '#ff4757' }}>
-                          {game.platform || 'RETRO'}
+                  {/* Formulario Añadir Amigo con Clave SW */}
+                  <form className="friends-action-bar" onSubmit={handleAddFriendByCode}>
+                    <div className="friend-input-wrap">
+                      <span className="friend-sw-prefix">SW-</span>
+                      <input
+                        type="text"
+                        className="friend-input-field"
+                        placeholder="1234-5678-9012 (Clave de amigo Switch)"
+                        value={addFriendInput}
+                        onChange={(e) => setAddFriendInput(e.target.value)}
+                        maxLength={18}
+                      />
+                    </div>
+                    <button type="submit" className="btn-send-friend-req">
+                      ➕ Añadir amigo
+                    </button>
+                  </form>
+
+                  {/* Cuadrícula de Amigos */}
+                  <div className="friends-grid">
+                    {friends.map(f => (
+                      <div key={f.id} className={`friend-card ${f.statusClass}`}>
+                        <div className="friend-top-row">
+                          <div className="friend-avatar-wrap">
+                            <img src={f.avatar} className="friend-avatar-img" alt={f.name} />
+                            <div className="friend-dot-status" />
+                          </div>
+                          <div className="friend-identity">
+                            <div className="friend-name">{f.name}</div>
+                            <div className="friend-tag">@{f.username}</div>
+                          </div>
                         </div>
 
-                        {isEditing && (
+                        <div className="friend-activity-pill">
+                          <span>🕹️</span>
+                          <span>{f.statusText}</span>
+                        </div>
+
+                        <div className="friend-actions-row">
                           <button
-                            className="btn-game-remove"
-                            title="Quitar de favoritos"
-                            onClick={() => handleRemoveGame(game.id)}
+                            className="btn-friend-action"
+                            onClick={() => showToast('info', `Invitación de partida enviada a ${f.name}.`)}
                           >
-                            ✕
+                            <span>🎮 Desafiar P2P</span>
                           </button>
-                        )}
-
-                        <div className="game-fav-cover-wrap">
-                          <img
-                            src={game.cover}
-                            className="game-fav-cover"
-                            alt={game.title}
-                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80'; }}
-                          />
-                        </div>
-
-                        <div className="game-fav-info">
-                          <div className="game-fav-title" title={game.title}>{game.title}</div>
-                          <div className="game-fav-meta">{game.year || 'Clásico'}</div>
+                          <button
+                            className="btn-friend-action"
+                            onClick={() => showToast('info', `Abriendo canal de chat directo con ${f.name}...`)}
+                          >
+                            <span>💬 Mensaje</span>
+                          </button>
                         </div>
                       </div>
                     ))}
-
-                    {isEditing && (
-                      <div
-                        className="game-add-card"
-                        onClick={() => setStockModalTarget('game')}
-                        title="Añadir un juego favorito"
-                      >
-                        <div className="game-add-plus">+</div>
-                        <span style={{ fontSize: '13px', fontWeight: 600 }}>Añadir Juego</span>
-                      </div>
-                    )}
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
 
-            {/* BARRA DE GUARDADO INFERIOR */}
-            {isEditing && (
-              <div className="profile-save-bar">
-                <div className="save-bar-info">
-                  <span>✏️ Modo Edición Activo</span>
+              {/* ========================================================
+                  PESTAÑA 3: AJUSTES & AVATAR STUDIO & AURA STUDIO
+                  ======================================================== */}
+              {activeTab === 'ajustes' && (
+                <div className="switch-section-box">
+                  <div className="section-header-row">
+                    <div className="section-title-wrap">
+                      <span className="section-icon-badge">⚙️</span>
+                      <div>
+                        <h2 className="section-title">Ajustes de Usuario & Avatar Studio</h2>
+                        <p className="section-subtitle">Personaliza tu foto de perfil, anillo de Aura bioluminiscente y datos públicos</p>
+                      </div>
+                    </div>
+
+                    <button
+                      className="btn-send-friend-req"
+                      onClick={handleSaveProfile}
+                      disabled={isSaving}
+                    >
+                      <span className="cue-circle cue-a" style={{ width: '18px', height: '18px', fontSize: '10px' }}>A</span>
+                      <span>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
+                    </button>
+                  </div>
+
+                  <div className="settings-grid-layout">
+                    {/* Columna Izquierda: Auras y Avatar Studio */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+                      
+                      {/* Aura Studio iiSU */}
+                      <div className="aura-studio-box">
+                        <label className="form-label">Anillo de Aura Bioluminiscente</label>
+                        <div className="aura-swatches-row">
+                          {Object.values(AURA_PALETTES).map(aura => (
+                            <div
+                              key={aura.id}
+                              className={`aura-swatch-item ${profile.systemAura === aura.id ? 'active' : ''}`}
+                              style={{ background: aura.color, color: aura.color }}
+                              onClick={() => handleSelectAura(aura.id)}
+                              title={aura.name}
+                            />
+                          ))}
+                        </div>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                          Color activo: <strong style={{ color: activeAuraData.color }}>{activeAuraData.name}</strong> (tiñe el resplandor de tu avatar y la consola).
+                        </span>
+                      </div>
+
+                      {/* Selector de Foto de Perfil (Stock & Archivo) */}
+                      <div className="avatar-studio-stage">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <label className="form-label">Foto de Perfil (Avatar)</label>
+                          <button
+                            type="button"
+                            className="btn-topbar-action"
+                            style={{ fontSize: '11px', padding: '3px 10px' }}
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            📁 Subir Archivo Local
+                          </button>
+                        </div>
+
+                        <div className="avatar-tabs-nav">
+                          <button
+                            type="button"
+                            className={`avatar-tab-pill ${avatarTabFilter === 'covers' ? 'active' : ''}`}
+                            onClick={() => setAvatarTabFilter('covers')}
+                          >
+                            Portadas Clásicas
+                          </button>
+                          <button
+                            type="button"
+                            className={`avatar-tab-pill ${avatarTabFilter === 'consoles' ? 'active' : ''}`}
+                            onClick={() => setAvatarTabFilter('consoles')}
+                          >
+                            Consolas
+                          </button>
+                          <button
+                            type="button"
+                            className={`avatar-tab-pill ${avatarTabFilter === 'characters' ? 'active' : ''}`}
+                            onClick={() => setAvatarTabFilter('characters')}
+                          >
+                            Personajes
+                          </button>
+                        </div>
+
+                        <div className="avatar-stock-grid">
+                          {STOCK_AVATARS.filter(a => a.type === avatarTabFilter).map(item => (
+                            <div
+                              key={item.id}
+                              className={`avatar-stock-item ${profile.avatarUrl === item.url ? 'active' : ''}`}
+                              onClick={() => handleSelectAvatar(item.url)}
+                              title={item.name}
+                            >
+                              <img src={item.url} className="avatar-stock-thumb" alt={item.name} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Selector de Banner Panorámico */}
+                      <div>
+                        <label className="form-label">Banner Panorámico de Fondo</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '8px', marginTop: '8px' }}>
+                          {STOCK_BANNERS.map(b => (
+                            <div
+                              key={b.id}
+                              style={{
+                                height: '56px',
+                                borderRadius: '8px',
+                                overflow: 'hidden',
+                                border: profile.bannerUrl === b.url ? '2px solid var(--system-aura-color)' : '1.5px solid rgba(255,255,255,0.1)',
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => handleSelectBanner(b.url)}
+                              title={b.name}
+                            >
+                              <img src={b.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={b.name} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Columna Derecha: Formulario de Información */}
+                    <div>
+                      <div className="form-field-group">
+                        <label className="form-label">Nombre de Usuario Único (@)</label>
+                        <input
+                          type="text"
+                          className="form-text-input"
+                          value={usernameInput}
+                          maxLength={24}
+                          onChange={handleUsernameChange}
+                        />
+                        <span style={{ fontSize: '11px', color: usernameValidation.status === 'taken' ? '#ff4757' : 'var(--system-aura-color)' }}>
+                          {usernameValidation.message}
+                        </span>
+                      </div>
+
+                      <div className="form-field-group">
+                        <label className="form-label">Nombre Visible Público</label>
+                        <input
+                          type="text"
+                          className="form-text-input"
+                          value={profile.displayName}
+                          maxLength={32}
+                          onChange={(e) => setProfile(p => ({ ...p, displayName: e.target.value }))}
+                        />
+                      </div>
+
+                      <div className="form-field-group">
+                        <label className="form-label">Título Honorífico</label>
+                        <input
+                          type="text"
+                          className="form-text-input"
+                          value={profile.titleHonor}
+                          maxLength={40}
+                          onChange={(e) => setProfile(p => ({ ...p, titleHonor: e.target.value }))}
+                        />
+                      </div>
+
+                      <div className="form-field-group">
+                        <label className="form-label">Consola Predilecta</label>
+                        <select
+                          className="form-text-input"
+                          value={profile.favoriteSystem}
+                          onChange={(e) => setProfile(p => ({ ...p, favoriteSystem: e.target.value }))}
+                        >
+                          <option value="n64">Nintendo 64</option>
+                          <option value="snes">Super Nintendo (SNES)</option>
+                          <option value="gba">Game Boy Advance</option>
+                          <option value="ps1">PlayStation 1</option>
+                          <option value="genesis">Sega Genesis / Mega Drive</option>
+                          <option value="nes">Nintendo NES</option>
+                          <option value="arcade">Arcade MAME</option>
+                        </select>
+                      </div>
+
+                      <div className="form-field-group">
+                        <label className="form-label">Descripción Personal (Bio)</label>
+                        <textarea
+                          className="form-text-input form-text-area"
+                          value={profile.bio}
+                          maxLength={350}
+                          onChange={(e) => setProfile(p => ({ ...p, bio: e.target.value }))}
+                        />
+                        <span style={{ fontSize: '11px', color: 'var(--text-dim)', textAlign: 'right' }}>
+                          {profile.bio.length} / 350
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="save-bar-actions">
-                  <button
-                    className="btn-avatar-quick"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setUsernameInput(originalUsername);
-                    }}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    className="btn-console-cue btn-primary-action"
-                    disabled={isSaving || usernameValidation.status === 'taken' || usernameValidation.status === 'invalid'}
-                    onClick={handleSaveProfile}
-                  >
-                    <span className="cue-circle cue-a">A</span>
-                    <span>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
-                  </button>
+              )}
+
+              {/* ========================================================
+                  PESTAÑA 4: LOGROS E INSIGNIAS RETRO
+                  ======================================================== */}
+              {activeTab === 'logros' && (
+                <div className="switch-section-box">
+                  <div className="section-header-row">
+                    <div className="section-title-wrap">
+                      <span className="section-icon-badge">🏆</span>
+                      <div>
+                        <h2 className="section-title">Logros & Medallas RetroHub</h2>
+                        <p className="section-subtitle">Recompensas desbloqueadas por horas jugadas, partidas completadas y amigos añadidos</p>
+                      </div>
+                    </div>
+                    <span className="hero-honor-pill" style={{ color: 'var(--gold-accent)', borderColor: 'var(--gold-accent)' }}>
+                      ⭐ 5 Desbloqueados
+                    </span>
+                  </div>
+
+                  <div className="achievements-grid">
+                    {RETRO_ACHIEVEMENTS.map(ach => (
+                      <div key={ach.id} className={`achievement-card ${!ach.unlocked ? 'locked' : ''}`}>
+                        <div className="achievement-icon-box">{ach.icon}</div>
+                        <div className="achievement-info">
+                          <div className="achievement-title">{ach.title}</div>
+                          <div className="achievement-desc">{ach.desc}</div>
+                          <span className="achievement-status-badge">
+                            {ach.unlocked ? `✓ Desbloqueado (${ach.progress})` : `En progreso: ${ach.progress}`}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+            </section>
           </main>
 
-          {/* MODAL DE STOCK */}
-          {stockModalTarget && (
-            <div className="profile-modal-backdrop" onClick={() => setStockModalTarget(null)}>
-              <div className="profile-modal-box" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h3 className="modal-title">
-                    {stockModalTarget === 'avatar' && 'Elegir Foto de Perfil'}
-                    {stockModalTarget === 'banner' && 'Elegir Imagen de Banner'}
-                    {stockModalTarget === 'game' && 'Añadir Juego a Favoritos'}
-                  </h3>
-                  <button className="modal-btn-close" onClick={() => setStockModalTarget(null)}>✕</button>
+          {/* MODAL CÓDIGO QR OFICIAL SWITCH */}
+          {showQrModal && (
+            <div className="switch-qr-backdrop" onClick={() => setShowQrModal(false)}>
+              <div className="switch-qr-box" onClick={(e) => e.stopPropagation()}>
+                <button className="btn-qr-close" onClick={() => setShowQrModal(false)}>✕</button>
+
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 800, color: 'white', marginBottom: '4px' }}>
+                  Añadir con Código QR
+                </h3>
+                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                  Escanea con la cámara de tu smartphone para ver o añadir a @{profile.username}
+                </p>
+
+                <div className="qr-matrix-preview">
+                  {/* SVG Matriz QR Auténtica */}
+                  <svg width="180" height="180" viewBox="0 0 29 29" fill="#0f172a">
+                    {/* Position detection patterns */}
+                    <rect x="2" y="2" width="7" height="7" rx="1" fill="#0f172a" />
+                    <rect x="3" y="3" width="5" height="5" fill="#ffffff" />
+                    <rect x="4" y="4" width="3" height="3" fill="#0f172a" />
+
+                    <rect x="20" y="2" width="7" height="7" rx="1" fill="#0f172a" />
+                    <rect x="21" y="3" width="5" height="5" fill="#ffffff" />
+                    <rect x="22" y="4" width="3" height="3" fill="#0f172a" />
+
+                    <rect x="2" y="20" width="7" height="7" rx="1" fill="#0f172a" />
+                    <rect x="3" y="21" width="5" height="5" fill="#ffffff" />
+                    <rect x="4" y="22" width="3" height="3" fill="#0f172a" />
+
+                    {/* Data modules */}
+                    <rect x="11" y="3" width="2" height="2" />
+                    <rect x="15" y="3" width="2" height="2" />
+                    <rect x="10" y="6" width="3" height="1" />
+                    <rect x="15" y="6" width="2" height="2" />
+                    <rect x="4" y="11" width="2" height="2" />
+                    <rect x="8" y="11" width="2" height="2" />
+                    <rect x="12" y="11" width="4" height="2" />
+                    <rect x="18" y="11" width="2" height="2" />
+                    <rect x="22" y="11" width="2" height="2" />
+                    <rect x="3" y="15" width="2" height="2" />
+                    <rect x="7" y="15" width="3" height="2" />
+                    <rect x="12" y="15" width="2" height="2" />
+                    <rect x="16" y="15" width="4" height="2" />
+                    <rect x="22" y="15" width="2" height="2" />
+                    <rect x="11" y="19" width="3" height="2" />
+                    <rect x="16" y="19" width="2" height="2" />
+                    <rect x="21" y="19" width="3" height="2" />
+                    <rect x="11" y="23" width="2" height="2" />
+                    <rect x="15" y="23" width="4" height="2" />
+                    <rect x="21" y="23" width="2" height="2" />
+                  </svg>
                 </div>
 
-                {stockModalTarget === 'avatar' && (
-                  <div className="modal-tabs">
-                    <button className={`modal-tab-btn ${stockTab === 'dicebear' ? 'active' : ''}`} onClick={() => setStockTab('dicebear')}>
-                      Personajes Retro
-                    </button>
-                    <button className={`modal-tab-btn ${stockTab === 'consoles' ? 'active' : ''}`} onClick={() => setStockTab('consoles')}>
-                      Consolas Reales
-                    </button>
-                    <button className={`modal-tab-btn ${stockTab === 'covers' ? 'active' : ''}`} onClick={() => setStockTab('covers')}>
-                      Portadas
-                    </button>
-                  </div>
-                )}
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'white', marginBottom: '14px' }}>
+                  {profile.friendCode}
+                </div>
 
-                {stockModalTarget === 'banner' && (
-                  <div className="modal-tabs">
-                    <button className={`modal-tab-btn ${stockTab === 'wallpapers' ? 'active' : ''}`} onClick={() => setStockTab('wallpapers')}>
-                      Fondos de Juegos
-                    </button>
-                    <button className={`modal-tab-btn ${stockTab === 'synthwave' ? 'active' : ''}`} onClick={() => setStockTab('synthwave')}>
-                      Estilo Retro Wave
-                    </button>
-                  </div>
-                )}
-
-                <div className="modal-content-scroll">
-                  {(stockModalTarget === 'avatar' || stockModalTarget === 'banner') && (
-                    <div className="upload-dropzone" onClick={() => fileInputRef.current?.click()}>
-                      <div style={{ fontSize: '28px', marginBottom: '6px' }}>📁</div>
-                      <div style={{ fontWeight: 700, color: 'white', marginBottom: '4px' }}>
-                        Haz clic para subir un archivo local desde tu equipo
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
-                        PNG, JPG, SVG, WebP o GIF (hasta 12MB)
-                      </div>
-                    </div>
-                  )}
-
-                  {stockModalTarget === 'avatar' && (
-                    <div className="stock-grid">
-                      {(stockData.avatars.length > 0 ? stockData.avatars : [
-                        { id: '1', name: 'Sara Retro', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro' },
-                        { id: '2', name: 'Lucas', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas' },
-                        { id: '3', name: 'Queen', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen' },
-                        { id: '4', name: 'Cyber', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cyber' },
-                        { id: '5', name: 'Alex', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex' },
-                        { id: '6', name: 'Super Mario 64', url: 'ROMS/covers/box_sm64.png' },
-                        { id: '7', name: 'Zelda OOT', url: 'ROMS/covers/box_oot.png' },
-                        { id: '8', name: 'Pokémon Esmeralda', url: 'ROMS/covers/box_emerald.png' }
-                      ]).map(item => (
-                        <div
-                          key={item.id}
-                          className="stock-item-card"
-                          onClick={() => {
-                            setProfile(p => ({ ...p, avatarUrl: item.url }));
-                            setStockModalTarget(null);
-                            showToast('success', 'Foto de perfil actualizada.');
-                          }}
-                        >
-                          <img src={item.url} className="stock-thumbnail" alt={item.name} />
-                          <div className="stock-item-label">{item.name}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {stockModalTarget === 'banner' && (
-                    <div className="stock-grid banner-grid">
-                      {(stockData.banners.length > 0 ? stockData.banners : [
-                        { id: 'b1', name: 'Super Mario 64', url: 'assets/game_wallpapers/n64/sm64.png' },
-                        { id: 'b2', name: 'Zelda Ocarina of Time', url: 'assets/game_wallpapers/n64/oot.png' },
-                        { id: 'b3', name: 'Chrono Trigger', url: 'assets/game_wallpapers/snes/chrono.png' },
-                        { id: 'b4', name: 'Super Mario World', url: 'assets/game_wallpapers/snes/smw.png' },
-                        { id: 'b5', name: 'Pokémon Esmeralda', url: 'assets/game_wallpapers/gba/pokemon_emerald.png' },
-                        { id: 'b6', name: 'Final Fantasy VII', url: 'assets/game_wallpapers/ps1/ff7.png' }
-                      ]).map(item => (
-                        <div
-                          key={item.id}
-                          className="stock-item-card banner-card"
-                          onClick={() => {
-                            setProfile(p => ({ ...p, bannerUrl: item.url }));
-                            setStockModalTarget(null);
-                            showToast('success', 'Banner de perfil actualizado.');
-                          }}
-                        >
-                          <img src={item.url} className="stock-thumbnail" alt={item.name} />
-                          <div className="stock-item-label">{item.name}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {stockModalTarget === 'game' && (
-                    <div className="stock-grid">
-                      {DEFAULT_RETRO_GAMES_CATALOG.map(game => (
-                        <div
-                          key={game.id}
-                          className="stock-item-card"
-                          onClick={() => handleAddGameFromCatalog(game)}
-                        >
-                          <img src={game.cover} className="stock-thumbnail" alt={game.title} />
-                          <div className="stock-item-label">{game.title}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button className="btn-send-friend-req" onClick={handleCopyFriendCode}>
+                    📋 Copiar Clave
+                  </button>
+                  <button className="btn-topbar-action" onClick={() => setShowQrModal(false)}>
+                    Cerrar
+                  </button>
                 </div>
               </div>
             </div>
