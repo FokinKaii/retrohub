@@ -602,69 +602,158 @@
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.24);
-            border: none;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff;
-            font-size: 19px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.4);
             transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .joycon-util-btn:hover {
-            background: rgba(255, 255, 255, 0.42);
-            transform: scale(1.15);
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.14);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.6);
         }
         .joycon-util-btn:active {
             transform: scale(0.92);
+        }
+        .joycon-util-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 56px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.92);
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 11px;
+            border-radius: 8px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+            z-index: 1200;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .joycon-util-btn:hover::after {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
         }
 
         /* CONTENEDOR SUPERIOR DE AMIGOS Y BOTÓN AGREGAR AMIGO */
         .switch-top-friends-container {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(16px);
-            border: 1.5px solid rgba(0, 0, 0, 0.08);
-            padding: 5px 14px 5px 8px;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(226, 232, 240, 0.95);
+            padding: 4px 6px 4px 8px;
             border-radius: 9999px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), inset 0 1.5px 2px #ffffff;
             user-select: none;
+            transition: all 0.22s ease;
+        }
+        .switch-top-friends-container:hover {
+            border-color: rgba(0, 210, 190, 0.4);
+            box-shadow: 0 6px 24px rgba(0, 210, 190, 0.12), 0 4px 14px rgba(0, 0, 0, 0.05), inset 0 1.5px 2px #ffffff;
+        }
+
+        .friends-pill-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(0, 0, 0, 0.08);
+            margin: 0 2px;
         }
 
         .top-friends-list {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
         }
 
         .top-friend-chip {
             position: relative;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .top-friend-chip:hover {
-            transform: scale(1.16) translateY(-2px);
+            transform: scale(1.18) translateY(-2px);
+            z-index: 10;
         }
         .top-friend-chip:active {
             transform: scale(0.94);
         }
 
+        /* Tooltip Switch para amigos */
+        .top-friend-chip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px) scale(0.94);
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+            z-index: 1200;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .top-friend-chip::before {
+            content: '';
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            border-width: 0 5px 5px 5px;
+            border-style: solid;
+            border-color: transparent transparent #0f172a transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1201;
+        }
+        .top-friend-chip:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        .top-friend-chip:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
         .top-friend-avatar-img {
-            width: 36px;
-            height: 36px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            border: 2px solid #2ecc71;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 2px solid #10b981;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
             object-fit: cover;
             display: block;
             background: #ffffff;
+            transition: border-color 0.2s ease;
         }
         .top-friend-chip.friend-peach .top-friend-avatar-img {
-            border-color: #f1c40f;
+            border-color: #f59e0b;
         }
         .top-friend-chip.friend-offline .top-friend-avatar-img {
             border-color: #94a3b8;
@@ -678,45 +767,120 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: #2ecc71;
-            border: 1.5px solid #ffffff;
-            box-shadow: 0 0 6px #2ecc71;
+            background: #10b981;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 6px #10b981;
+        }
+        .top-friend-dot::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: inherit;
+            animation: friendRadarPing 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+            pointer-events: none;
+        }
+        @keyframes friendRadarPing {
+            0% { transform: scale(0.9); opacity: 0.9; }
+            70% { transform: scale(2.2); opacity: 0; }
+            100% { transform: scale(2.2); opacity: 0; }
         }
         .top-friend-chip.friend-peach .top-friend-dot {
-            background: #f1c40f;
-            box-shadow: 0 0 6px #f1c40f;
+            background: #f59e0b;
+            box-shadow: 0 0 6px #f59e0b;
         }
         .top-friend-chip.friend-offline .top-friend-dot {
             background: #94a3b8;
             box-shadow: none;
         }
+        .top-friend-chip.friend-offline .top-friend-dot::before {
+            display: none;
+        }
 
         .btn-add-friend-top {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: #00d2be;
+            gap: 8px;
+            background: linear-gradient(135deg, #00d2be 0%, #00b4d8 100%);
             color: #ffffff;
             border: none;
-            padding: 7px 14px;
+            padding: 7px 16px 7px 10px;
             border-radius: 9999px;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 700;
+            letter-spacing: -0.2px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 210, 190, 0.35);
+            box-shadow: 0 4px 14px rgba(0, 210, 190, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
             transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
         }
         .btn-add-friend-top:hover {
-            background: #00b8a6;
-            transform: scale(1.06);
-            box-shadow: 0 6px 18px rgba(0, 210, 190, 0.5);
+            background: linear-gradient(135deg, #00e2cc 0%, #00c2ea 100%);
+            transform: scale(1.05) translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 210, 190, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
         }
         .btn-add-friend-top:active {
             transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0, 210, 190, 0.3);
         }
-        .btn-add-friend-icon {
-            font-size: 12px;
+
+        .btn-add-friend-icon-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+        }
+        .btn-add-friend-top:hover .btn-add-friend-icon-badge {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-add-friend-top::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+            z-index: 1200;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .btn-add-friend-top::before {
+            content: '';
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 24px;
+            transform: scale(0.8);
+            border-width: 0 5px 5px 5px;
+            border-style: solid;
+            border-color: transparent transparent #0f172a transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1201;
+        }
+        .btn-add-friend-top:hover::after {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .btn-add-friend-top:hover::before {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* MODAL DE AGREGAR AMIGO (ESTILO NINTENDO SWITCH DIALOG) */
@@ -944,74 +1108,232 @@
         .switch-top-pills-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .switch-top-circle {
-            width: 44px;
-            height: 44px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            background: #ffffff;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f8fafc 100%);
             border: 1.5px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), inset 0 1.5px 2px #ffffff;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05), inset 0 1.5px 2px #ffffff, inset 0 -1px 2px rgba(0, 0, 0, 0.04);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            color: #1e293b;
+            color: #334155;
             text-decoration: none;
             cursor: pointer;
             position: relative;
-            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .switch-top-circle:hover {
-            transform: scale(1.14) translateY(-2px);
-            border-color: #0ab9e6;
-            box-shadow: 0 8px 20px rgba(10, 185, 230, 0.3);
-        }
-        .switch-top-circle:active {
-            transform: scale(0.92);
+            transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
         }
 
+        /* Tooltip Switch para botones circulares */
+        .switch-top-circle::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px) scale(0.94);
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+            z-index: 1200;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .switch-top-circle::before {
+            content: '';
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            border-width: 0 5px 5px 5px;
+            border-style: solid;
+            border-color: transparent transparent #0f172a transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1201;
+        }
+        .switch-top-circle:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        .switch-top-circle:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Hover específico con halos temáticos Switch */
+        .switch-top-circle.circle-news:hover {
+            transform: scale(1.12) translateY(-2px);
+            border-color: #00d2be;
+            box-shadow: 0 8px 24px rgba(0, 210, 190, 0.35), inset 0 1px 2px #ffffff;
+            color: #00a896;
+        }
+        .switch-top-circle.circle-eshop:hover {
+            transform: scale(1.12) translateY(-2px);
+            border-color: #ff7300;
+            box-shadow: 0 8px 24px rgba(255, 115, 0, 0.35), inset 0 1px 2px #ffffff;
+            color: #e65c00;
+        }
+        .switch-top-circle.circle-album:hover {
+            transform: scale(1.12) translateY(-2px);
+            border-color: #0284c7;
+            box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35), inset 0 1px 2px #ffffff;
+            color: #0284c7;
+        }
+
+        .switch-top-circle:active {
+            transform: scale(0.92);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Micro-animación en los iconos SVG */
+        .switch-circle-svg {
+            display: block;
+            transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, fill 0.2s ease;
+        }
+        .circle-news .news-svg {
+            color: #334155;
+        }
+        .circle-news:hover .news-svg {
+            color: #00d2be;
+            transform: scale(1.08);
+        }
+        .circle-eshop .eshop-bag-svg {
+            color: #ff7300;
+        }
+        .circle-eshop:hover .eshop-bag-svg {
+            color: #ff5500;
+            transform: rotate(-6deg) scale(1.08);
+        }
+        .circle-album .album-svg {
+            color: #0284c7;
+        }
+        .circle-album:hover .album-svg {
+            color: #0ea5e9;
+            transform: scale(1.08);
+        }
+
+        /* Punto de notificación azul con radar pulsante */
         .unread-blue-dot {
             position: absolute;
             top: -2px;
             right: -2px;
-            width: 11px;
-            height: 11px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: #0ab9e6;
+            background: #00d2be;
             border: 2px solid #ffffff;
-            box-shadow: 0 0 8px #0ab9e6;
+            box-shadow: 0 0 10px #00d2be;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .unread-dot-pulse {
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: rgba(0, 210, 190, 0.6);
+            animation: unreadRadarPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            pointer-events: none;
+        }
+        @keyframes unreadRadarPulse {
+            0% { transform: scale(0.9); opacity: 0.9; }
+            70% { transform: scale(2.2); opacity: 0; }
+            100% { transform: scale(2.2); opacity: 0; }
         }
 
+        /* Zona de estado a la derecha: Reloj y Wi-Fi */
         .switch-top-status-right {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
+            gap: 16px;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
             color: #1e293b;
-            text-shadow: 0 1px 10px rgba(255, 255, 255, 0.85);
+            user-select: none;
         }
 
         .switch-clock-text {
-            font-size: 17px;
+            font-size: 16.5px;
             font-weight: 800;
             letter-spacing: -0.3px;
+            font-variant-numeric: tabular-nums;
         }
 
-        .switch-wifi-icon {
-            font-size: 17px;
-        }
-
-        .switch-battery-badge {
+        .switch-wifi-wrap {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 14.5px;
+            justify-content: center;
+            color: #334155;
+            position: relative;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .switch-wifi-wrap:hover {
+            color: #00d2be;
+            background: rgba(0, 210, 190, 0.1);
+            transform: scale(1.1);
+        }
+        .switch-wifi-svg {
+            display: block;
+        }
+
+        .switch-wifi-wrap::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            font-size: 11.5px;
             font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+            z-index: 1200;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .switch-wifi-wrap::before {
+            content: '';
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 8px;
+            transform: scale(0.8);
+            border-width: 0 5px 5px 5px;
+            border-style: solid;
+            border-color: transparent transparent #0f172a transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1201;
+        }
+        .switch-wifi-wrap:hover::after {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .switch-wifi-wrap:hover::before {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* 4. SECCIÓN CENTRAL DEL CARRUSEL Y REPISA SWITCH */
@@ -4112,11 +4434,20 @@
 
         <!-- Botones de Sistema en la Base (Mandos y Power; Sin ajustes porque el perfil es la foto) -->
         <div class="joycon-util-stack">
-            <button class="joycon-util-btn" onclick="alert('🎮 Mandos Nintendo Switch: Compatible con Pro Controller, Joy-Con y mandos USB. Navega con la cruceta/stick y pulsa (A) para entrar.')" title="Configuración de Mandos">
-                <span>🍉</span>
+            <button class="joycon-util-btn" onclick="alert('🎮 Mandos Nintendo Switch: Compatible con Pro Controller, Joy-Con y mandos USB. Navega con la cruceta/stick y pulsa (A) para entrar.')" data-tooltip="Mandos y Sensores" aria-label="Mandos">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="6"></rect>
+                    <line x1="6" y1="12" x2="10" y2="12"></line>
+                    <line x1="8" y1="10" x2="8" y2="14"></line>
+                    <circle cx="15.5" cy="13.5" r="1.3" fill="currentColor"></circle>
+                    <circle cx="18.5" cy="10.5" r="1.3" fill="currentColor"></circle>
+                </svg>
             </button>
-            <button class="joycon-util-btn" onclick="if(confirm('¿Deseas cerrar sesión de RetroHub?')) { localStorage.removeItem('retrohub_token'); window.location.href='login.html'; }" title="Apagar / Salir">
-                <span>⏻</span>
+            <button class="joycon-util-btn" onclick="if(confirm('¿Deseas cerrar sesión de RetroHub?')) { localStorage.removeItem('retrohub_token'); window.location.href='login.html'; }" data-tooltip="Modo de Espera / Salir" aria-label="Apagar / Salir">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                    <line x1="12" y1="2" x2="12" y2="12"></line>
+                </svg>
             </button>
         </div>
     </aside>
@@ -4128,17 +4459,35 @@
 
         <!-- BARRA SUPERIOR SWITCH OS -->
         <header class="switch-top-bar">
-            <!-- Cápsulas Circulares a la Izquierda (Tablón con punto azul, eShop, Álbum) -->
+            <!-- Cápsulas Circulares a la Izquierda (Noticias con radar azul, Tienda eShop, Álbum de Capturas) -->
             <div class="switch-top-pills-left">
-                <a href="iisu_network.html#feed" class="switch-top-circle circle-news" title="Tablón de Noticias y Novedades">
-                    <span class="unread-blue-dot"></span>
-                    <span>💬</span>
+                <!-- 1. NOTICIAS Y NOVEDADES -->
+                <a href="iisu_network.html#feed" class="switch-top-circle circle-news" data-tooltip="Noticias y Novedades" aria-label="Noticias">
+                    <span class="unread-blue-dot">
+                        <span class="unread-dot-pulse"></span>
+                    </span>
+                    <svg class="switch-circle-svg news-svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        <line x1="8" y1="9.5" x2="16" y2="9.5" stroke-width="2"/>
+                        <line x1="8" y1="13.5" x2="13.5" y2="13.5" stroke-width="2"/>
+                    </svg>
                 </a>
-                <button class="switch-top-circle circle-eshop" onclick="openRomLibraryModal()" title="Colección de Cajas 3D y Tienda de ROMs">
-                    <span>🛍️</span>
+
+                <!-- 2. NINTENDO ESHOP / TIENDA DE ROMS -->
+                <button class="switch-top-circle circle-eshop" onclick="openRomLibraryModal()" data-tooltip="Tienda de ROMs (eShop)" aria-label="Tienda de ROMs">
+                    <svg class="switch-circle-svg eshop-bag-svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                        <path d="M19 6h-3c0-2.21-1.79-4-4-4S8 3.79 8 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm7 16H5V8h3v1.5c0 .55.45 1 1 1s1-.45 1-1V8h4v1.5c0 .55.45 1 1 1s1-.45 1-1V8h3v12z"/>
+                    </svg>
                 </button>
-                <button class="switch-top-circle circle-album" onclick="alert('🖼️ Álbum de Capturas y Partidas Guardadas: Todas tus partidas guardadas (SRAM y Save States) se sincronizan en la nube.')" title="Álbum de Capturas y Saves">
-                    <span>🖼️</span>
+
+                <!-- 3. ÁLBUM DE CAPTURAS Y PARTIDAS -->
+                <button class="switch-top-circle circle-album" onclick="openSwitchAlbumNotice()" data-tooltip="Álbum de Capturas" aria-label="Álbum">
+                    <svg class="switch-circle-svg album-svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="4" ry="4"/>
+                        <circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/>
+                        <path d="M21 15.5l-5-5-10 10"/>
+                        <path d="M14 17l2.5-2.5 4.5 4.5"/>
+                    </svg>
                 </button>
             </div>
 
@@ -4147,16 +4496,29 @@
                 <div class="top-friends-list" id="topFriendsList">
                     <!-- Amigos generados dinámicamente con renderTopFriendsList() -->
                 </div>
-                <button class="btn-add-friend-top" onclick="openAddFriendModal()" title="Agregar nuevo amigo a RetroHub">
-                    <span class="btn-add-friend-icon">➕</span>
+                <div class="friends-pill-divider"></div>
+                <button class="btn-add-friend-top" onclick="openAddFriendModal()" data-tooltip="Buscar amigos por código SW o ID" aria-label="Agregar amigo">
+                    <span class="btn-add-friend-icon-badge">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </span>
                     <span>Agregar amigo</span>
                 </button>
             </div>
 
-            <!-- Estado a la Derecha: Reloj y Wi-Fi (Sin Batería) -->
+            <!-- Estado a la Derecha: Reloj y Wi-Fi en Vector SVG (Sin Batería) -->
             <div class="switch-top-status-right">
-                <span class="switch-clock-text" id="headerClock">23:48</span>
-                <span class="switch-wifi-icon" title="Wi-Fi: Conectado">📶</span>
+                <span class="switch-clock-text" id="headerClock">16:33</span>
+                <div class="switch-wifi-wrap" data-tooltip="Wi-Fi: Conexión Óptima (100%)" aria-label="Wi-Fi">
+                    <svg class="switch-wifi-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <circle cx="12" cy="20" r="1.3" fill="currentColor"></circle>
+                    </svg>
+                </div>
             </div>
         </header>
 
@@ -4211,7 +4573,12 @@
     <div class="add-friend-modal-backdrop" id="addFriendModal" style="display: none;" onclick="if(event.target === this) closeAddFriendModal()">
         <div class="add-friend-modal-box">
             <div class="add-friend-header">
-                <div class="add-friend-icon-badge">➕</div>
+                <div class="add-friend-icon-badge">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </div>
                 <h2 class="add-friend-title">Agregar amigo</h2>
                 <button class="btn-add-friend-close" onclick="closeAddFriendModal()">✕</button>
             </div>
@@ -5952,6 +6319,15 @@
         // ========================================================
         // 6. AMIGOS Y AGREGAR AMIGO EN LA BARRA SUPERIOR
         // ========================================================
+        function openSwitchAlbumNotice() {
+            if (window.n3dsAudio) window.n3dsAudio.play('select');
+            if (typeof showSocialNotif === 'function') {
+                showSocialNotif('📸 Álbum y Capturas: Tus capturas y partidas guardadas (SRAM/Save States) están sincronizadas en la nube.', 'info');
+            } else {
+                alert('📸 Álbum de Capturas y Partidas Guardadas: Todas tus partidas guardadas se sincronizan.');
+            }
+        }
+
         function renderTopFriendsList() {
             const wrap = document.getElementById('topFriendsList');
             if (!wrap) return;
@@ -5970,12 +6346,15 @@
             currentFriends.slice(0, 4).forEach(f => {
                 const chip = document.createElement('div');
                 chip.className = `top-friend-chip ${f.id === 'peach' ? 'friend-peach' : ''} ${f.online ? '' : 'friend-offline'}`;
-                chip.title = `${f.name}: ${f.playing ? 'Jugando a ' + f.playing : (f.online ? 'En línea' : 'Desconectado')}`;
+                const statusDesc = f.playing ? `Jugando a ${f.playing}` : (f.online ? 'En línea' : 'Desconectado');
+                chip.setAttribute('data-tooltip', `${f.name} • ${statusDesc}`);
+                chip.setAttribute('aria-label', f.name);
                 chip.innerHTML = `
                     <img src="${f.avatar}" class="top-friend-avatar-img" alt="${f.name}">
                     <span class="top-friend-dot"></span>
                 `;
                 chip.onclick = () => {
+                    if (window.n3dsAudio) window.n3dsAudio.play('select');
                     if (typeof openChatWith === 'function' && f.userId) {
                         openChatWith(f.userId);
                     } else if (typeof toggleFriendsDrawer === 'function') {
