@@ -481,22 +481,18 @@
             user-select: none;
         }
 
-        .joycon-avatar-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .joycon-avatar-active-wrap {
+        /* FOTO DE PERFIL DEL USUARIO EN LA PARTE SUPERIOR DEL JOY-CON */
+        .joycon-profile-wrap {
             position: relative;
             cursor: pointer;
             transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            margin-bottom: 8px;
         }
-        .joycon-avatar-active-wrap:hover {
+        .joycon-profile-wrap:hover {
             transform: scale(1.14);
         }
-        .joycon-avatar-active-wrap:active {
+        .joycon-profile-wrap:active {
             transform: scale(0.94);
         }
 
@@ -511,30 +507,95 @@
             background: #ffffff;
         }
 
-        .joycon-avatar-friend {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 2.5px solid #2ecc71;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            object-fit: cover;
-            display: block;
-            background: #ffffff;
-            cursor: pointer;
-            transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* LISTA VERTICAL DE EMULADORES EN EL RIEL IZQUIERDO JOY-CON */
+        .joycon-console-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 0;
+            width: 100%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        .joycon-avatar-friend:hover {
-            transform: scale(1.12);
-        }
-        .joycon-avatar-friend.friend-peach {
-            border-color: #f1c40f;
+        .joycon-console-list::-webkit-scrollbar {
+            display: none;
         }
 
+        .joycon-console-item {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+        }
+        .joycon-console-item:hover {
+            background: rgba(255, 255, 255, 0.36);
+            transform: scale(1.14);
+        }
+        .joycon-console-item.active {
+            background: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.95), 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: scale(1.18);
+        }
+
+        .joycon-console-icon {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            transition: transform 0.22s ease;
+        }
+        .joycon-console-item.active .joycon-console-icon {
+            transform: scale(1.1);
+        }
+
+        /* Tooltip informativo al pasar el cursor sobre la consola */
+        .joycon-console-item::after {
+            content: attr(data-name);
+            position: absolute;
+            left: 58px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.9);
+            background: #1e293b;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            z-index: 1100;
+        }
+        .joycon-console-item:hover::after {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        /* BOTONES DE LA BASE (MANDOS Y SALIR - SIN ENGRANAJE DE AJUSTES) */
         .joycon-util-stack {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            flex-shrink: 0;
+            margin-top: 6px;
         }
 
         .joycon-util-btn {
@@ -558,6 +619,285 @@
         }
         .joycon-util-btn:active {
             transform: scale(0.92);
+        }
+
+        /* CONTENEDOR SUPERIOR DE AMIGOS Y BOTÓN AGREGAR AMIGO */
+        .switch-top-friends-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            padding: 5px 14px 5px 8px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+            user-select: none;
+        }
+
+        .top-friends-list {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-friend-chip {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .top-friend-chip:hover {
+            transform: scale(1.16) translateY(-2px);
+        }
+        .top-friend-chip:active {
+            transform: scale(0.94);
+        }
+
+        .top-friend-avatar-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #2ecc71;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+            display: block;
+            background: #ffffff;
+        }
+        .top-friend-chip.friend-peach .top-friend-avatar-img {
+            border-color: #f1c40f;
+        }
+        .top-friend-chip.friend-offline .top-friend-avatar-img {
+            border-color: #94a3b8;
+            filter: grayscale(0.5);
+        }
+
+        .top-friend-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2ecc71;
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 6px #2ecc71;
+        }
+        .top-friend-chip.friend-peach .top-friend-dot {
+            background: #f1c40f;
+            box-shadow: 0 0 6px #f1c40f;
+        }
+        .top-friend-chip.friend-offline .top-friend-dot {
+            background: #94a3b8;
+            box-shadow: none;
+        }
+
+        .btn-add-friend-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #00d2be;
+            color: #ffffff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 9999px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 210, 190, 0.35);
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-add-friend-top:hover {
+            background: #00b8a6;
+            transform: scale(1.06);
+            box-shadow: 0 6px 18px rgba(0, 210, 190, 0.5);
+        }
+        .btn-add-friend-top:active {
+            transform: scale(0.95);
+        }
+        .btn-add-friend-icon {
+            font-size: 12px;
+        }
+
+        /* MODAL DE AGREGAR AMIGO (ESTILO NINTENDO SWITCH DIALOG) */
+        .add-friend-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            z-index: 2500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeInDialog 0.25s ease;
+        }
+        @keyframes fadeInDialog {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .add-friend-modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 460px;
+            border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08);
+            padding: 28px;
+            box-sizing: border-box;
+            animation: popInModal 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        @keyframes popInModal {
+            from { opacity: 0; transform: scale(0.92) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .add-friend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .add-friend-icon-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 210, 190, 0.15);
+            color: #00a896;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .add-friend-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .btn-add-friend-close {
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 14px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-add-friend-close:hover {
+            background: #ff4757;
+            color: #ffffff;
+        }
+
+        .add-friend-desc {
+            font-size: 13.5px;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0 0 20px 0;
+        }
+
+        .add-friend-input-wrap {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 4px 14px;
+            margin-bottom: 20px;
+            transition: border-color 0.2s ease;
+        }
+        .add-friend-input-wrap:focus-within {
+            border-color: #00d2be;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 210, 190, 0.15);
+        }
+
+        .friend-input-prefix {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #94a3b8;
+            margin-right: 8px;
+        }
+
+        .add-friend-input {
+            border: none;
+            background: transparent;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            width: 100%;
+            outline: none;
+            padding: 10px 0;
+        }
+
+        .add-friend-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-friend-cancel {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            color: #475569;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-friend-cancel:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-friend-confirm {
+            background: #00d2be;
+            border: none;
+            color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 210, 190, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-friend-confirm:hover {
+            background: #00b8a6;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0, 210, 190, 0.45);
+        }
+
+        .add-friend-status {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 14px;
+            text-align: center;
+            min-height: 20px;
         }
 
         /* 2. ÁREA PRINCIPAL SWITCH OS */
@@ -3475,23 +3815,21 @@
 
     <!-- 1. RIEL LATERAL IZQUIERDO JOY-CON ROJO (NINTENDO SWITCH OS) -->
     <aside class="switch-joycon-rail" id="switchJoyconRail">
-        <!-- Avatares Superiores de Usuario y Amigos -->
-        <div class="joycon-avatar-stack">
-            <div class="joycon-avatar-active-wrap" onclick="window.open('profile.html', '_blank')" title="Mi Perfil de Usuario">
-                <img id="joyconUserAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="joycon-avatar-main" alt="Avatar">
-                <span class="online-dot" style="position: absolute; bottom: 0; right: 0; border: 2.5px solid #ff3c28;"></span>
-            </div>
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=LuigiBro" class="joycon-avatar-friend" alt="Amigo Luigi" title="Luigi (En línea)" onclick="window.location.href='iisu_network.html'">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=PeachPrincess" class="joycon-avatar-friend friend-peach" alt="Amigo Peach" title="Peach (En línea)" onclick="window.location.href='iisu_network.html'">
+        <!-- Foto de Perfil del Usuario en la parte superior (lleva a perfil sin icono de ajustes) -->
+        <div class="joycon-profile-wrap" onclick="window.open('profile.html', '_blank')" title="Mi Perfil de Usuario">
+            <img id="joyconUserAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro" class="joycon-avatar-main" alt="Avatar">
+            <span class="online-dot" style="position: absolute; bottom: 0; right: 0; border: 2.5px solid #ff3c28;"></span>
         </div>
 
-        <!-- Botones de Sistema en la Base (Mandos, Ajustes, Power) -->
+        <!-- Lista Vertical de Emuladores para elegir directamente desde aquí -->
+        <div class="joycon-console-list" id="joyconConsoleList" title="Selecciona tu emulador">
+            <!-- Se inyectan las 14 consolas dinámicamente con renderJoyconConsoleList() -->
+        </div>
+
+        <!-- Botones de Sistema en la Base (Mandos y Power; Sin ajustes porque el perfil es la foto) -->
         <div class="joycon-util-stack">
             <button class="joycon-util-btn" onclick="alert('🎮 Mandos Nintendo Switch: Compatible con Pro Controller, Joy-Con y mandos USB. Navega con la cruceta/stick y pulsa (A) para entrar.')" title="Configuración de Mandos">
                 <span>🍉</span>
-            </button>
-            <button class="joycon-util-btn" onclick="window.open('profile.html', '_blank')" title="Ajustes de Perfil y Sistema">
-                <span>⚙️</span>
             </button>
             <button class="joycon-util-btn" onclick="if(confirm('¿Deseas cerrar sesión de RetroHub?')) { localStorage.removeItem('retrohub_token'); window.location.href='login.html'; }" title="Apagar / Salir">
                 <span>⏻</span>
@@ -3520,16 +3858,15 @@
                 </button>
             </div>
 
-            <!-- Widget Central de Música en Vivo -->
-            <div class="music-now-playing-pill" id="musicWidgetPill" onclick="toggleMuteMusic()" title="Silenciar / Activar Música">
-                <div class="equalizer-anim" id="equalizerBars">
-                    <div class="eq-bar"></div>
-                    <div class="eq-bar"></div>
-                    <div class="eq-bar"></div>
-                    <div class="eq-bar"></div>
+            <!-- Contenedor Superior de Amigos y Opción de Agregar Amigos -->
+            <div class="switch-top-friends-container">
+                <div class="top-friends-list" id="topFriendsList">
+                    <!-- Amigos generados dinámicamente con renderTopFriendsList() -->
                 </div>
-                <span class="music-track-text" id="musicTrackText">🎵 Super Mario 64 - Bob-omb Battlefield</span>
-                <button class="btn-mute-toggle" id="btnMuteToggle" style="background:none; border:none; cursor:pointer;" title="Silenciar">🔊</button>
+                <button class="btn-add-friend-top" onclick="openAddFriendModal()" title="Agregar nuevo amigo a RetroHub">
+                    <span class="btn-add-friend-icon">➕</span>
+                    <span>Agregar amigo</span>
+                </button>
             </div>
 
             <!-- Estado a la Derecha: Reloj, Wi-Fi y Batería -->
@@ -3551,21 +3888,21 @@
                     <div class="cartridge-notch"></div>
                 </div>
                 <div>
-                    <h1 class="switch-game-main-title" id="switchGameTitle">The Legend of Zelda: Breath of the Wild</h1>
-                    <span class="switch-game-sub-title" id="switchGameSubtitle">Nintendo 64 • 64-Bit Reality Immersion (1996)</span>
+                    <h1 class="switch-game-main-title" id="switchGameTitle">Cargando juego...</h1>
+                    <span class="switch-game-sub-title" id="switchGameSubtitle">RetroHub • Nintendo Switch OS</span>
                 </div>
             </div>
 
-            <!-- Pista Horizontal de Tarjetas de Emuladores -->
+            <!-- Pista Horizontal de Tarjetas de Juegos de la Consola Elegida -->
             <div class="switch-shelf-track" id="switchShelfTrack">
-                <!-- Se inyectan las 14 consolas dinámicamente con renderSwitchShelf() -->
+                <!-- Se inyectan únicamente los juegos de la consola activa con renderSwitchShelf() -->
             </div>
         </section>
 
         <!-- BARRA INFERIOR DE PROMPTS SWITCH OS -->
         <footer class="switch-bottom-footer">
             <div class="switch-prompts-left">
-                <div class="switch-prompt-btn" onclick="openCurrentConsoleGames()">
+                <div class="switch-prompt-btn" onclick="playActiveShelfGame()">
                     <span class="switch-badge-key key-a">A</span>
                     <span>Continuar</span>
                 </div>
@@ -3589,6 +3926,27 @@
             </div>
         </footer>
     </main>
+
+    <!-- MODAL DE AGREGAR AMIGO (NINTENDO SWITCH OS) -->
+    <div class="add-friend-modal-backdrop" id="addFriendModal" style="display: none;" onclick="if(event.target === this) closeAddFriendModal()">
+        <div class="add-friend-modal-box">
+            <div class="add-friend-header">
+                <div class="add-friend-icon-badge">➕</div>
+                <h2 class="add-friend-title">Agregar amigo</h2>
+                <button class="btn-add-friend-close" onclick="closeAddFriendModal()">✕</button>
+            </div>
+            <p class="add-friend-desc">Introduce la clave de amigo, nombre de usuario o ID P2P para enviarle una solicitud de amistad instantánea.</p>
+            <div class="add-friend-input-wrap">
+                <span class="friend-input-prefix">ID / SW:</span>
+                <input type="text" id="inputFriendIdOrCode" class="add-friend-input" placeholder="Ej: SW-4829-1092 o LuigiBro" onkeydown="if(event.key==='Enter') sendAddFriendRequest()">
+            </div>
+            <div class="add-friend-actions">
+                <button class="btn-friend-cancel" onclick="closeAddFriendModal()">Cancelar</button>
+                <button class="btn-friend-confirm" onclick="sendAddFriendRequest()">Enviar solicitud</button>
+            </div>
+            <div id="addFriendStatusMsg" class="add-friend-status"></div>
+        </div>
+    </div>
 
     <!-- iiSU COMMUNITY FEED STRIP (below main carousel) -->
 
@@ -4622,7 +4980,8 @@
 
         // INICIALIZACIÓN
         window.addEventListener('DOMContentLoaded', async () => {
-            renderHorizontalTrack();
+            renderJoyconConsoleList();
+            renderTopFriendsList();
             updateFocusedConsole(0, false);
             updateClock();
             setInterval(updateClock, 1000);
@@ -4840,8 +5199,196 @@
         }
 
         // ========================================================
-        // PASAR CONSOLA A LA DERECHA / IZQUIERDA CON MÚSICA TEMÁTICA
+        // 1. OBTENER JUEGOS DE LA CONSOLA SELECCIONADA
         // ========================================================
+        let activeGameIndex = 0;
+
+        function getGamesForConsole(consoleId) {
+            const list = [];
+            const local = LOCAL_GAMES[consoleId] || [];
+            
+            // 1. Añadir ROMs locales con archivos existentes
+            local.forEach(g => {
+                list.push({
+                    title: g.title,
+                    file: g.file,
+                    cover: g.cover,
+                    cartridge: g.cartridge || '',
+                    genre: g.genre || 'Aventura Clásica',
+                    year: g.year || 'Retro',
+                    core: g.core,
+                    n64core: g.n64core,
+                    isPlayable: true
+                });
+            });
+
+            // 2. Añadir títulos icónicos del catálogo de wallpapers si no están ya en la lista
+            const wallpapers = CONSOLE_GAME_WALLPAPERS[consoleId] || [];
+            wallpapers.forEach(wp => {
+                const exists = list.some(item => 
+                    item.title.toLowerCase().includes(wp.name.toLowerCase()) || 
+                    wp.name.toLowerCase().includes(item.title.toLowerCase())
+                );
+                if (!exists) {
+                    const c = CONSOLES.find(x => x.id === consoleId) || CONSOLES[0];
+                    list.push({
+                        title: wp.name,
+                        file: '',
+                        cover: wp.url,
+                        cartridge: `assets/consoles/${c.img}`,
+                        genre: 'Clásico ' + c.name,
+                        year: c.era ? (c.era.match(/\d{4}/)?.[0] || 'Retro') : 'Retro',
+                        core: c.id === 'genesis' ? 'segaMD' : (c.id === 'ps1' ? 'psx' : (c.id === 'sms' ? 'segaMS' : c.id)),
+                        isPlayable: false
+                    });
+                }
+            });
+
+            // 3. Fallback garantizado por si no hay ni locales ni wallpapers
+            if (list.length === 0) {
+                const c = CONSOLES.find(x => x.id === consoleId) || CONSOLES[0];
+                list.push({
+                    title: c.famousGame || c.name,
+                    file: '',
+                    cover: `assets/consoles_hires/${c.img}`,
+                    cartridge: `assets/consoles/${c.img}`,
+                    genre: 'Clásico ' + c.name,
+                    year: c.era ? (c.era.match(/\d{4}/)?.[0] || 'Retro') : 'Retro',
+                    core: c.id === 'genesis' ? 'segaMD' : (c.id === 'ps1' ? 'psx' : c.id),
+                    isPlayable: false
+                });
+            }
+
+            return list;
+        }
+
+        // ========================================================
+        // 2. RENDERIZAR REPISA SWITCH (SOLO JUEGOS DE LA CONSOLA ACTIVA)
+        // ========================================================
+        function renderSwitchShelf() {
+            const track = document.getElementById('switchShelfTrack');
+            if (!track) return;
+            track.innerHTML = '';
+
+            const c = CONSOLES[activeConsoleIndex];
+            const games = getGamesForConsole(c.id);
+
+            if (activeGameIndex >= games.length) {
+                activeGameIndex = 0;
+            }
+
+            const activeGame = games[activeGameIndex] || { title: c.name, genre: c.era, year: '' };
+            const titleEl = document.getElementById('switchGameTitle');
+            const subTitleEl = document.getElementById('switchGameSubtitle');
+            if (titleEl) titleEl.textContent = activeGame.title;
+            if (subTitleEl) subTitleEl.textContent = `${c.name} • ${activeGame.genre} (${activeGame.year || c.era})`;
+
+            games.forEach((g, idx) => {
+                const isActive = idx === activeGameIndex;
+                const card = document.createElement('div');
+                card.className = `switch-card ${isActive ? 'active' : ''}`;
+                card.id = `switch-card-${idx}`;
+                card.title = `${g.title} (${c.name})`;
+
+                card.style.backgroundImage = `url('${g.cover}')`;
+
+                if (isActive) {
+                    const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
+                        ? document.getElementById('joyconUserAvatar').src 
+                        : 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro';
+
+                    card.innerHTML = `
+                        <div class="currently-playing-pill">
+                            <img src="${avatarSrc}" class="cp-avatar-circle" alt="User">
+                            <span>Currently Playing</span>
+                        </div>
+                    `;
+                } else {
+                    if (g.isPlayable) {
+                        card.innerHTML = `
+                            <div class="switch-card-progress">
+                                <div class="switch-card-progress-fill" style="width: 100%;"></div>
+                            </div>
+                        `;
+                    }
+                }
+
+                card.onclick = () => {
+                    if (idx === activeGameIndex) {
+                        playSelectedGame(g, c);
+                    } else {
+                        activeGameIndex = idx;
+                        if (window.n3dsAudio) window.n3dsAudio.play('move');
+                        renderSwitchShelf();
+                        setDynamicBg(g.cover, g.title);
+                    }
+                };
+
+                track.appendChild(card);
+            });
+
+            // Centrar la tarjeta activa en la vista
+            setTimeout(() => {
+                const activeEl = document.getElementById(`switch-card-${activeGameIndex}`);
+                if (activeEl) {
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 30);
+        }
+
+        // ========================================================
+        // 3. LANZAMIENTO Y EJECUCIÓN DEL JUEGO SELECCIONADO
+        // ========================================================
+        function playSelectedGame(game, consoleObj) {
+            if (game.isPlayable && game.file) {
+                launchGameInPlayer(game, consoleObj);
+            } else {
+                if (window.n3dsAudio) window.n3dsAudio.play('launch');
+                const uploadPrompt = confirm(`🎮 "${game.title}" (${consoleObj.name})\n\nEste clásico está registrado en RetroHub. ¿Deseas seleccionar tu archivo ROM (.${consoleObj.id}) para iniciarlo en el emulador?`);
+                if (uploadPrompt) {
+                    openCurrentConsoleGames();
+                }
+            }
+        }
+
+        function playActiveShelfGame() {
+            const c = CONSOLES[activeConsoleIndex];
+            const games = getGamesForConsole(c.id);
+            const g = games[activeGameIndex] || games[0];
+            if (g) {
+                playSelectedGame(g, c);
+            } else {
+                openCurrentConsoleGames();
+            }
+        }
+
+        // ========================================================
+        // 4. NAVEGACIÓN ENTRE JUEGOS Y ENTRE CONSOLAS
+        // ========================================================
+        function passGameRight() {
+            const c = CONSOLES[activeConsoleIndex];
+            const games = getGamesForConsole(c.id);
+            if (games.length <= 1) return;
+            activeGameIndex = (activeGameIndex + 1) % games.length;
+            if (window.n3dsAudio) window.n3dsAudio.play('move');
+            renderSwitchShelf();
+            const g = games[activeGameIndex];
+            setDynamicBg(g.cover, g.title);
+            triggerHapticPulse(35, 0.25, 0.1);
+        }
+
+        function passGameLeft() {
+            const c = CONSOLES[activeConsoleIndex];
+            const games = getGamesForConsole(c.id);
+            if (games.length <= 1) return;
+            activeGameIndex = (activeGameIndex - 1 + games.length) % games.length;
+            if (window.n3dsAudio) window.n3dsAudio.play('move');
+            renderSwitchShelf();
+            const g = games[activeGameIndex];
+            setDynamicBg(g.cover, g.title);
+            triggerHapticPulse(35, 0.25, 0.1);
+        }
+
         function passConsoleRight() {
             const nextIdx = (activeConsoleIndex + 1) % CONSOLES.length;
             updateFocusedConsole(nextIdx, true, 'right');
@@ -4856,6 +5403,7 @@
 
         function updateFocusedConsole(index, playMusic, direction = 'right') {
             activeConsoleIndex = index;
+            activeGameIndex = 0;
             const c = CONSOLES[index];
 
             // 1. Sonido de movimiento 3DS
@@ -4883,11 +5431,11 @@
             if (eraPill) eraPill.textContent = c.era;
             if (mainTitle) mainTitle.textContent = c.name;
 
-            const games = LOCAL_GAMES[c.id] || [];
+            const games = getGamesForConsole(c.id);
             const gamesCountEl = document.getElementById('specGamesCount');
             if (gamesCountEl) {
                 gamesCountEl.textContent = games.length > 0 
-                    ? `📚 ${games.length} Juego${games.length > 1 ? 's' : ''} Instalado${games.length > 1 ? 's' : ''}` 
+                    ? `📚 ${games.length} Juego${games.length > 1 ? 's' : ''} Disponibles` 
                     : '📂 Listo para ROMs externas';
             }
 
@@ -4911,72 +5459,133 @@
                 window.retroConsoleMusic.playConsoleTheme(c.id);
             }
 
-            // 8. Renderizar y actualizar la repisa Switch
+            // 8. Actualizar lista de emuladores en el Joy-Con izquierdo
+            renderJoyconConsoleList();
+
+            // 9. Renderizar y actualizar la repisa Switch mostrando ÚNICAMENTE los juegos de esta consola
             renderSwitchShelf();
         }
 
         // ========================================================
-        // RENDERIZAR REPISA DE SOFTWARE NINTENDO SWITCH OS
+        // 5. LISTA DE EMULADORES EN EL RIEL IZQUIERDO JOY-CON
         // ========================================================
-        function renderSwitchShelf() {
-            const track = document.getElementById('switchShelfTrack');
-            if (!track) return;
-            track.innerHTML = '';
+        function renderJoyconConsoleList() {
+            const listEl = document.getElementById('joyconConsoleList');
+            if (!listEl) return;
+            listEl.innerHTML = '';
 
             CONSOLES.forEach((c, idx) => {
+                const item = document.createElement('div');
                 const isActive = idx === activeConsoleIndex;
-                const card = document.createElement('div');
-                card.className = `switch-card ${isActive ? 'active' : ''}`;
-                card.id = `switch-card-${idx}`;
-                card.title = `${c.name} - ${c.famousGame}`;
+                item.className = `joycon-console-item ${isActive ? 'active' : ''}`;
+                item.id = `joycon-console-${c.id}`;
+                item.setAttribute('data-name', c.name);
+                item.title = `${c.name} (${c.era})`;
 
-                // Imagen de carátula para la tarjeta (wallpaper de alta definición o render)
-                const bgImg = (CONSOLE_GAME_WALLPAPERS[c.id] && CONSOLE_GAME_WALLPAPERS[c.id][0]) 
-                    ? CONSOLE_GAME_WALLPAPERS[c.id][0].url 
-                    : `assets/consoles_hires/${c.img}`;
-                card.style.backgroundImage = `url('${bgImg}')`;
+                item.innerHTML = `
+                    <img src="assets/consoles/${c.img}" class="joycon-console-icon" alt="${c.name}" onerror="this.src='assets/consoles_hires/${c.img}'">
+                `;
 
-                if (isActive) {
-                    const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
-                        ? document.getElementById('joyconUserAvatar').src 
-                        : 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro';
-
-                    card.innerHTML = `
-                        <div class="currently-playing-pill">
-                            <img src="${avatarSrc}" class="cp-avatar-circle" alt="User">
-                            <span>Currently Playing</span>
-                        </div>
-                    `;
-                } else {
-                    const games = LOCAL_GAMES[c.id] || [];
-                    if (games.length > 0) {
-                        card.innerHTML = `
-                            <div class="switch-card-progress">
-                                <div class="switch-card-progress-fill" style="width: 100%;"></div>
-                            </div>
-                        `;
-                    }
-                }
-
-                card.onclick = () => {
-                    if (idx === activeConsoleIndex) {
-                        openCurrentConsoleGames();
-                    } else {
-                        const dir = idx >= activeConsoleIndex ? 'right' : 'left';
-                        updateFocusedConsole(idx, true, dir);
-                    }
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    selectConsoleById(c.id);
                 };
 
-                track.appendChild(card);
+                listEl.appendChild(item);
             });
+        }
 
-            // Centrar la tarjeta activa en la vista
-            setTimeout(() => {
-                const activeEl = document.getElementById(`switch-card-${activeConsoleIndex}`);
-                if (activeEl) {
-                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        function selectConsoleById(consoleId) {
+            const idx = CONSOLES.findIndex(x => x.id === consoleId);
+            if (idx === -1) return;
+            activeGameIndex = 0;
+            updateFocusedConsole(idx, true);
+            renderJoyconConsoleList();
+        }
+
+        // ========================================================
+        // 6. AMIGOS Y AGREGAR AMIGO EN LA BARRA SUPERIOR
+        // ========================================================
+        function renderTopFriendsList() {
+            const wrap = document.getElementById('topFriendsList');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+
+            const defaultFriends = [
+                { id: 'luigi', name: 'Luigi', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=LuigiBro', online: true, playing: 'Super Mario 64' },
+                { id: 'peach', name: 'Peach', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=PeachPrincess', online: true, playing: 'Mario Kart' },
+                { id: 'yoshi', name: 'Yoshi', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=YoshiIsland', online: true, playing: 'Super Metroid' }
+            ];
+
+            const currentFriends = (window.SOCIAL && window.SOCIAL.friends && window.SOCIAL.friends.length > 0)
+                ? window.SOCIAL.friends
+                : defaultFriends;
+
+            currentFriends.slice(0, 4).forEach(f => {
+                const chip = document.createElement('div');
+                chip.className = `top-friend-chip ${f.id === 'peach' ? 'friend-peach' : ''} ${f.online ? '' : 'friend-offline'}`;
+                chip.title = `${f.name}: ${f.playing ? 'Jugando a ' + f.playing : (f.online ? 'En línea' : 'Desconectado')}`;
+                chip.innerHTML = `
+                    <img src="${f.avatar}" class="top-friend-avatar-img" alt="${f.name}">
+                    <span class="top-friend-dot"></span>
+                `;
+                chip.onclick = () => {
+                    if (typeof openChatWith === 'function' && f.userId) {
+                        openChatWith(f.userId);
+                    } else if (typeof toggleFriendsDrawer === 'function') {
+                        toggleFriendsDrawer();
+                    } else {
+                        window.location.href = 'iisu_network.html';
+                    }
+                };
+                wrap.appendChild(chip);
+            });
+        }
+
+        function openAddFriendModal() {
+            if (window.n3dsAudio) window.n3dsAudio.play('move');
+            const modal = document.getElementById('addFriendModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const input = document.getElementById('inputFriendIdOrCode');
+                if (input) {
+                    input.value = '';
+                    input.focus();
                 }
-            }, 30);
+                const status = document.getElementById('addFriendStatusMsg');
+                if (status) status.textContent = '';
+            }
+        }
+
+        function closeAddFriendModal() {
+            if (window.n3dsAudio) window.n3dsAudio.play('cancel');
+            const modal = document.getElementById('addFriendModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function sendAddFriendRequest() {
+            const input = document.getElementById('inputFriendIdOrCode');
+            const status = document.getElementById('addFriendStatusMsg');
+            if (!input || !status) return;
+
+            const val = input.value.trim();
+            if (!val) {
+                status.style.color = '#e74c3c';
+                status.textContent = '⚠️ Introduce un código de amigo o ID de usuario válido.';
+                return;
+            }
+
+            if (window.n3dsAudio) window.n3dsAudio.play('launch');
+            status.style.color = '#00a896';
+            status.textContent = `🚀 ¡Solicitud enviada a "${val}" con éxito!`;
+
+            if (window.SOCIAL && window.SOCIAL.socket) {
+                window.SOCIAL.socket.emit('friend_request_send', { toUserId: val, fromUserId: window.SOCIAL.myUserId });
+            }
+
+            setTimeout(() => {
+                closeAddFriendModal();
+            }, 1600);
         }
 
         // Alias retrocompatibles
@@ -4997,6 +5606,8 @@
             if (gp && gp.connected) {
                 const now = performance.now();
                 if (now - lastGamepadNavTime > 230) {
+                    const dpadUp = gp.buttons[12] && gp.buttons[12].pressed;
+                    const dpadDown = gp.buttons[13] && gp.buttons[13].pressed;
                     const dpadLeft = gp.buttons[14] && gp.buttons[14].pressed;
                     const dpadRight = gp.buttons[15] && gp.buttons[15].pressed;
                     const lb = gp.buttons[4] && gp.buttons[4].pressed;
@@ -5005,16 +5616,23 @@
                     const btnB = gp.buttons[1] && gp.buttons[1].pressed;
                     const btnY = gp.buttons[3] && gp.buttons[3].pressed;
                     const axisX = gp.axes[0] || 0;
+                    const axisY = gp.axes[1] || 0;
 
                     if (dpadRight || rb || axisX > 0.55) {
-                        passConsoleRight();
+                        passGameRight();
                         lastGamepadNavTime = now;
                     } else if (dpadLeft || lb || axisX < -0.55) {
+                        passGameLeft();
+                        lastGamepadNavTime = now;
+                    } else if (dpadDown || axisY > 0.55) {
+                        passConsoleRight();
+                        lastGamepadNavTime = now;
+                    } else if (dpadUp || axisY < -0.55) {
                         passConsoleLeft();
                         lastGamepadNavTime = now;
                     } else if (btnA) {
-                        if (document.getElementById('gamesViewModal').style.display !== 'flex') {
-                            openCurrentConsoleGames();
+                        if (document.getElementById('gamesViewModal').style.display !== 'flex' && document.getElementById('playerModalOverlay').style.display !== 'flex') {
+                            playActiveShelfGame();
                             lastGamepadNavTime = now;
                         }
                     } else if (btnB) {
@@ -5023,6 +5641,9 @@
                             lastGamepadNavTime = now;
                         } else if (document.getElementById('gamesViewModal').style.display === 'flex') {
                             closeGamesModal();
+                            lastGamepadNavTime = now;
+                        } else if (document.getElementById('addFriendModal').style.display === 'flex') {
+                            closeAddFriendModal();
                             lastGamepadNavTime = now;
                         }
                     } else if (btnY) {
@@ -5251,13 +5872,23 @@
                     return;
                 }
 
-                // En el carrusel de consolas
+                // Si está en el modal de agregar amigo
+                if (document.getElementById('addFriendModal') && document.getElementById('addFriendModal').style.display === 'flex') {
+                    if (e.key === 'Escape') closeAddFriendModal();
+                    return;
+                }
+
+                // En la repisa de juegos de la consola
                 if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                    passConsoleRight();
+                    passGameRight();
                 } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                    passGameLeft();
+                } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
                     passConsoleLeft();
+                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                    passConsoleRight();
                 } else if (e.key === 'Enter') {
-                    openCurrentConsoleGames();
+                    playActiveShelfGame();
                 } else if (e.key === 'x' || e.key === 'X' || e.key === 'b' || e.key === 'B') {
                     openRomLibraryModal();
                 } else if (e.key === '+' || e.key === 'p' || e.key === 'P') {
@@ -5265,7 +5896,7 @@
                 } else if (e.key === 'm' || e.key === 'M') {
                     toggleMuteMusic();
                 } else if (e.key === 'f' || e.key === 'F') {
-                    toggleFriendsDrawer();
+                    openAddFriendModal();
                 }
             });
         }
@@ -5727,8 +6358,12 @@
                 }
                 const savedAvatar = localStorage.getItem('retrohub_user_avatar');
                 if (savedAvatar) {
-                    document.getElementById('headerAvatarImg').src = savedAvatar;
-                    document.getElementById('profileAvatarImg').src = savedAvatar;
+                    const hAvEl = document.getElementById('headerAvatarImg');
+                    if (hAvEl) hAvEl.src = savedAvatar;
+                    const pAvEl = document.getElementById('profileAvatarImg');
+                    if (pAvEl) pAvEl.src = savedAvatar;
+                    const jAvEl = document.getElementById('joyconUserAvatar');
+                    if (jAvEl) jAvEl.src = savedAvatar;
                 }
             }
         }

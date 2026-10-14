@@ -498,8 +498,10 @@ const RetroHub = {
     // Header Badge
     const headerName = document.getElementById('headerUsername');
     const headerAvatar = document.getElementById('headerAvatarImg');
+    const joyconAvatar = document.getElementById('joyconUserAvatar');
     if (headerName) headerName.textContent = name;
     if (headerAvatar) headerAvatar.src = avatar;
+    if (joyconAvatar) joyconAvatar.src = avatar;
 
     // Pasaporte VIP Modal
     const pName = document.getElementById('profileDisplayName');
