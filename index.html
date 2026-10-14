@@ -1099,25 +1099,29 @@
         .switch-shelf-track::-webkit-scrollbar { display: none; }
 
         /* Tarjeta de Software Nintendo Switch */
+        /* Tarjeta de Software Nintendo Switch */
         .switch-card {
             flex: 0 0 220px;
             width: 220px;
             height: 220px;
-            border-radius: 14px;
-            background-color: #ffffff;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            background-color: #0f172a;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             cursor: pointer;
             position: relative;
             overflow: hidden;
             transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
             transform-origin: center bottom;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            user-select: none;
         }
         .switch-card:hover {
             transform: translateY(-8px) scale(1.04);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+            border-color: rgba(255, 255, 255, 0.85);
         }
 
         /* Tarjeta Activa Hero con Marco Joy-Con Cyan (#00d2be) */
@@ -1125,11 +1129,139 @@
             flex: 0 0 295px;
             width: 295px;
             height: 375px;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 4px solid #00d2be !important;
-            box-shadow: 0 0 34px rgba(0, 210, 190, 0.58), 0 22px 50px rgba(0, 0, 0, 0.38) !important;
+            box-shadow: 0 0 34px rgba(0, 210, 190, 0.58), 0 22px 50px rgba(0, 0, 0, 0.42) !important;
             transform: translateY(-10px) scale(1.02);
             z-index: 10;
+        }
+
+        /* Fondo difuminado ambiental de la carátula */
+        .switch-card-ambient {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            background-size: cover;
+            background-position: center;
+            filter: blur(22px) brightness(0.6);
+            opacity: 0.8;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        .switch-card:hover .switch-card-ambient {
+            transform: scale(1.08);
+            filter: blur(18px) brightness(0.72);
+        }
+
+        /* Contenedor y Arte Principal de la Carátula */
+        .switch-card-art-wrap {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 34px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        .switch-card.active .switch-card-art-wrap {
+            top: 14px;
+            left: 14px;
+            right: 14px;
+            bottom: 50px;
+        }
+
+        .switch-card-art {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.6));
+            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .switch-card:hover .switch-card-art {
+            transform: scale(1.05) translateY(-3px);
+            filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.75));
+        }
+
+        /* Brillo sutil de cristal en la esquina */
+        .switch-card-sheen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 65%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Distintivo de Consola (N64, GBA, etc.) */
+        .switch-card-system-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .switch-card.active .switch-card-system-tag {
+            top: 14px;
+            right: 14px;
+            font-size: 12px;
+            padding: 4px 10px;
+            background: rgba(0, 210, 190, 0.85);
+            border-color: #00d2be;
+            box-shadow: 0 4px 14px rgba(0, 210, 190, 0.45);
+        }
+
+        /* Franja Inferior con Título del Juego */
+        .switch-card-info-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 12px 8px 12px;
+            background: linear-gradient(to top, rgba(10, 15, 29, 0.95) 0%, rgba(10, 15, 29, 0.75) 55%, transparent 100%);
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            transition: all 0.22s ease;
+        }
+        .switch-card:hover .switch-card-info-strip {
+            padding-bottom: 12px;
+            background: linear-gradient(to top, rgba(10, 15, 29, 0.98) 0%, rgba(10, 15, 29, 0.85) 65%, transparent 100%);
+        }
+
+        .switch-card-game-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+            letter-spacing: -0.2px;
+        }
+        .switch-card.active .switch-card-game-title {
+            font-size: 14px;
+            margin-bottom: 26px; /* Espacio para Currently Playing pill */
         }
 
         /* Insignia 'Currently Playing' dentro de la tarjeta activa */
@@ -1151,6 +1283,7 @@
             letter-spacing: 0.3px;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
             animation: fadeInPill 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 5;
         }
         @keyframes fadeInPill {
             from { opacity: 0; transform: translateY(6px); }
@@ -3869,14 +4002,10 @@
                 </button>
             </div>
 
-            <!-- Estado a la Derecha: Reloj, Wi-Fi y Batería -->
+            <!-- Estado a la Derecha: Reloj y Wi-Fi (Sin Batería) -->
             <div class="switch-top-status-right">
                 <span class="switch-clock-text" id="headerClock">23:48</span>
                 <span class="switch-wifi-icon" title="Wi-Fi: Conectado">📶</span>
-                <div class="switch-battery-badge" title="Batería: 75%">
-                    <span>75%</span>
-                    <span>🔋</span>
-                </div>
             </div>
         </header>
 
@@ -5199,52 +5328,125 @@
         }
 
         // ========================================================
-        // 1. OBTENER JUEGOS DE LA CONSOLA SELECCIONADA
+        // 1. CATÁLOGO CURADO DE CARÁTULAS OFICIALES POR CONSOLA
         // ========================================================
         let activeGameIndex = 0;
 
+        const CONSOLE_CURATED_GAMES = {
+            'n64': [
+                { title: 'Paper Mario (Europe)', file: 'ROMS/n64/Paper Mario (Europe) (En,Fr,De,Es).z64', cover: 'ROMS/covers/papermario.png', cartridge: 'ROMS/cartridges/cart_papermario.png', genre: 'RPG / Mario Aventura', year: '2001', core: 'n64', n64core: 'parallel', isPlayable: true },
+                { title: 'Super Mario 64', file: '', cover: 'ROMS/covers/box_sm64.png', cartridge: 'ROMS/cartridges/n64_clean.png', genre: 'Plataformas 3D', year: '1996', core: 'n64', isPlayable: false },
+                { title: 'The Legend of Zelda: Ocarina of Time', file: '', cover: 'ROMS/covers/box_oot.png', cartridge: 'ROMS/cartridges/n64_clean.png', genre: 'Aventura Legendaria', year: '1998', core: 'n64', isPlayable: false },
+                { title: 'Mario Kart 64', file: '', cover: 'ROMS/covers/box_mk64.png', cartridge: 'ROMS/cartridges/n64_clean.png', genre: 'Carreras Multijugador', year: '1997', core: 'n64', isPlayable: false }
+            ],
+            'snes': [
+                { title: 'Super Mario World', file: '', cover: 'ROMS/covers/box_smw.png', cartridge: 'ROMS/cartridges/cart_snes.svg', genre: 'Plataformas 16-Bit', year: '1990', core: 'snes', isPlayable: false },
+                { title: 'Chrono Trigger', file: '', cover: 'ROMS/covers/box_chrono.png', cartridge: 'ROMS/cartridges/cart_snes.svg', genre: 'JRPG Clásico', year: '1995', core: 'snes', isPlayable: false },
+                { title: 'Super Metroid', file: '', cover: 'ROMS/covers/box_super_metroid.png', cartridge: 'ROMS/cartridges/cart_snes.svg', genre: 'Metroidvania', year: '1994', core: 'snes', isPlayable: false },
+                { title: 'Donkey Kong Country', file: '', cover: 'ROMS/covers/box_dkc.png', cartridge: 'ROMS/cartridges/cart_snes.svg', genre: 'Aventura 16-Bit', year: '1994', core: 'snes', isPlayable: false }
+            ],
+            'gba': [
+                { title: 'Anguna: Warriors of Demrav', file: 'ROMS/gba/Anguna.gba', cover: 'ROMS/covers/anguna_box.png', cartridge: 'ROMS/cartridges/cart_anguna.png', genre: 'Acción / RPG Aventura', year: '2008', core: 'gba', isPlayable: true },
+                { title: '3 Weeks in Paradise', file: 'ROMS/gba/3Weeksinparadise.gba', cover: 'ROMS/covers/3weeksinparadise.jpg', cartridge: 'ROMS/cartridges/cart_3weeksinparadise.png', genre: 'Aventura Clásica', year: '1986', core: 'gba', isPlayable: true },
+                { title: 'Pokémon Esmeralda', file: '', cover: 'ROMS/covers/box_emerald.png', cartridge: 'ROMS/cartridges/gba_clean.png', genre: 'RPG / Monstruos', year: '2004', core: 'gba', isPlayable: false },
+                { title: 'The Legend of Zelda: The Minish Cap', file: '', cover: 'ROMS/covers/box_minish_cap.png', cartridge: 'ROMS/cartridges/gba_clean.png', genre: 'Aventura Zelda', year: '2004', core: 'gba', isPlayable: false },
+                { title: 'Golden Sun', file: '', cover: 'ROMS/covers/box_goldensun.png', cartridge: 'ROMS/cartridges/gba_clean.png', genre: 'JRPG Fantasía', year: '2001', core: 'gba', isPlayable: false },
+                { title: 'Castlevania: Aria of Sorrow', file: '', cover: 'ROMS/covers/box_aria.png', cartridge: 'ROMS/cartridges/gba_clean.png', genre: 'Acción Gótica', year: '2003', core: 'gba', isPlayable: false }
+            ],
+            'nes': [
+                { title: '31 In 1 Realgame Multicart', file: 'ROMS/nes/31In1Realgame-Multicart.nes', cover: 'ROMS/covers/31in1.png', cartridge: 'ROMS/cartridges/cart_31in1.png', genre: 'Compilatorio Arcade 8-Bit', year: '1992', core: 'nes', isPlayable: true },
+                { title: '3 In 1 2P Pak', file: 'ROMS/nes/3In12Ppak.nes', cover: 'ROMS/covers/3in1.png', cartridge: 'ROMS/cartridges/cart_3in1.png', genre: 'Multijuego Cooperativo', year: '1990', core: 'nes', isPlayable: true },
+                { title: 'Super Mario Bros. 3', file: '', cover: 'ROMS/covers/box_smb3.png', cartridge: 'ROMS/cartridges/nes_clean.png', genre: 'Plataformas 8-Bit', year: '1988', core: 'nes', isPlayable: false },
+                { title: 'The Legend of Zelda', file: '', cover: 'ROMS/covers/box_zelda1.png', cartridge: 'ROMS/cartridges/nes_clean.png', genre: 'Aventura Dorada', year: '1986', core: 'nes', isPlayable: false },
+                { title: 'Mega Man 2', file: '', cover: 'ROMS/covers/box_megaman2.png', cartridge: 'ROMS/cartridges/nes_clean.png', genre: 'Acción / Plataformas', year: '1988', core: 'nes', isPlayable: false },
+                { title: 'Castlevania', file: '', cover: 'ROMS/covers/box_castlevania1.png', cartridge: 'ROMS/cartridges/nes_clean.png', genre: 'Acción Clásica', year: '1986', core: 'nes', isPlayable: false }
+            ],
+            'genesis': [
+                { title: 'Sonic The Hedgehog 2', file: '', cover: 'ROMS/covers/box_sonic2.png', cartridge: 'ROMS/cartridges/cart_genesis.svg', genre: 'Velocidad 16-Bit', year: '1992', core: 'segaMD', isPlayable: false },
+                { title: 'Streets of Rage 2', file: '', cover: 'ROMS/covers/box_sor2.png', cartridge: 'ROMS/cartridges/cart_genesis.svg', genre: 'Beat em up Clásico', year: '1992', core: 'segaMD', isPlayable: false },
+                { title: 'Gunstar Heroes', file: '', cover: 'ROMS/covers/box_gunstar.png', cartridge: 'ROMS/cartridges/cart_genesis.svg', genre: 'Run and Gun Frenético', year: '1993', core: 'segaMD', isPlayable: false },
+                { title: 'Shinobi III: Return of the Ninja Master', file: '', cover: 'ROMS/covers/box_shinobi3.png', cartridge: 'ROMS/cartridges/cart_genesis.svg', genre: 'Acción Ninja', year: '1993', core: 'segaMD', isPlayable: false }
+            ],
+            'ps1': [
+                { title: 'Crash Bandicoot', file: '', cover: 'ROMS/covers/box_crash1.png', cartridge: 'ROMS/cartridges/cd_disc.svg', genre: 'Plataformas 3D', year: '1996', core: 'psx', isPlayable: false },
+                { title: 'Final Fantasy VII', file: '', cover: 'ROMS/covers/box_ff7.png', cartridge: 'ROMS/cartridges/cd_disc.svg', genre: 'JRPG Cinematográfico', year: '1997', core: 'psx', isPlayable: false },
+                { title: 'Castlevania: Symphony of the Night', file: '', cover: 'ROMS/covers/box_sotn.png', cartridge: 'ROMS/cartridges/cd_disc.svg', genre: 'Metroidvania Maestro', year: '1997', core: 'psx', isPlayable: false },
+                { title: 'Tekken 3', file: '', cover: 'ROMS/covers/box_tekken3.png', cartridge: 'ROMS/cartridges/cd_disc.svg', genre: 'Lucha 3D Arcade', year: '1998', core: 'psx', isPlayable: false }
+            ],
+            'gbc': [
+                { title: 'Pokémon Cristal', file: '', cover: 'ROMS/covers/box_pokemon_crystal.png', genre: 'RPG Portátil', year: '2000', core: 'gbc', isPlayable: false },
+                { title: 'The Legend of Zelda: Oracle of Ages', file: '', cover: 'ROMS/covers/box_oracle_ages.png', genre: 'Aventura Puzles', year: '2001', core: 'gbc', isPlayable: false },
+                { title: 'Wario Land 3', file: '', cover: 'ROMS/covers/box_wario3.png', genre: 'Plataformas', year: '2000', core: 'gbc', isPlayable: false }
+            ],
+            'nds': [
+                { title: 'New Super Mario Bros.', file: '', cover: 'ROMS/covers/box_nsmb.png', genre: 'Plataformas Táctil', year: '2006', core: 'nds', isPlayable: false },
+                { title: 'Pokémon HeartGold', file: '', cover: 'ROMS/covers/box_pokemon_hg.png', genre: 'RPG Doble Pantalla', year: '2009', core: 'nds', isPlayable: false }
+            ],
+            'sms': [
+                { title: 'Alex Kidd in Miracle World', file: '', cover: 'ROMS/covers/box_alexkidd.png', cartridge: 'ROMS/cartridges/cart_sms.svg', genre: 'Aventura Clásica', year: '1986', core: 'segaMS', isPlayable: false },
+                { title: 'Sonic The Hedgehog (8-Bit)', file: '', cover: 'assets/game_wallpapers/sms/sonic_sms.png', cartridge: 'ROMS/cartridges/cart_sms.svg', genre: 'Velocidad 8-Bit', year: '1991', core: 'segaMS', isPlayable: false }
+            ],
+            'arcade': [
+                { title: 'Metal Slug (Arcade Classic)', file: '', cover: 'assets/game_wallpapers/arcade/metalslug.png', genre: 'Arcade Coin-Op', year: '1996', core: 'arcade', isPlayable: false },
+                { title: 'Street Fighter II', file: '', cover: 'assets/game_wallpapers/arcade/street_fighter_2.png', genre: 'Lucha Legendaria', year: '1991', core: 'arcade', isPlayable: false }
+            ],
+            'psp': [
+                { title: 'God of War: Chains of Olympus', file: '', cover: 'assets/game_wallpapers/psp/gow.png', genre: 'Acción Hack and Slash', year: '2008', core: 'psp', isPlayable: false },
+                { title: 'Crisis Core: Final Fantasy VII', file: '', cover: 'assets/game_wallpapers/psp/crisis_core.png', genre: 'Acción RPG', year: '2007', core: 'psp', isPlayable: false }
+            ],
+            'atari': [
+                { title: 'Space Invaders', file: '', cover: 'assets/game_wallpapers/atari/spaceinvaders.png', genre: 'Arcade Retro', year: '1978', core: 'atari', isPlayable: false },
+                { title: 'Pac-Man Atari 2600', file: '', cover: 'assets/game_wallpapers/atari/pacman.png', genre: 'Laberinto Arcade', year: '1982', core: 'atari', isPlayable: false }
+            ],
+            'pce': [
+                { title: "Bonk's Adventure (PC Genjin)", file: '', cover: 'assets/game_wallpapers/pce/bonk.png', genre: 'Plataformas HuCard', year: '1989', core: 'pce', isPlayable: false },
+                { title: 'Castlevania: Rondo of Blood', file: '', cover: 'assets/game_wallpapers/pce/castlevania_rondo.png', genre: 'Acción Gótica CD', year: '1993', core: 'pce', isPlayable: false }
+            ],
+            'virtualboy': [
+                { title: 'Galactic Pinball 3D', file: '', cover: 'assets/game_wallpapers/virtualboy/galactic_pinball__japan__usa__png.png', genre: 'Pinball 3D Rojo', year: '1995', core: 'virtualboy', isPlayable: false },
+                { title: '3-D Tetris', file: '', cover: 'assets/game_wallpapers/virtualboy/3_d_tetris__usa__png.png', genre: 'Puzle Estereoscópico', year: '1996', core: 'virtualboy', isPlayable: false }
+            ]
+        };
+
         function getGamesForConsole(consoleId) {
             const list = [];
-            const local = LOCAL_GAMES[consoleId] || [];
             
-            // 1. Añadir ROMs locales con archivos existentes
-            local.forEach(g => {
-                list.push({
-                    title: g.title,
-                    file: g.file,
-                    cover: g.cover,
-                    cartridge: g.cartridge || '',
-                    genre: g.genre || 'Aventura Clásica',
-                    year: g.year || 'Retro',
-                    core: g.core,
-                    n64core: g.n64core,
-                    isPlayable: true
+            // 1. Añadir catálogo curado con carátulas oficiales verificadas
+            if (CONSOLE_CURATED_GAMES[consoleId]) {
+                CONSOLE_CURATED_GAMES[consoleId].forEach(g => {
+                    list.push({ ...g });
                 });
-            });
+            }
 
-            // 2. Añadir títulos icónicos del catálogo de wallpapers si no están ya en la lista
-            const wallpapers = CONSOLE_GAME_WALLPAPERS[consoleId] || [];
-            wallpapers.forEach(wp => {
-                const exists = list.some(item => 
-                    item.title.toLowerCase().includes(wp.name.toLowerCase()) || 
-                    wp.name.toLowerCase().includes(item.title.toLowerCase())
+            // 2. Fusionar ROMs instaladas desde LOCAL_GAMES si no están ya en la lista
+            const local = LOCAL_GAMES[consoleId] || [];
+            local.forEach(g => {
+                const existing = list.find(item => 
+                    item.title.toLowerCase().includes(g.title.toLowerCase()) || 
+                    g.title.toLowerCase().includes(item.title.toLowerCase())
                 );
-                if (!exists) {
-                    const c = CONSOLES.find(x => x.id === consoleId) || CONSOLES[0];
-                    list.push({
-                        title: wp.name,
-                        file: '',
-                        cover: wp.url,
-                        cartridge: `assets/consoles/${c.img}`,
-                        genre: 'Clásico ' + c.name,
-                        year: c.era ? (c.era.match(/\d{4}/)?.[0] || 'Retro') : 'Retro',
-                        core: c.id === 'genesis' ? 'segaMD' : (c.id === 'ps1' ? 'psx' : (c.id === 'sms' ? 'segaMS' : c.id)),
-                        isPlayable: false
+                if (existing) {
+                    existing.file = g.file;
+                    existing.isPlayable = true;
+                    if (g.core) existing.core = g.core;
+                    if (g.n64core) existing.n64core = g.n64core;
+                    if (g.cover && !existing.cover.startsWith('ROMS/covers/box_')) existing.cover = g.cover;
+                } else {
+                    list.unshift({
+                        title: g.title,
+                        file: g.file,
+                        cover: g.cover,
+                        cartridge: g.cartridge || '',
+                        genre: g.genre || 'Aventura Clásica',
+                        year: g.year || 'Retro',
+                        core: g.core,
+                        n64core: g.n64core,
+                        isPlayable: true
                     });
                 }
             });
 
-            // 3. Fallback garantizado por si no hay ni locales ni wallpapers
+            // 3. Fallback garantizado por si no hay nada
             if (list.length === 0) {
                 const c = CONSOLES.find(x => x.id === consoleId) || CONSOLES[0];
                 list.push({
@@ -5263,7 +5465,7 @@
         }
 
         // ========================================================
-        // 2. RENDERIZAR REPISA SWITCH (SOLO JUEGOS DE LA CONSOLA ACTIVA)
+        // 2. RENDERIZAR REPISA SWITCH (ESTILO OFICIAL NINTENDO SWITCH)
         // ========================================================
         function renderSwitchShelf() {
             const track = document.getElementById('switchShelfTrack');
@@ -5290,28 +5492,31 @@
                 card.id = `switch-card-${idx}`;
                 card.title = `${g.title} (${c.name})`;
 
-                card.style.backgroundImage = `url('${g.cover}')`;
+                const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
+                    ? document.getElementById('joyconUserAvatar').src 
+                    : 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro';
 
-                if (isActive) {
-                    const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
-                        ? document.getElementById('joyconUserAvatar').src 
-                        : 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro';
-
-                    card.innerHTML = `
+                card.innerHTML = `
+                    <div class="switch-card-ambient" style="background-image: url('${g.cover}');"></div>
+                    <div class="switch-card-art-wrap">
+                        <img src="${g.cover}" class="switch-card-art" alt="${g.title}" onerror="this.src='assets/consoles/${c.img}'">
+                    </div>
+                    <div class="switch-card-sheen"></div>
+                    <div class="switch-card-system-tag">${c.id.toUpperCase()}</div>
+                    <div class="switch-card-info-strip">
+                        <span class="switch-card-game-title">${g.title}</span>
+                    </div>
+                    ${isActive ? `
                         <div class="currently-playing-pill">
                             <img src="${avatarSrc}" class="cp-avatar-circle" alt="User">
                             <span>Currently Playing</span>
                         </div>
-                    `;
-                } else {
-                    if (g.isPlayable) {
-                        card.innerHTML = `
-                            <div class="switch-card-progress">
-                                <div class="switch-card-progress-fill" style="width: 100%;"></div>
-                            </div>
-                        `;
-                    }
-                }
+                    ` : (g.isPlayable ? `
+                        <div class="switch-card-progress">
+                            <div class="switch-card-progress-fill" style="width: 100%;"></div>
+                        </div>
+                    ` : '')}
+                `;
 
                 card.onclick = () => {
                     if (idx === activeGameIndex) {
