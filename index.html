@@ -1048,6 +1048,16 @@
             justify-content: flex-end;
             padding-bottom: 4px;
             position: relative;
+            transform-origin: center bottom;
+        }
+        .switch-cartridge-icon.hopping {
+            animation: cartridgeHop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes cartridgeHop {
+            0%   { transform: translateY(0) scale(1) rotate(0deg); }
+            35%  { transform: translateY(-8px) scale(1.15) rotate(-3.5deg); }
+            70%  { transform: translateY(1.5px) scale(0.97) rotate(1deg); }
+            100% { transform: translateY(0) scale(1) rotate(0deg); }
         }
         .switch-cartridge-icon::before {
             content: '';
@@ -1075,6 +1085,28 @@
             text-shadow: 0 2px 14px rgba(255, 255, 255, 0.95);
             margin: 0;
             line-height: 1.1;
+            transform-origin: left center;
+        }
+        .switch-game-main-title.animating-title-right {
+            animation: switchTitleSlideRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes switchTitleSlideRight {
+            0%   { opacity: 0; transform: translateX(-18px) scale(0.96); filter: blur(4px); }
+            100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+        }
+        .switch-game-main-title.animating-title-left {
+            animation: switchTitleSlideLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes switchTitleSlideLeft {
+            0%   { opacity: 0; transform: translateX(18px) scale(0.96); filter: blur(4px); }
+            100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+        }
+        .switch-game-main-title.animating-title-fade {
+            animation: switchTitleFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes switchTitleFadeIn {
+            0%   { opacity: 0; transform: translateY(8px) scale(0.98); filter: blur(3px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
 
         .switch-game-sub-title {
@@ -1083,6 +1115,14 @@
             color: #64748b;
             margin-left: 6px;
             letter-spacing: 0.2px;
+            display: inline-block;
+        }
+        .switch-game-sub-title.animating-subtitle {
+            animation: switchSubtitleFadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both 0.04s;
+        }
+        @keyframes switchSubtitleFadeIn {
+            0%   { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* Repisa de Cartas / Carátulas */
@@ -1093,12 +1133,12 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             scrollbar-width: none;
-            padding: 18px 4px 26px 4px;
+            padding: 24px 6px 30px 6px;
             box-sizing: border-box;
+            perspective: 1200px;
         }
         .switch-shelf-track::-webkit-scrollbar { display: none; }
 
-        /* Tarjeta de Software Nintendo Switch */
         /* Tarjeta de Software Nintendo Switch */
         .switch-card {
             flex: 0 0 220px;
@@ -1106,22 +1146,33 @@
             height: 220px;
             border-radius: 16px;
             background-color: #0f172a;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+            border: 2px solid rgba(255, 255, 255, 0.35);
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        flex-basis 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        height 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-color 0.25s ease,
+                        opacity 0.28s ease,
+                        filter 0.28s ease;
             transform-origin: center bottom;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             user-select: none;
+            opacity: 0.88;
+            transform: translateY(0) scale(0.97);
+            will-change: transform, width, height, box-shadow;
         }
         .switch-card:hover {
-            transform: translateY(-8px) scale(1.04);
+            transform: translateY(-8px) scale(1.02);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
             border-color: rgba(255, 255, 255, 0.85);
+            opacity: 1;
         }
 
         /* Tarjeta Activa Hero con Marco Joy-Con Cyan (#00d2be) */
@@ -1131,9 +1182,101 @@
             height: 375px;
             border-radius: 20px;
             border: 4px solid #00d2be !important;
-            box-shadow: 0 0 34px rgba(0, 210, 190, 0.58), 0 22px 50px rgba(0, 0, 0, 0.42) !important;
-            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 35px rgba(0, 210, 190, 0.62), 0 24px 50px rgba(0, 0, 0, 0.45) !important;
+            transform: translateY(-12px) scale(1.02);
             z-index: 10;
+            opacity: 1;
+            animation: switchActiveAuraPulse 3.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes switchActiveAuraPulse {
+            0% {
+                box-shadow: 0 0 28px rgba(0, 210, 190, 0.52), 0 20px 45px rgba(0, 0, 0, 0.42);
+                border-color: #00d2be;
+            }
+            50% {
+                box-shadow: 0 0 46px rgba(0, 210, 190, 0.82), 0 26px 56px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(0, 210, 190, 0.2);
+                border-color: #38efdb;
+            }
+            100% {
+                box-shadow: 0 0 32px rgba(0, 210, 190, 0.58), 0 22px 48px rgba(0, 0, 0, 0.44);
+                border-color: #00d2be;
+            }
+        }
+
+        /* Animaciones cinéticas direccionales de foco ("Pop & Spring") */
+        .switch-card.just-focused.focused-from-left {
+            animation: switchCardPopRight 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes switchCardPopRight {
+            0%   { transform: translateY(-4px) scale(0.94) rotate(-2.5deg); }
+            60%  { transform: translateY(-16px) scale(1.04) rotate(0.8deg); }
+            100% { transform: translateY(-12px) scale(1.02) rotate(0deg); }
+        }
+
+        .switch-card.just-focused.focused-from-right {
+            animation: switchCardPopLeft 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes switchCardPopLeft {
+            0%   { transform: translateY(-4px) scale(0.94) rotate(2.5deg); }
+            60%  { transform: translateY(-16px) scale(1.04) rotate(-0.8deg); }
+            100% { transform: translateY(-12px) scale(1.02) rotate(0deg); }
+        }
+
+        .switch-card.just-focused:not(.focused-from-left):not(.focused-from-right) {
+            animation: switchCardPopDirect 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes switchCardPopDirect {
+            0%   { transform: translateY(0) scale(0.96); }
+            60%  { transform: translateY(-16px) scale(1.04); }
+            100% { transform: translateY(-12px) scale(1.02); }
+        }
+
+        /* Destello holográfico al ganar foco */
+        .switch-card.just-focused::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -160%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.35) 48%, rgba(0, 210, 190, 0.45) 55%, transparent 80%);
+            transform: skewX(-22deg);
+            pointer-events: none;
+            z-index: 8;
+            animation: cardSheenSweep 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes cardSheenSweep {
+            0%   { left: -160%; opacity: 0; }
+            20%  { opacity: 1; }
+            100% { left: 180%; opacity: 0; }
+        }
+
+        /* Salida suave de la tarjeta previa */
+        .switch-card.shrink-down {
+            animation: cardShrinkDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes cardShrinkDown {
+            0%   { transform: translateY(-12px) scale(1.02); }
+            100% { transform: translateY(0) scale(0.97); }
+        }
+
+        /* Entrada con escalonado de cartas al cambiar de consola */
+        .switch-card.card-stagger-in {
+            animation: cardStaggerPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation-delay: calc(var(--card-index, 0) * 0.045s);
+        }
+        @keyframes cardStaggerPop {
+            0%   { opacity: 0; transform: translateY(28px) scale(0.85); }
+            100% { opacity: 0.88; transform: translateY(0) scale(0.97); }
+        }
+        .switch-card.card-stagger-in.active {
+            animation: cardStaggerPopActive 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation-delay: calc(var(--card-index, 0) * 0.045s);
+        }
+        @keyframes cardStaggerPopActive {
+            0%   { opacity: 0; transform: translateY(32px) scale(0.88); }
+            100% { opacity: 1; transform: translateY(-12px) scale(1.02); }
         }
 
         /* Fondo difuminado ambiental de la carátula */
@@ -1148,10 +1291,11 @@
             filter: blur(22px) brightness(0.6);
             opacity: 0.8;
             z-index: 1;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease, filter 0.4s ease;
         }
-        .switch-card:hover .switch-card-ambient {
-            transform: scale(1.08);
+        .switch-card:hover .switch-card-ambient,
+        .switch-card.active .switch-card-ambient {
+            transform: scale(1.12);
             filter: blur(18px) brightness(0.72);
         }
 
@@ -1167,6 +1311,7 @@
             align-items: center;
             justify-content: center;
             padding: 4px;
+            transition: top 0.35s ease, bottom 0.35s ease;
         }
         .switch-card.active .switch-card-art-wrap {
             top: 14px;
@@ -1180,12 +1325,16 @@
             max-height: 100%;
             object-fit: contain;
             border-radius: 8px;
-            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.6));
-            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+            transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.42s ease;
         }
         .switch-card:hover .switch-card-art {
             transform: scale(1.05) translateY(-3px);
-            filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.75));
+            filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.7));
+        }
+        .switch-card.active .switch-card-art {
+            transform: scale(1.08) translateY(-6px);
+            filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(0, 210, 190, 0.35));
         }
 
         /* Brillo sutil de cristal en la esquina */
@@ -1218,13 +1367,14 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.25s ease;
         }
         .switch-card.active .switch-card-system-tag {
             top: 14px;
             right: 14px;
             font-size: 12px;
             padding: 4px 10px;
-            background: rgba(0, 210, 190, 0.85);
+            background: rgba(0, 210, 190, 0.88);
             border-color: #00d2be;
             box-shadow: 0 4px 14px rgba(0, 210, 190, 0.45);
         }
@@ -1241,7 +1391,7 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            transition: all 0.22s ease;
+            transition: all 0.25s ease;
         }
         .switch-card:hover .switch-card-info-strip {
             padding-bottom: 12px;
@@ -1264,14 +1414,14 @@
             margin-bottom: 26px; /* Espacio para Currently Playing pill */
         }
 
-        /* Insignia 'Currently Playing' dentro de la tarjeta activa */
+        /* Insignia 'Currently Playing' dentro de la tarjeta activa con elastic bounce */
         .currently-playing-pill {
             position: absolute;
             bottom: 14px;
             left: 14px;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.92);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             padding: 5px 12px 5px 6px;
             border-radius: 9999px;
             display: flex;
@@ -1281,13 +1431,14 @@
             font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.3px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-            animation: fadeInPill 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+            animation: pillSpringPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
             z-index: 5;
         }
-        @keyframes fadeInPill {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes pillSpringPop {
+            0%   { opacity: 0; transform: translateY(14px) scale(0.75); }
+            65%  { opacity: 1; transform: translateY(-3px) scale(1.08); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .cp-avatar-circle {
@@ -5465,12 +5616,48 @@
         }
 
         // ========================================================
-        // 2. RENDERIZAR REPISA SWITCH (ESTILO OFICIAL NINTENDO SWITCH)
+        // 2. RENDERIZAR REPISA SWITCH CON ANIMACIÓN FLUIDA & RESORTE
         // ========================================================
-        function renderSwitchShelf() {
+        let currentShelfConsoleId = null;
+
+        function animateSwitchTitle(newTitle, newSubtitle, direction) {
+            const titleEl = document.getElementById('switchGameTitle');
+            const subTitleEl = document.getElementById('switchGameSubtitle');
+            const cartIcon = document.querySelector('.switch-cartridge-icon');
+
+            // Salto lúdico del icono de cartucho
+            if (cartIcon) {
+                cartIcon.classList.remove('hopping');
+                void cartIcon.offsetWidth; // Reflow para reiniciar keyframe
+                cartIcon.classList.add('hopping');
+            }
+
+            // Transición cinematográfica del título
+            if (titleEl) {
+                titleEl.classList.remove('animating-title-right', 'animating-title-left', 'animating-title-fade');
+                void titleEl.offsetWidth; // Reflow
+                titleEl.textContent = newTitle;
+                if (direction === 'right') {
+                    titleEl.classList.add('animating-title-right');
+                } else if (direction === 'left') {
+                    titleEl.classList.add('animating-title-left');
+                } else {
+                    titleEl.classList.add('animating-title-fade');
+                }
+            }
+
+            // Transición del subtítulo
+            if (subTitleEl) {
+                subTitleEl.classList.remove('animating-subtitle');
+                void subTitleEl.offsetWidth; // Reflow
+                subTitleEl.textContent = newSubtitle;
+                subTitleEl.classList.add('animating-subtitle');
+            }
+        }
+
+        function renderSwitchShelf(direction = null, forceRebuild = false) {
             const track = document.getElementById('switchShelfTrack');
             if (!track) return;
-            track.innerHTML = '';
 
             const c = CONSOLES[activeConsoleIndex];
             const games = getGamesForConsole(c.id);
@@ -5480,16 +5667,69 @@
             }
 
             const activeGame = games[activeGameIndex] || { title: c.name, genre: c.era, year: '' };
-            const titleEl = document.getElementById('switchGameTitle');
-            const subTitleEl = document.getElementById('switchGameSubtitle');
-            if (titleEl) titleEl.textContent = activeGame.title;
-            if (subTitleEl) subTitleEl.textContent = `${c.name} • ${activeGame.genre} (${activeGame.year || c.era})`;
+
+            // 1. Animar el título y el icono del cartucho con fluid slide
+            animateSwitchTitle(activeGame.title, `${c.name} • ${activeGame.genre} (${activeGame.year || c.era})`, direction);
+
+            // 2. Si la consola es la misma y no es forzado, preservamos el DOM para interpolación elástica CSS
+            const existingCards = track.querySelectorAll('.switch-card');
+            if (!forceRebuild && currentShelfConsoleId === c.id && existingCards.length === games.length) {
+                existingCards.forEach((card, idx) => {
+                    const isActive = idx === activeGameIndex;
+                    const wasActive = card.classList.contains('active');
+
+                    // Limpiar clases de animación previas
+                    card.classList.remove('just-focused', 'focused-from-left', 'focused-from-right', 'shrink-down', 'card-stagger-in');
+
+                    if (isActive) {
+                        card.classList.add('active', 'just-focused');
+                        if (direction === 'right') {
+                            card.classList.add('focused-from-left');
+                        } else if (direction === 'left') {
+                            card.classList.add('focused-from-right');
+                        }
+
+                        // Asegurar currently-playing-pill si no la tiene
+                        if (!card.querySelector('.currently-playing-pill')) {
+                            const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
+                                ? document.getElementById('joyconUserAvatar').src 
+                                : 'https://api.dicebear.com/7.x/bottts/svg?seed=SaraRetro';
+                            const pill = document.createElement('div');
+                            pill.className = 'currently-playing-pill';
+                            pill.innerHTML = `
+                                <img src="${avatarSrc}" class="cp-avatar-circle" alt="User">
+                                <span>Currently Playing</span>
+                            `;
+                            card.appendChild(pill);
+                        }
+                    } else {
+                        if (wasActive) {
+                            card.classList.add('shrink-down');
+                        }
+                        card.classList.remove('active');
+                        const pill = card.querySelector('.currently-playing-pill');
+                        if (pill) pill.remove();
+                    }
+                });
+
+                // Centrar suavemente la tarjeta activa sin interrupción
+                const activeEl = document.getElementById(`switch-card-${activeGameIndex}`);
+                if (activeEl) {
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+                return;
+            }
+
+            // 3. Si la consola cambió o es primera carga, construimos con animación de entrada escalonada
+            currentShelfConsoleId = c.id;
+            track.innerHTML = '';
 
             games.forEach((g, idx) => {
                 const isActive = idx === activeGameIndex;
                 const card = document.createElement('div');
-                card.className = `switch-card ${isActive ? 'active' : ''}`;
+                card.className = `switch-card card-stagger-in ${isActive ? 'active just-focused' : ''}`;
                 card.id = `switch-card-${idx}`;
+                card.style.setProperty('--card-index', idx);
                 card.title = `${g.title} (${c.name})`;
 
                 const avatarSrc = (document.getElementById('joyconUserAvatar') && document.getElementById('joyconUserAvatar').src)
@@ -5522,9 +5762,10 @@
                     if (idx === activeGameIndex) {
                         playSelectedGame(g, c);
                     } else {
+                        const dir = idx > activeGameIndex ? 'right' : 'left';
                         activeGameIndex = idx;
                         if (window.n3dsAudio) window.n3dsAudio.play('move');
-                        renderSwitchShelf();
+                        renderSwitchShelf(dir);
                         setDynamicBg(g.cover, g.title);
                     }
                 };
@@ -5538,7 +5779,7 @@
                 if (activeEl) {
                     activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
-            }, 30);
+            }, 40);
         }
 
         // ========================================================
@@ -5576,7 +5817,7 @@
             if (games.length <= 1) return;
             activeGameIndex = (activeGameIndex + 1) % games.length;
             if (window.n3dsAudio) window.n3dsAudio.play('move');
-            renderSwitchShelf();
+            renderSwitchShelf('right');
             const g = games[activeGameIndex];
             setDynamicBg(g.cover, g.title);
             triggerHapticPulse(35, 0.25, 0.1);
@@ -5588,7 +5829,7 @@
             if (games.length <= 1) return;
             activeGameIndex = (activeGameIndex - 1 + games.length) % games.length;
             if (window.n3dsAudio) window.n3dsAudio.play('move');
-            renderSwitchShelf();
+            renderSwitchShelf('left');
             const g = games[activeGameIndex];
             setDynamicBg(g.cover, g.title);
             triggerHapticPulse(35, 0.25, 0.1);
@@ -5668,7 +5909,7 @@
             renderJoyconConsoleList();
 
             // 9. Renderizar y actualizar la repisa Switch mostrando ÚNICAMENTE los juegos de esta consola
-            renderSwitchShelf();
+            renderSwitchShelf(null, true);
         }
 
         // ========================================================
